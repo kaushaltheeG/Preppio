@@ -18,7 +18,7 @@ router.post('/analyze', async (req: Request<{}, {}, JobRequest>, res: Response) 
       return res.status(400).json({ error: 'Job description is required' });
     }
 
-    // Mock response for now - replace with actual API call
+    // improve the prompt to get the best results
     const analysis = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
