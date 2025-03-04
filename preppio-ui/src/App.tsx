@@ -27,10 +27,11 @@ function App() {
         </div>
         <div className="w-px bg-gray-200 h-auto self-stretch border-r-2 border-gray-200" />
         <div className="flex flex-col flex-1">
-          <TextBox 
+          <TextBox
             value="" 
             placeholder="Potential Questions..." 
             className="flex-1 min-h-[200px]"
+            readonly={true}
             />
           <Button variant="primary" size="lg" onClick={() => {}}>Download Questions</Button>
 
