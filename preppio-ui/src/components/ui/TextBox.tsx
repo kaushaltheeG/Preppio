@@ -15,9 +15,9 @@ const TextBox: React.FC<TextBoxProps> = ({ value, onChange, placeholder, readonl
   }, [onChange]);
 
   return (
-    <div className="w-full h-full pb-[10px]">
+    <div className="w-full h-full pb-[10px] overflow-hidden">
       <textarea
-        className={`w-full h-full p-4 border rounded-lg resize-none 
+        className={`w-full h-full p-4 border rounded-lg max-h-[60vh]
           focus:outline-none focus:ring-2 focus:ring-blue-500 
           bg-white dark:bg-gray-800 
           text-gray-900 dark:text-gray-100
