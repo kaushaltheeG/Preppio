@@ -21,13 +21,7 @@ function App() {
           <div className="w-56">
             <Control />
           </div>
-          <div className="flex-1">
-            <PasteOnlyTextBox 
-              value={jobDescription} 
-              onChange={setJobDescription}
-              className="h-full"
-            />
-          </div>
+          {/* add Resume and JobDescription here */}
           <div className="w-85">
             <Tune />
           </div>

@@ -12,4 +12,4 @@ const Control: React.FC = () => {
   );
 };
 
-export default Control; 
+export default Control;
