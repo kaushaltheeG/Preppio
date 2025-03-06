@@ -1,10 +1,8 @@
 import React from 'react';
-import PasteOnlyTextBox from './components/ui/PasteOnlyTextBox';
 import Control from './components/feature/Control';
 import Tune from './components/feature/Tune';
 
 function App() {
-  const [jobDescription, setJobDescription] = React.useState('');
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">

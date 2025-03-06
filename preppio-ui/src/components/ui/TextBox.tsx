@@ -2,7 +2,7 @@ import React from "react";
 
 interface TextBoxProps {
   value: string;
-  onChange?: (text: string) => void;
+  onChange?: (text: string | React.ChangeEvent<HTMLTextAreaElement>) => void;
   placeholder?: string;
   readonly?: boolean;
   className?: string;

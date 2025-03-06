@@ -1,20 +1,34 @@
 import React from "react";
 import Input from "../../ui/Input";
 import TextBox from "../../ui/TextBox";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { setInterviewType, setInterviewerPosition, setExtraInformation } from "../../../store/tuneSlice";
 
 const Tune: React.FC = () => {
-  const [extraInformation, setExtraInformation] = React.useState('');
-  const [interviewType, setInterviewType] = React.useState('');
-  const [interviewerPosition, setInterviewerPosition] = React.useState('');
+  const dispatch = useAppDispatch();
+  const { interviewType, interviewerPosition, extraInformation } = useAppSelector((state) => state.tune);
+  const handleInterviewTypeChange = (value: string | React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = typeof value === 'string' ? value : value.target.value;
+    dispatch(setInterviewType(newValue));
+  };
+
+  const handleInterviewerPositionChange = (value: string | React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = typeof value === 'string' ? value : value.target.value;
+    dispatch(setInterviewerPosition(newValue));
+  };
+
+  const handleExtraInformationChange = (value: string | React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = typeof value === 'string' ? value : value.target.value;
+    dispatch(setExtraInformation(newValue));
+  };
+
   return (
     <div className="flex flex-col gap-2">
-      {/* interview type | interviewer's position */}
       <div className="flex flex-row gap-2">
-        <Input placeholder="Type of Interview" value={interviewType} onChange={setInterviewType} />
-        <Input placeholder="Interviewer's Position" value={interviewerPosition} onChange={setInterviewerPosition} />
+        <Input placeholder="Type of Interview" value={interviewType} onChange={handleInterviewTypeChange} />
+        <Input placeholder="Interviewer's Position" value={interviewerPosition} onChange={handleInterviewerPositionChange} />
       </div>
-      {/* extra information */}
-      <TextBox placeholder="Extra Information" value={extraInformation} onChange={setExtraInformation} />
+      <TextBox placeholder="Extra Information" value={extraInformation} onChange={handleExtraInformationChange} />
     </div>
   );
 };

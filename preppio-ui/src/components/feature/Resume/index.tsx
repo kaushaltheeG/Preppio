@@ -1,14 +1,22 @@
 import React from 'react';
 import PasteOnlyTextBox from '../../ui/PasteOnlyTextBox';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { setResume } from '../../../store/resumeSlice';
 
 const Resume: React.FC = () => {
-  const [resume, setResume] = React.useState('');
+  const dispatch = useAppDispatch();
+  const { content: resumeContent } = useAppSelector((state) => state.resume);
+
+  const handleResumeChange = (value: string | React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = typeof value === 'string' ? value : value.target.value;
+    dispatch(setResume(newValue));
+  };
 
   return (
     <div className="flex-1">
       <PasteOnlyTextBox 
-        value={resume} 
-        onChange={setResume}
+        value={resumeContent} 
+        onChange={handleResumeChange}
         className="h-full"
       />
     </div>

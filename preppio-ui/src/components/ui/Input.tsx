@@ -3,7 +3,7 @@ import { cn } from '../../lib/utils';
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: string | React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
   error?: string;
   className?: string;
