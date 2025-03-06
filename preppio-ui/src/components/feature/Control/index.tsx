@@ -1,13 +1,28 @@
 import React from "react";
 import Button from "../../ui/Button";
+import { useAppDispatch } from "../../../store/hooks";
+import { setFormState } from "../../../store/appSlice";
 
 const Control: React.FC = () => {
-  
+  const dispatch = useAppDispatch();
+
+  const handleResumeClick = () => {
+    dispatch(setFormState('resume'));
+  };
+
+  const handleJobClick = () => {
+    dispatch(setFormState('jobDescription'));
+  };
+
+  const handleGenerateClick = () => {
+    dispatch(setFormState('questions'));
+  };
+
   return (
     <div className="flex flex-col gap-2">
-      {['Resume', 'Job', 'Generate'].map((btnName, index) => (
-        <Button key={index} variant="primary" size="md">{btnName}</Button>
-      ))}
+      <Button key={1} variant="primary" size="md" onClick={handleResumeClick}>Resume</Button>
+      <Button key={2} variant="primary" size="md" onClick={handleJobClick}>Job</Button>
+      <Button key={3} variant="primary" size="md" onClick={handleGenerateClick}>Generate</Button>
     </div>
   );
 };

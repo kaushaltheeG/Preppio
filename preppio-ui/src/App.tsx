@@ -1,8 +1,13 @@
-import React from 'react';
 import Control from './components/feature/Control';
 import Tune from './components/feature/Tune';
+import { useAppSelector } from './store/hooks';
+import { onJobDescription, onResume } from './store/appSlice';
+import Resume from './components/feature/Resume';
+import JobDescription from './components/feature/JobDescription';
 
 function App() {
+  const isOnJobDescription = useAppSelector(onJobDescription);
+  const isOnResume = useAppSelector(onResume);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
@@ -20,6 +25,10 @@ function App() {
             <Control />
           </div>
           {/* add Resume and JobDescription here */}
+          {isOnResume && <Resume />}
+          {isOnJobDescription &&
+            <JobDescription />
+          }
           <div className="w-85">
             <Tune />
           </div>

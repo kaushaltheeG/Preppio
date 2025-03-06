@@ -18,6 +18,7 @@ const Resume: React.FC = () => {
         value={resumeContent} 
         onChange={handleResumeChange}
         className="h-full"
+        placeholder="Paste your resume here"
       />
     </div>
   );
