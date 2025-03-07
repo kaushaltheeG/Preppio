@@ -19,7 +19,7 @@ class GPTService implements IGPTService {
     return response;
   }
 
-  cleanResponse(response: string): string {
+  cleanResponse<T>(response: string): T {
     try {
       const cleaned = response
         .replace(/\\n/g, '')

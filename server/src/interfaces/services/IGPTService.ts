@@ -10,7 +10,7 @@ export interface IPromptProps {
 
 interface IGPTService {
   promptModel(promptObj: IPromptProps): Promise<ChatCompletion>;
-  cleanResponse(response: string): string;
+  cleanResponse<T>(response: string): T;
 }
 
 export default IGPTService;

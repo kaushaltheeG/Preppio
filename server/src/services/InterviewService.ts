@@ -1,18 +1,22 @@
 import IGPTService, { IPromptProps } from "../interfaces/services/IGPTService";
-import { ICreateInterviewQuestionPrompt } from "../interfaces/services/IInterviewService";
+import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse } from "../interfaces/services/IInterviewService";
 
 
-class InterviewService {
+class InterviewService implements IInterviewService {
   private gptService: IGPTService;
 
   constructor(gptService: IGPTService) {
     this.gptService = gptService;
   }
 
-  async getQuestions(interviewRequest: ICreateInterviewQuestionPrompt) {
+  async getQuestions(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse> {
     const prompt = this.createInterviewQuestionsPrompt(interviewRequest);
     const response = await this.gptService.promptModel(prompt);
-    return this.gptService.cleanResponse(response.choices[0].message.content || '');
+    if (!response || !response.choices[0].message.content) {
+      throw new Error('No response from GPT');
+    }
+
+    return this.gptService.cleanResponse<IGetQuestionsResponse>(response.choices[0].message.content);
   }
 
   createInterviewQuestionsPrompt(interviewRequest: ICreateInterviewQuestionPrompt): IPromptProps {
