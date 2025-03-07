@@ -1,7 +1,8 @@
 import React from 'react';
 import PasteOnlyTextBox from '../../ui/PasteOnlyTextBox';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { setResume } from '../../../store/resumeSlice';
+import { useAppDispatch } from '../../../hooks/useAppDispatch';
+import { useAppSelector } from '../../../hooks/useAppSelector'; 
+import { setResume } from '../../../store/slices/resumeSlice';
 
 const Resume: React.FC = () => {
   const dispatch = useAppDispatch();

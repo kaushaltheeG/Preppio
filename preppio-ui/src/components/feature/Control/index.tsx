@@ -1,8 +1,7 @@
 import React from "react";
 import Button from "../../ui/Button";
-import { useAppDispatch } from "../../../store/hooks";
-import { setFormState } from "../../../store/appSlice";
-
+import { setFormState } from "../../../store/slices/appSlice";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
 const Control: React.FC = () => {
   const dispatch = useAppDispatch();
 

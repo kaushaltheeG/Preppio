@@ -1,7 +1,7 @@
 import Control from './components/feature/Control';
 import Tune from './components/feature/Tune';
-import { useAppSelector } from './store/hooks';
-import { onJobDescription, onResume } from './store/appSlice';
+import { useAppSelector } from './hooks/useAppSelector';
+import { onJobDescription, onResume } from './store/slices/appSlice';
 import Resume from './components/feature/Resume';
 import JobDescription from './components/feature/JobDescription';
 

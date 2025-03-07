@@ -1,7 +1,8 @@
 import React from 'react';
 import PasteOnlyTextBox from '../../ui/PasteOnlyTextBox';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { setJobDescription } from '../../../store/jobDescriptionSlice';
+import { setJobDescription } from '../../../store/slices/jobDescriptionSlice';
+import { useAppDispatch } from '../../../hooks/useAppDispatch';
+import { useAppSelector } from '../../../hooks/useAppSelector';
 
 const JobDescription: React.FC = () => {
   const dispatch = useAppDispatch();

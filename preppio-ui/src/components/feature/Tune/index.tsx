@@ -1,8 +1,9 @@
 import React from "react";
 import Input from "../../ui/Input";
 import TextBox from "../../ui/TextBox";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { setInterviewType, setInterviewerPosition, setExtraInformation } from "../../../store/tuneSlice";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
+import { setInterviewType, setInterviewerPosition, setExtraInformation } from "../../../store/slices/tuneSlice";
 
 const Tune: React.FC = () => {
   const dispatch = useAppDispatch();
