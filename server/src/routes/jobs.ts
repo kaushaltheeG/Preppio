@@ -1,14 +1,12 @@
 import { Router, Request, Response } from 'express';
-import OpenAI from 'openai';
+import GPTService from '../services/GPTService';
 
 interface JobRequest {
   description: string;
 }
 
 const router = Router();
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const gptService = new GPTService();
 
 router.post('/questions', async (req: Request<{}, {}, JobRequest>, res: Response) => {
   try {
@@ -19,12 +17,12 @@ router.post('/questions', async (req: Request<{}, {}, JobRequest>, res: Response
     }
 
     // improve the prompt to get the best results
-    const analysis = await openai.chat.completions.create({
+    const analysis = await gptService.prompt({
       model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
-          content: 'You are a helpful assistant that analyzes job descriptions and 5 behavioral and 5 technical questions that are relevant to the job description.',
+          content: 'You are a helpful assistant that analyzes job descriptions and provide 10 technical questions that are relevant to the job description. I only want the questions, no other text.',
         },
         {
           role: 'user',
