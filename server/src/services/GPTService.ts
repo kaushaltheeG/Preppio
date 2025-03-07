@@ -1,22 +1,14 @@
 import OpenAI from "openai";
-import { ChatCompletionCreateParamsBase } from "openai/resources/chat/completions";
-
-interface IPromptProps {
-  messages: ChatCompletionCreateParamsBase['messages'];
-  model: ChatCompletionCreateParamsBase['model'];
-  temperature?: ChatCompletionCreateParamsBase['temperature'];
-  max_tokens?: ChatCompletionCreateParamsBase['max_tokens'];
-  response_format?: ChatCompletionCreateParamsBase['response_format'];
-}
-
-class GPTService {
+import { ChatCompletion } from "openai/resources/chat/completions";
+import IGPTService, { IPromptProps } from "../interfaces/services/IGPTService";
+class GPTService implements IGPTService {
   private openai: OpenAI;
 
   constructor() {
     this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   }
 
-  async prompt(promptObj: IPromptProps) {
+  async promptModel(promptObj: IPromptProps): Promise<ChatCompletion> {
     for (const arg in promptObj) {
       if (arg === undefined) {
         delete promptObj[arg];
@@ -25,6 +17,20 @@ class GPTService {
     const response = await this.openai.chat.completions.create(promptObj);
 
     return response;
+  }
+
+  cleanResponse(response: string): string {
+    try {
+      const cleaned = response
+        .replace(/\\n/g, '')
+        .replace(/\\/g, '')
+        .replace(/"{/g, '{')
+        .replace(/}"/g, '}');
+      return JSON.parse(cleaned);
+    } catch (error) {
+      console.error('Error parsing response:', error);
+      throw new Error('Failed to parse GPT response');
+    }
   }
 }
 
