@@ -29,9 +29,9 @@ interface IQuestion {
 }
 
 interface IAnalysis {
-  "strengthAreas": string[],
-  "gapAreas": string[],
-  "recommendedFocus": string[],
+  strengthAreas: string[],
+  gapAreas: string[],
+  recommendedFocus: string[],
 }
 
 interface IInterviewService {
