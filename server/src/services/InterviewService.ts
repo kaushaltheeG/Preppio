@@ -21,8 +21,8 @@ class InterviewService {
       messages: [
         {
           role: 'system',
-          content: `You are an expert ${interviewRequest.interviewType} interviewer at a top tech company, with the role of ${interviewRequest.interviewerPosition}.
-            Your task is to generate relevant interview questions based on the job description and candidate's resume.
+          content: `You are an expert ${interviewRequest.interviewType} interviewer at this company found in this job description: ${interviewRequest.jobDescription} , with the role of ${interviewRequest.interviewerPosition}.
+            Your task is to generate relevant ${interviewRequest.interviewType} interview questions based on the company, job description and candidate's resume.
 
             Context to consider:
             - Interview Type: ${interviewRequest.interviewType}
@@ -36,8 +36,12 @@ class InterviewService {
             - Focus on areas where the candidate's experience matches job requirements
             - Include follow-up points for deeper discussion
 
-            Format response as JSON:
+            Format response always as JSON:
             {
+              "company": "The company name",
+              "jobTitle": "The job title",
+              "interviewType": "The type of interview",
+              "interviewerPosition": "The position of the interviewer",
               "questions": [
                 {
                   "question": "The main question text",
