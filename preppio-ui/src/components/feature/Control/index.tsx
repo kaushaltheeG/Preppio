@@ -16,6 +16,7 @@ const Control: React.FC = () => {
   };
 
   const handleGenerateClick = () => {
+    dispatch(setFormState('questions'));
     dispatch(analyzeRequest());
   };
 

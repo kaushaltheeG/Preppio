@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IAnalysis, IQuestion, IGetQuestionsResponse } from '../../services/interview/api';
+import { RootState } from '../../store';
 
 export interface IInterviewState {
   analysis: IAnalysis;
@@ -45,6 +46,11 @@ const interviewSlice = createSlice({
     },
   },
 });
+
+// Selectors
+export const getQuestions = (state: RootState) => state.interview.questions;
+export const getAnalysis = (state: RootState) => state.interview.analysis;
+export const getIsLoadingQuestions = (state: RootState) => state.interview.isLoading;
 
 export const { setQuestions, setAnalysis, analyzeRequest, analyzeSuccess, analyzeFailure } = interviewSlice.actions;
 export default interviewSlice.reducer;

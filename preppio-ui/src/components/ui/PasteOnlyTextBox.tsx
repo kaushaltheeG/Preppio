@@ -17,7 +17,7 @@ const PasteOnlyTextBox: React.FC<PasteOnlyTextBoxProps> = ({
     // Allow: Ctrl+V (paste), Ctrl+C (copy), Ctrl+A (select all), Delete, Backspace
     const allowedKeys = ['Delete', 'Backspace'];
     const isCtrlKey = e.ctrlKey || e.metaKey; // metaKey for Mac
-    const isAllowedCtrlCommand = isCtrlKey && ['v', 'c', 'a', 'z'].includes(e.key.toLowerCase());
+    const isAllowedCtrlCommand = isCtrlKey && ['v', 'c', 'a', 'z', 'x'].includes(e.key.toLowerCase());
     
     if (!isAllowedCtrlCommand && !allowedKeys.includes(e.key)) {
       e.preventDefault();
