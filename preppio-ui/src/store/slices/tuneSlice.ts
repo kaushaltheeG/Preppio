@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../../store';
 
 interface TuneState {
   interviewType: string;
@@ -27,6 +28,11 @@ export const tuneSlice = createSlice({
     },
   },
 });
+
+// Selectors
+export const getInterviewType = (state: RootState) => state.tune.interviewType;
+export const getInterviewerPosition = (state: RootState) => state.tune.interviewerPosition;
+export const getExtraInformation = (state: RootState) => state.tune.extraInformation;
 
 export const { setInterviewType, setInterviewerPosition, setExtraInformation } = tuneSlice.actions;
 export default tuneSlice.reducer;

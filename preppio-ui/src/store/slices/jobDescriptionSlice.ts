@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../../store';
 
 interface JobDescriptionState {
   content: string;
@@ -17,6 +18,9 @@ export const jobDescriptionSlice = createSlice({
     },
   },
 });
+
+// Selectors
+export const getJobDescription = (state: RootState) => state.jobDescription.content;
 
 export const { setJobDescription } = jobDescriptionSlice.actions;
 export default jobDescriptionSlice.reducer;

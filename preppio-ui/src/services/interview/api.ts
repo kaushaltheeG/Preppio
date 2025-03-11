@@ -1,21 +1,12 @@
 import axios from 'axios';
 import { API_URL } from '../utils';
 
-interface IGetInterviewQuestionsRequest {
-  jobDescription: string,
-  resume: string,
-  extraNotes: string,
-  interviewType: string,
-  interviewerPosition: string
-}
-
-export interface IGetQuestionsResponse {
-  company: string;
-  jobTitle: string;
+export interface IGetInterviewQuestionsRequest {
+  jobDescription: string;
+  resume: string;
   interviewType: string;
   interviewerPosition: string;
-  questions: IQuestion[];
-  analysis: IAnalysis;
+  extraInformation: string;
 }
 
 interface IQuestion {
@@ -35,7 +26,20 @@ interface IAnalysis {
   recommendedFocus: string[],
 }
 
-export const getInterviewQuestions = async (requestBody: IGetInterviewQuestionsRequest): Promise<IGetQuestionsResponse> => {
-  const response = await axios.post<IGetQuestionsResponse>(`${API_URL}/api/interview/questions`, requestBody);
-  return response.data;
+export interface IGetQuestionsResponse {
+  company: string;
+  jobTitle: string;
+  interviewType: string;
+  interviewerPosition: string;
+  questions: IQuestion[];
+  analysis: IAnalysis;
+}
+
+export const getInterviewQuestions = async (requestBody: IGetInterviewQuestionsRequest): Promise<IGetQuestionsResponse | null> => {
+  try {
+    const response = await axios.post<IGetQuestionsResponse>(`${API_URL}/api/interview/questions`,  requestBody);
+    return response.data;
+  } catch (error) {
+    return null;
+  }
 };

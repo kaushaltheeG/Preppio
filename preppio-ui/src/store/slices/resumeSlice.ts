@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
+import { RootState } from '../../store';
 interface ResumeState {
   content: string;
 }
@@ -17,6 +17,9 @@ export const resumeSlice = createSlice({
     },
   },
 });
+
+// Selectors
+export const getResume = (state: RootState) => state.resume.content;
 
 export const { setResume } = resumeSlice.actions;
 export default resumeSlice.reducer;

@@ -1,8 +1,11 @@
-// import { all } from 'redux-saga/effects';
+import { all } from 'redux-saga/effects';
+import { interviewSaga } from './interviewSaga';
 
-export function* rootSaga() {
-  // yield all([
-  //   watchJobDescription(),
-  //   watchResume(),
-  // ]);
-} 
+function* rootSaga() {
+  yield all([
+    interviewSaga(),
+  ]);
+};
+
+export default rootSaga;
+
