@@ -2,6 +2,8 @@ import React from "react";
 import Button from "../../ui/Button";
 import { setFormState } from "../../../store/slices/appSlice";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { analyzeRequest } from "../../../store/slices/interviewSlice";
+
 const Control: React.FC = () => {
   const dispatch = useAppDispatch();
 
@@ -14,7 +16,7 @@ const Control: React.FC = () => {
   };
 
   const handleGenerateClick = () => {
-    dispatch(setFormState('questions'));
+    dispatch(analyzeRequest());
   };
 
   return (

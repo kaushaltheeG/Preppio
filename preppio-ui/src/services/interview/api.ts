@@ -9,7 +9,7 @@ export interface IGetInterviewQuestionsRequest {
   extraInformation: string;
 }
 
-interface IQuestion {
+export interface IQuestion {
   question: string;
   type: string;
   difficulty: string;
@@ -20,7 +20,7 @@ interface IQuestion {
   skillsAssessed: string[],
 }
 
-interface IAnalysis {
+export interface IAnalysis {
   strengthAreas: string[],
   gapAreas: string[],
   recommendedFocus: string[],
