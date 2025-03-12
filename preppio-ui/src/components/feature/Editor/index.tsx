@@ -8,11 +8,45 @@ import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
 import './styles.css';
-// import { useAppSelector } from '../../../hooks/useAppSelector';
-// import { getQuestions } from '../../../store/slices/interviewSlice';  
+import { $getRoot, $createParagraphNode, $createTextNode } from 'lexical';
+import { IQuestion } from '@/services/interview/api';
+import { useAppSelector } from '../../../hooks/useAppSelector';
+import { getQuestions } from '../../../store/slices/interviewSlice';  
+import UpdatePlugin from './plugins/UpdatePlugin';
 
 const Editor: React.FC = () => {
-  // const questions = useAppSelector(getQuestions);
+  const questionsData = useAppSelector(getQuestions);
+
+  const formatQuestionsContent = React.useCallback((questions: IQuestion[]) => {
+    if (!questions.length) return () => {};
+  
+    return (editor: any) => {
+      const root = $getRoot();
+      const paragraphNode = $createParagraphNode();
+      
+      // Add interview details
+      paragraphNode.append(
+        // $createTextNode(`Interview Type: ${data.interviewType}\n`),
+        // $createTextNode(`Interviewer Position: ${data.interviewerPosition}\n\n`),
+        $createTextNode('Questions:\n\n')
+      );
+      root.append(paragraphNode);
+
+      // Add questions
+      questions.forEach((q, index) => {
+        const questionNode = $createParagraphNode();
+        questionNode.append(
+          $createTextNode(`${index + 1}. ${q.question}\n`),
+          $createTextNode(`Type: ${q.type}\n`),
+          $createTextNode(`Difficulty: ${q.difficulty}\n`),
+          $createTextNode(`Topic: ${q.topic}\n`),
+          $createTextNode('Key Points:\n'),
+          $createTextNode(`${q.keyPoints.map(point => `• ${point}`).join('\n')}\n\n`)
+        );
+        root.append(questionNode);
+      });
+    };
+  }, []);
 
   const theme = {
     ltr: 'ltr',
@@ -32,6 +66,7 @@ const Editor: React.FC = () => {
     theme,
     nodes: [HeadingNode, QuoteNode],
     onError: (err: Error) => console.log(err),
+    editable: true,
   };
 
   return (
@@ -50,6 +85,9 @@ const Editor: React.FC = () => {
           />
           <HistoryPlugin />
           <AutoFocusPlugin />
+          {questionsData && (
+            <UpdatePlugin updateFn={formatQuestionsContent(questionsData)} />
+          )}
         </div>
       </div>
     </LexicalComposer>
