@@ -1,15 +1,15 @@
 import Control from './components/feature/Control';
 import Tune from './components/feature/Tune';
-import { useAppSelector } from './hooks/useAppSelector';
-import { onJobDescription, onResume, onQuestions } from './store/slices/appSlice';
-import Resume from './components/feature/Resume';
-import JobDescription from './components/feature/JobDescription';
-import Questions from './components/feature/Questions';
-
+// import { useAppSelector } from './hooks/useAppSelector';
+// import { onJobDescription, onResume, onQuestions } from './store/slices/appSlice';
+// import Resume from './components/feature/Resume';
+// import JobDescription from './components/feature/JobDescription';
+// import Questions from './components/feature/Questions';
+import Editor from './components/feature/Editor';
 function App() {
-  const isOnJobDescription = useAppSelector(onJobDescription);
-  const isOnResume = useAppSelector(onResume);
-  const isOnQuestions = useAppSelector(onQuestions);
+  // const isOnJobDescription = useAppSelector(onJobDescription);
+  // const isOnResume = useAppSelector(onResume);
+  // const isOnQuestions = useAppSelector(onQuestions);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
@@ -22,16 +22,19 @@ function App() {
         </div>
       </header>
       <main className="flex-1 bg-gray-100">
-        <div className="h-full min-w-7xl px-8 py-6 flex gap-8">
+        <div className="h-full px-8 py-6 flex gap-8">
           <div className="w-56">
             <Control />
           </div>
           {/* add Resume and JobDescription here */}
-          {isOnResume && <Resume />}
+          {/* {isOnResume && <Resume />}
           {isOnJobDescription &&
             <JobDescription />
           }
-          {isOnQuestions && <Questions />}
+          {isOnQuestions && <Questions />} */}
+          <div className="w-[55%]">
+            <Editor />
+          </div>
           <div className="w-[30%]">
             <Tune />
           </div>
