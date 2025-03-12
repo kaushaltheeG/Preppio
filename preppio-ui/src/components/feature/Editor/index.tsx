@@ -2,20 +2,18 @@ import React from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
-// import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-// import { OnClickPlugin } from '@lexical/react/LexicalOnClickPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
 import './styles.css';
-
-const Placeholder = () => {
-  return <div className="editor-placeholder">Enter your text here...</div>;
-};
+// import { useAppSelector } from '../../../hooks/useAppSelector';
+// import { getQuestions } from '../../../store/slices/interviewSlice';  
 
 const Editor: React.FC = () => {
+  // const questions = useAppSelector(getQuestions);
+
   const theme = {
     ltr: 'ltr',
     rtl: 'rtl',
@@ -47,7 +45,7 @@ const Editor: React.FC = () => {
                 className="outline-none min-h-full"
               />
             }
-            placeholder={<Placeholder />}
+            placeholder={<div className="editor-placeholder">Enter your text here...</div>}
             ErrorBoundary={LexicalErrorBoundary}
           />
           <HistoryPlugin />

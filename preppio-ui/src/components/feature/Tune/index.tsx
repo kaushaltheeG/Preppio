@@ -4,24 +4,31 @@ import TextBox from "../../ui/TextBox";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { setInterviewType, setInterviewerPosition, setExtraInformation } from "../../../store/slices/tuneSlice";
+import { Button } from "@mui/material";
+import { analyzeRequest } from "../../../store/slices/interviewSlice";
 
 const Tune: React.FC = () => {
   const dispatch = useAppDispatch();
   const { interviewType, interviewerPosition, extraInformation } = useAppSelector((state) => state.tune);
-  const handleInterviewTypeChange = (value: string | React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleInterviewTypeChange = React.useCallback((value: string | React.ChangeEvent<HTMLInputElement>) => {
     const newValue = typeof value === 'string' ? value : value.target.value;
     dispatch(setInterviewType(newValue));
-  };
+  }, [dispatch]);
 
-  const handleInterviewerPositionChange = (value: string | React.ChangeEvent<HTMLInputElement>) => {
+  const handleInterviewerPositionChange = React.useCallback((value: string | React.ChangeEvent<HTMLInputElement>) => {
     const newValue = typeof value === 'string' ? value : value.target.value;
     dispatch(setInterviewerPosition(newValue));
-  };
+  }, [dispatch]);
 
-  const handleExtraInformationChange = (value: string | React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleExtraInformationChange = React.useCallback((value: string | React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = typeof value === 'string' ? value : value.target.value;
     dispatch(setExtraInformation(newValue));
-  };
+  }, [dispatch]);
+
+  const handleGenerate = React.useCallback(() => {
+    dispatch(analyzeRequest());
+  }, [dispatch]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -30,6 +37,7 @@ const Tune: React.FC = () => {
         <Input placeholder="Interviewer's Position" value={interviewerPosition} onChange={handleInterviewerPositionChange} />
       </div>
       <TextBox placeholder="Extra Information" value={extraInformation} onChange={handleExtraInformationChange} />
+      <Button variant="contained" color="primary" onClick={handleGenerate}>Generate</Button>
     </div>
   );
 };

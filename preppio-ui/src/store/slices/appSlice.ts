@@ -4,7 +4,7 @@ import { RootState } from '../index';
 interface AppState {
   isLoading: boolean;
   errorMessage: string;
-  formState: 'jobDescription' | 'resume' | 'questions';
+  formState: 'jobDescription' | 'resume' | 'tune';
 }
 
 const initialState: AppState = {
@@ -30,12 +30,12 @@ export const appSlice = createSlice({
 });
 
 // Selectors
-export const selectFormState = (state: RootState) => state.app.formState;
-export const selectIsLoading = (state: RootState) => state.app.isLoading;
-export const selectErrorMessage = (state: RootState) => state.app.errorMessage;
+export const getFormState = (state: RootState) => state.app.formState;
+export const getIsLoading = (state: RootState) => state.app.isLoading;
+export const getAppErrorMessage = (state: RootState) => state.app.errorMessage;
 export const onJobDescription = (state: RootState) => state.app.formState === 'jobDescription';
 export const onResume = (state: RootState) => state.app.formState === 'resume';
-export const onQuestions = (state: RootState) => state.app.formState === 'questions';
+export const onTune = (state: RootState) => state.app.formState === 'tune';
 
 export const { setFormState, setIsLoading, setErrorMessage } = appSlice.actions;
 export default appSlice.reducer;
