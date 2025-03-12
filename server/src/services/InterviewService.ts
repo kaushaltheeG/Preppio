@@ -1,5 +1,5 @@
 import IGPTService, { IPromptProps } from "../interfaces/services/IGPTService";
-import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse } from "../interfaces/services/IInterviewService";
+import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse, ISerializedEditorState } from "../interfaces/services/IInterviewService";
 
 
 class InterviewService implements IInterviewService {
@@ -9,14 +9,17 @@ class InterviewService implements IInterviewService {
     this.gptService = gptService;
   }
 
-  async getQuestions(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse> {
+  async getAnalysis(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse> {
     const prompt = this.createInterviewQuestionsPrompt(interviewRequest);
     const response = await this.gptService.promptModel(prompt);
     if (!response || !response.choices[0].message.content) {
       throw new Error('No response from GPT');
     }
 
-    return this.gptService.cleanResponse<IGetQuestionsResponse>(response.choices[0].message.content);
+    const analysis = this.gptService.cleanResponse<IGetQuestionsResponse>(response.choices[0].message.content);
+    analysis.serializedLexicalEditorState = this.formatLexicalEditorContent(analysis);
+
+    return analysis;
   }
 
   createInterviewQuestionsPrompt(interviewRequest: ICreateInterviewQuestionPrompt): IPromptProps {
@@ -83,6 +86,32 @@ class InterviewService implements IInterviewService {
       temperature: 0.7,
       max_tokens: 3000,
     };
+  }
+
+  private formatLexicalEditorContent(data: IGetQuestionsResponse): ISerializedEditorState {
+    return {
+      root: {
+        children: [
+          {
+            type: "paragraph",
+            children: [
+              { text: "Questions:\n\n" }
+            ]
+          },
+          ...data.questions.map((q, index) => ({
+            type: "paragraph",
+            children: [
+              { text: `${index + 1}. ${q.question}\n` },
+              { text: `Type: ${q.type}\n` },
+              { text: `Difficulty: ${q.difficulty}\n` },
+              { text: `Topic: ${q.topic}\n` },
+              { text: "Key Points:\n" },
+              { text: `${q.keyPoints.map(point => `• ${point}`).join('\n')}\n\n` }
+            ]
+          })),
+        ],
+      },
+    }
   }
 
 }

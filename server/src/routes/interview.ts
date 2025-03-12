@@ -30,7 +30,7 @@ router.post('/questions', async (req: Request<{}, {}, InterviewRequest>, res: Re
     if (!interviewerPosition) {
       return res.status(400).json({ error: 'Interviewer position is required' });
     }
-     const questions = await interviewService.getQuestions({
+     const analysis = await interviewService.getAnalysis({
       jobDescription,
       resume,
       extraNotes,
@@ -38,7 +38,7 @@ router.post('/questions', async (req: Request<{}, {}, InterviewRequest>, res: Re
       interviewerPosition,
     });
 
-    return res.json(questions);
+    return res.json(analysis);
   } catch (error) {
     console.error('Error analyzing job:', error);
     return res.status(500).json({ error: 'Failed to analyze job description' });

@@ -15,6 +15,7 @@ export interface IGetQuestionsResponse {
   interviewerPosition: string;
   questions: IQuestion[];
   analysis: IAnalysis;
+  serializedLexicalEditorState: ISerializedEditorState;
 }
 
 interface IQuestion {
@@ -34,9 +35,22 @@ interface IAnalysis {
   recommendedFocus: string[],
 }
 
+export interface ISerializedEditorState {
+  root: {
+    children: {
+      type: string;
+      children: {
+        text: string;
+        format?: number;
+      }[];
+    }[];
+  };
+}
+
+
 interface IInterviewService {
   createInterviewQuestionsPrompt(interviewRequest: ICreateInterviewQuestionPrompt): IPromptProps;
-  getQuestions(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse>;
+  getAnalysis(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse>;
 }
 
 export default IInterviewService;

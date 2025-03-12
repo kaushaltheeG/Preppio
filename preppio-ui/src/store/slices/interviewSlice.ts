@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAnalysis, IQuestion, IGetQuestionsResponse } from '../../services/interview/api';
+import { IAnalysis, IQuestion, IGetQuestionsResponse, ISerializedEditorState } from '../../services/interview/api';
 import { RootState } from '../../store';
 
 export interface IInterviewState {
@@ -7,6 +7,7 @@ export interface IInterviewState {
   error: string | null;
   isLoading: boolean;
   questions: IQuestion[];
+  serializedLexicalEditorState: ISerializedEditorState;
 }
 
 const initialState: IInterviewState = {
@@ -18,6 +19,11 @@ const initialState: IInterviewState = {
   error: null,
   isLoading: false,
   questions: [],
+  serializedLexicalEditorState: {
+    root: {
+      children: [],
+    },
+  },
 };
 
 const interviewSlice = createSlice({
@@ -33,6 +39,7 @@ const interviewSlice = createSlice({
       state.error = null;
       state.questions = action.payload.questions;
       state.analysis = action.payload.analysis;
+      state.serializedLexicalEditorState = action.payload.serializedLexicalEditorState;
     },
     analyzeFailure: (state, action: PayloadAction<string>) => {
       state.isLoading = false;
@@ -44,6 +51,9 @@ const interviewSlice = createSlice({
     setAnalysis: (state, action: PayloadAction<IAnalysis>) => {
       state.analysis = action.payload;
     },
+    setSerializedLexicalEditorState: (state, action: PayloadAction<ISerializedEditorState>) => {
+      state.serializedLexicalEditorState = action.payload;
+    },
   },
 });
 
@@ -51,6 +61,7 @@ const interviewSlice = createSlice({
 export const getQuestions = (state: RootState) => state.interview.questions;
 export const getAnalysis = (state: RootState) => state.interview.analysis;
 export const getIsLoadingQuestions = (state: RootState) => state.interview.isLoading;
+export const getSerializedLexicalEditorState = (state: RootState) => state.interview.serializedLexicalEditorState;
 
-export const { setQuestions, setAnalysis, analyzeRequest, analyzeSuccess, analyzeFailure } = interviewSlice.actions;
+export const { setQuestions, setAnalysis, setSerializedLexicalEditorState, analyzeRequest, analyzeSuccess, analyzeFailure } = interviewSlice.actions;
 export default interviewSlice.reducer;

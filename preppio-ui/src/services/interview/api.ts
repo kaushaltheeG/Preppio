@@ -33,6 +33,19 @@ export interface IGetQuestionsResponse {
   interviewerPosition: string;
   questions: IQuestion[];
   analysis: IAnalysis;
+  serializedLexicalEditorState: ISerializedEditorState;
+}
+
+export interface ISerializedEditorState {
+  root: {
+    children: {
+      type: string;
+      children: {
+        text: string;
+        format?: number;
+      }[];
+    }[];
+  };
 }
 
 export const getInterviewQuestions = async (requestBody: IGetInterviewQuestionsRequest): Promise<IGetQuestionsResponse | null> => {
