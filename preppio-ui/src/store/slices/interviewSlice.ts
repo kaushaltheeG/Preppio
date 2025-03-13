@@ -4,8 +4,12 @@ import { RootState } from '../../store';
 
 export interface IInterviewState {
   analysis: IAnalysis;
+  company: string;
   error: string | null;
   isLoading: boolean;
+  interviewerPosition: string;
+  interviewType: string;
+  jobTitle: string;
   questions: IQuestion[];
   serializedLexicalEditorState: ISerializedEditorState;
 }
@@ -16,12 +20,16 @@ const initialState: IInterviewState = {
     gapAreas: [],
     recommendedFocus: [],
   },
+  company: '',
   error: null,
   isLoading: false,
+  interviewerPosition: '',
+  interviewType: '',
+  jobTitle: '',
   questions: [],
   serializedLexicalEditorState: {
     root: {
-      children: [],
+      htmlContent: '',
     },
   },
 };

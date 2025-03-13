@@ -1,28 +1,31 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useEffect } from 'react';
+import { $generateNodesFromDOM } from '@lexical/html';
 import { ISerializedEditorState } from '../../../../services/interview/api';
-import { $getRoot, $createParagraphNode, $createTextNode } from 'lexical';
+import { $getRoot } from 'lexical';
 export interface UpdatePluginProps {
   serializedLexicalEditorState: ISerializedEditorState;
 }
 
 export default function UpdatePlugin({ serializedLexicalEditorState }: UpdatePluginProps): null {
   const [editor] = useLexicalComposerContext();
-  console.log(JSON.stringify(serializedLexicalEditorState));
+
   useEffect(() => {
     editor.update(() => {
       const root = $getRoot();
-      
+
       // Clear existing content
       root.clear();
+      const parser = new DOMParser();
 
-      // Recreate nodes using Lexical's node creation API
-      serializedLexicalEditorState.root.children.forEach((paragraph) => {
-        const paragraphNode = $createParagraphNode();
-        paragraph.children.forEach((child) => {
-          paragraphNode.append($createTextNode(child.text));
-        });
-        root.append(paragraphNode);
+      // Parse the HTML content into a DOM object
+      const dom = parser.parseFromString(serializedLexicalEditorState.root.htmlContent, 'text/html');
+
+      // Generate Lexical nodes from the DOM object
+      const nodes = $generateNodesFromDOM(editor, dom);
+
+      nodes.forEach((node) => {
+        root.append(node);
       });
     });
   }, [editor, serializedLexicalEditorState]);

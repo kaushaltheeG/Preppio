@@ -38,13 +38,7 @@ export interface IGetQuestionsResponse {
 
 export interface ISerializedEditorState {
   root: {
-    children: {
-      type: string;
-      children: {
-        text: string;
-        format?: number;
-      }[];
-    }[];
+    htmlContent: string;
   };
 }
 

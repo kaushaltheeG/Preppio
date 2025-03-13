@@ -89,29 +89,28 @@ class InterviewService implements IInterviewService {
   }
 
   private formatLexicalEditorContent(data: IGetQuestionsResponse): ISerializedEditorState {
+    const htmlContent = `
+      <div>
+        <h2>Questions:</h2>
+        ${data.questions.map((q, index) => `
+          <div class="question">
+            <p><strong>${index + 1}. ${q.question}</strong></p>
+            <p><span>Type:</span> ${q.type}</p>
+            <p><span>Difficulty:</span> ${q.difficulty}</p>
+            <p><span>Topic:</span> ${q.topic}</p>
+            <p><span>Key Points:</span></p>
+            <ul>
+              ${q.keyPoints.map(point => `<li>${point}</li>`).join('')}
+            </ul>
+          </div>
+        `).join('')}
+      </div>
+    `;
     return {
       root: {
-        children: [
-          {
-            type: "paragraph",
-            children: [
-              { text: "Questions:\n\n" }
-            ]
-          },
-          ...data.questions.map((q, index) => ({
-            type: "paragraph",
-            children: [
-              { text: `${index + 1}. ${q.question}\n` },
-              { text: `Type: ${q.type}\n` },
-              { text: `Difficulty: ${q.difficulty}\n` },
-              { text: `Topic: ${q.topic}\n` },
-              { text: "Key Points:\n" },
-              { text: `${q.keyPoints.map(point => `• ${point}`).join('\n')}\n\n` }
-            ]
-          })),
-        ],
+        htmlContent,
       },
-    }
+    };
   }
 
 }

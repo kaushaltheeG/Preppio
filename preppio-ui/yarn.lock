@@ -1710,7 +1710,7 @@
     "@lexical/utils" "0.27.2"
     lexical "0.27.2"
 
-"@lexical/html@0.27.2":
+"@lexical/html@0.27.2", "@lexical/html@^0.27.2":
   version "0.27.2"
   resolved "https://registry.yarnpkg.com/@lexical/html/-/html-0.27.2.tgz#d87e3c0607febe08898ff17ea36d583acc7eda47"
   integrity sha512-6kPvrTxAE39jUhnbYMCenHVHXTlew9sBprniQu5iZSszMfcn/SDkqmHWi8//fhiLlcAa/p0vRDxaBYoQQf0r9A==
