@@ -42,26 +42,22 @@ export default function ToolbarPlugin() {
     if ($isRangeSelection(selection)) {
       const nodes = selection.getNodes();
       
-      // Helper function to check for specific HTML tags
-      const hasFormat = (tag: string) => {
+      const hasTag = (tagName: string) => {
         return nodes.some(node => {
-          // Get the actual DOM element for this node
           const element = editor.getElementByKey(node.getKey());
           if (!element) return false;
           
-          // Check two things:
-          // 1. Is the element itself the tag we're looking for?
-          if (element.tagName.toLowerCase() === tag) return true;
-          
-          // 2. Is the element wrapped by the tag we're looking for?
-          return !!element.closest(tag);
+          // Check if element is the tag or has the tag as parent
+          return element.tagName.toLowerCase() === tagName.toLowerCase() ||
+                 !!element.closest(tagName.toLowerCase());
         });
       };
-      // Update text format
-      setIsBold(hasFormat('bold'));
-      setIsItalic(hasFormat('italic'));
-      setIsUnderline(hasFormat('underline'));
-      setIsStrikethrough(hasFormat('strikethrough'));
+
+      // Update format states based on HTML tags
+      setIsBold(hasTag('strong') || hasTag('b'));
+      setIsItalic(hasTag('em') || hasTag('i'));
+      setIsUnderline(hasTag('u'));
+      setIsStrikethrough(hasTag('s'));
     }
   }, [editor]);
 
