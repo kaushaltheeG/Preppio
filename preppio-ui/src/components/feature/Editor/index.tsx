@@ -39,7 +39,6 @@ const Editor: React.FC = () => {
     text: {
       bold: 'strong',
       italic: 'em',
-      underline: 'u',
       strikethrough: 's',
     },
   };

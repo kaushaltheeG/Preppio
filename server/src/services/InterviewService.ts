@@ -95,18 +95,24 @@ class InterviewService implements IInterviewService {
         <header>
           <h2>Potential ${company} Interview Questions</h2>
         </header>
+        <br />
         
         <section>
           <h3>Interview Background</h3>
           <dl>
             <p>
-              <u>Company: ${company}</u>
-              <span>Job Title/Position: ${jobTitle}</span><br />
-              <span>Interview Type: ${interviewType}</span><br />
-              <span>Interviewer's Position: ${interviewerPosition}</span>
+              <span><u>Company</u>:</span>
+              <span>${company}</span><br />
+              <span><u>Job Title/Position</u>:</span>
+              <span>${jobTitle}</span><br />
+              <span><u>Interview Type</u>:</span>
+              <span>${interviewType}</span><br />
+              <span><u>Interviewer's Position</u>:</span>
+              <span>${interviewerPosition}</span>
             </p>
           </dl>
         </section>
+        <br />
 
         <section>
           <h2>Potential Interview Questions:</h2>
@@ -114,25 +120,33 @@ class InterviewService implements IInterviewService {
               ${questions.map((q, index) => `
                 <p><strong>${index + 1}. ${q.question}</strong></p>
                 <p>
-                  <p>Type: ${q.type}</p><br />
-                  <span>Difficulty: ${q.difficulty}</span><br />
-                  <span>Topic: ${q.topic}</span><br />
+                  <span><u>Type</u>:</span>
+                  <span>${q.type}</span><br />
+                  <span><u>Difficulty</u>:</span>
+                  <span>${q.difficulty}</span><br />
+                  <span><u>Topic</u>:</span>
+                  <span>${q.topic}</span><br />
                 </p>
-                <p><strong>Key Points:</strong></p>
+                <u>Key Points:</u>
                 <ul>
                   ${q.keyPoints.map(point => `<li>${point}</li>`).join('')}
                 </ul>
+                <br />
                 `).join('')}
             </dl>
         </section>
+        <br />
 
         <section>
           <h2>Analysis:</h2>
           <dl>
             <p>
-              <span>Strength Areas: ${analysis.strengthAreas.join(', ')}</span><br />
-              <span>Gap Areas: ${analysis.gapAreas.join(', ')}</span><br />  
-              <span>Recommended Focus: ${analysis.recommendedFocus.join(', ')}</span>
+              <span><u>Strength Areas</u>:</span>
+              <span>${analysis.strengthAreas.join(', ')}</span><br />
+              <span><u>Gap Areas</u>:</span>
+              <span>${analysis.gapAreas.join(', ')}</span><br />  
+              <span><u>Recommended Focus</u>:</span>
+              <span>${analysis.recommendedFocus.join(', ')}</span>
             </p>
           </dl>
         </section>
