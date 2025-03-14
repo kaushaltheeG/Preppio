@@ -1,6 +1,6 @@
 import IGPTService, { IPromptProps } from "../interfaces/services/IGPTService";
 import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse, ISerializedEditorState } from "../interfaces/services/IInterviewService";
-
+import { JSDOM } from 'jsdom';
 
 class InterviewService implements IInterviewService {
   private gptService: IGPTService;
@@ -64,7 +64,7 @@ class InterviewService implements IInterviewService {
               "analysis": {
                 "strengthAreas": ["area1", "area2"],
                 "gapAreas": ["gap1", "gap2"],
-                "recommendedFocus": "Primary area to focus questioning"
+                "recommendedFocus": ["focus1", "focus2"],
               }
             }`
         },
@@ -89,28 +89,81 @@ class InterviewService implements IInterviewService {
   }
 
   private formatLexicalEditorContent(data: IGetQuestionsResponse): ISerializedEditorState {
+    const { company, jobTitle, interviewType, interviewerPosition, questions, analysis } = data;
     const htmlContent = `
-      <div>
-        <h2>Questions:</h2>
-        ${data.questions.map((q, index) => `
-          <div class="question">
-            <p><strong>${index + 1}. ${q.question}</strong></p>
-            <p><span>Type:</span> ${q.type}</p>
-            <p><span>Difficulty:</span> ${q.difficulty}</p>
-            <p><span>Topic:</span> ${q.topic}</p>
-            <p><span>Key Points:</span></p>
-            <ul>
-              ${q.keyPoints.map(point => `<li>${point}</li>`).join('')}
-            </ul>
-          </div>
-        `).join('')}
-      </div>
-    `;
+      <article>
+        <header>
+          <h2>Potential ${company} Interview Questions</h2>
+        </header>
+        
+        <section>
+          <h3>Interview Background</h3>
+          <dl>
+            <p> 
+              <span>Company: ${company}</span><br />
+              <span>Job Title/Position: ${jobTitle}</span><br />
+            <span>Interview Type: ${interviewType}</span><br />
+              <span>Interviewer's Position: ${interviewerPosition}</span>
+            </p>
+          </dl>
+        </section>
+
+        <section>
+          <h2>Potential Interview Questions:</h2>
+            <dl>
+              ${questions.map((q, index) => `
+                <p><strong>${index + 1}. ${q.question}</strong></p>
+                <p>
+                  <span>Type: ${q.type}</span><br />
+                  <span>Difficulty: ${q.difficulty}</span><br />
+                  <span>Topic: ${q.topic}</span><br />
+                </p>
+                <p><strong>Key Points:</strong></p>
+                <ul>
+                  ${q.keyPoints.map(point => `<li>${point}</li>`).join('')}
+                </ul>
+                `).join('')}
+            </dl>
+        </section>
+
+        <section>
+          <h2>Analysis:</h2>
+          <dl>
+            <p>
+              <span>Strength Areas: ${analysis.strengthAreas.join(', ')}</span><br />
+              <span>Gap Areas: ${analysis.gapAreas.join(', ')}</span><br />  
+              <span>Recommended Focus: ${analysis.recommendedFocus.join(', ')}</span>
+            </p>
+          </dl>
+        </section>
+      </article>
+    `.trim();
+  
     return {
       root: {
         htmlContent,
       },
     };
+  }
+
+  private cleanHtml(html: string): string {
+    const dom = new JSDOM(html);
+    const doc = dom.window.document;
+
+    const cleanNode = (node: Node) => {
+      for (let i = 0; i < node.childNodes.length; i++) {
+        const child = node.childNodes[i];
+        if (child.nodeType === 3 && child.nodeValue?.trim() === '') {
+          node.removeChild(child);
+          i--;
+        } else if (child.nodeType === 1) {
+          cleanNode(child);
+        }
+      }
+    };
+
+    cleanNode(doc.body);
+    return doc.body.innerHTML;
   }
 
 }

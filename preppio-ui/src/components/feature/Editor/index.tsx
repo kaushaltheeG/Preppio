@@ -2,77 +2,63 @@ import React from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
+import { LinkNode } from '@lexical/link';
+import { ListNode, ListItemNode } from '@lexical/list';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
-import './styles.css';
-// import { $getRoot, $createParagraphNode, $createTextNode } from 'lexical';
-// import { IQuestion } from '@/services/interview/api';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { getSerializedLexicalEditorState } from '../../../store/slices/interviewSlice';  
 import UpdatePlugin from './plugins/UpdatePlugin';
+import { EditorThemeClasses } from 'lexical';
+import './styles.css';
 
 const Editor: React.FC = () => {
-  // const questionsData = useAppSelector(getQuestions);
   const serializedLexicalEditorState = useAppSelector(getSerializedLexicalEditorState);
-  console.log(serializedLexicalEditorState);
-  // const formatQuestionsContent = React.useCallback((questions: IQuestion[]) => {
-  //   if (!questions.length) return () => {};
-  
-  //   return (editor: any) => {
-  //     const root = $getRoot();
-  //     const paragraphNode = $createParagraphNode();
-      
-  //     // Add interview details
-  //     paragraphNode.append(
-  //       // $createTextNode(`Interview Type: ${data.interviewType}\n`),
-  //       // $createTextNode(`Interviewer Position: ${data.interviewerPosition}\n\n`),
-  //       $createTextNode('Questions:\n\n')
-  //     );
-  //     root.append(paragraphNode);
 
-  //     // Add questions
-  //     questions.forEach((q, index) => {
-  //       const questionNode = $createParagraphNode();
-  //       questionNode.append(
-  //         $createTextNode(`${index + 1}. ${q.question}\n`),
-  //         $createTextNode(`Type: ${q.type}\n`),
-  //         $createTextNode(`Difficulty: ${q.difficulty}\n`),
-  //         $createTextNode(`Topic: ${q.topic}\n`),
-  //         $createTextNode('Key Points:\n'),
-  //         $createTextNode(`${q.keyPoints.map(point => `• ${point}`).join('\n')}\n\n`)
-  //       );
-  //       root.append(questionNode);
-  //     });
-  //   };
-  // }, []);
-
-  const theme = {
+  const theme: EditorThemeClasses = {
     ltr: 'ltr',
     rtl: 'rtl',
-    paragraph: 'editor-paragraph',
-    root: 'editor-root',
+    paragraph: 'p',
+    heading: {
+      h1: 'h1',
+      h2: 'h2',
+      h3: 'h3',
+      h4: 'h4',
+    },
+    list: {
+      ul: 'ul',
+      ol: 'ol',
+      listitem: 'li',
+    },
+    quote: 'blockquote',
     text: {
-      bold: 'font-bold',
-      italic: 'italic',
-      underline: 'underline',
-      strikethrough: 'line-through',
+      bold: 'strong',
+      italic: 'em',
+      underline: 'u',
+      strikethrough: 's',
     },
   };
 
   const initialConfig = {
     namespace: 'InterviewQuestionsEditor',
     theme,
-    nodes: [HeadingNode, QuoteNode],
+    nodes: [
+      HeadingNode,
+      QuoteNode,
+      ListNode,
+      ListItemNode,
+      LinkNode,
+    ],
     onError: (err: Error) => console.log(err),
     editable: true,
   };
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="editor-container">
+      <div className="editor-container prose prose-neutral max-w-none">
         <ToolbarPlugin />
         <div className="editor-content">
           <RichTextPlugin

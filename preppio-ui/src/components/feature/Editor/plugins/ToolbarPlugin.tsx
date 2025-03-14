@@ -5,11 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {mergeRegister} from '@lexical/utils';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { mergeRegister } from '@lexical/utils';
 import {
   $getSelection,
   $isRangeSelection,
+  // $createTextNode,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   FORMAT_ELEMENT_COMMAND,
@@ -18,7 +19,7 @@ import {
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
 } from 'lexical';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const LowPriority = 1;
 
@@ -39,13 +40,30 @@ export default function ToolbarPlugin() {
   const $updateToolbar = useCallback(() => {
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
+      const nodes = selection.getNodes();
+      
+      // Helper function to check for specific HTML tags
+      const hasFormat = (tag: string) => {
+        return nodes.some(node => {
+          // Get the actual DOM element for this node
+          const element = editor.getElementByKey(node.getKey());
+          if (!element) return false;
+          
+          // Check two things:
+          // 1. Is the element itself the tag we're looking for?
+          if (element.tagName.toLowerCase() === tag) return true;
+          
+          // 2. Is the element wrapped by the tag we're looking for?
+          return !!element.closest(tag);
+        });
+      };
       // Update text format
-      setIsBold(selection.hasFormat('bold'));
-      setIsItalic(selection.hasFormat('italic'));
-      setIsUnderline(selection.hasFormat('underline'));
-      setIsStrikethrough(selection.hasFormat('strikethrough'));
+      setIsBold(hasFormat('bold'));
+      setIsItalic(hasFormat('italic'));
+      setIsUnderline(hasFormat('underline'));
+      setIsStrikethrough(hasFormat('strikethrough'));
     }
-  }, []);
+  }, [editor]);
 
   useEffect(() => {
     return mergeRegister(
