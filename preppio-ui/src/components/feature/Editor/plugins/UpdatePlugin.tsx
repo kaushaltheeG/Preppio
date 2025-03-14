@@ -2,10 +2,11 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { useEffect } from 'react';
 import { $generateNodesFromDOM } from '@lexical/html';
 import { ISerializedEditorState } from '../../../../services/interview/api';
-import { $getRoot } from 'lexical';
+import { $getRoot, $insertNodes } from 'lexical';
 export interface UpdatePluginProps {
   serializedLexicalEditorState: ISerializedEditorState;
 }
+
 
 export default function UpdatePlugin({ serializedLexicalEditorState }: UpdatePluginProps): null {
   const [editor] = useLexicalComposerContext();
@@ -23,10 +24,7 @@ export default function UpdatePlugin({ serializedLexicalEditorState }: UpdatePlu
 
       // Generate Lexical nodes from the DOM object
       const nodes = $generateNodesFromDOM(editor, dom);
-
-      nodes.forEach((node) => {
-        root.append(node);
-      });
+      $insertNodes(nodes);
     });
   }, [editor, serializedLexicalEditorState]);
 

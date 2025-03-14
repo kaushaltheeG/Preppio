@@ -99,10 +99,10 @@ class InterviewService implements IInterviewService {
         <section>
           <h3>Interview Background</h3>
           <dl>
-            <p> 
-              <span>Company: ${company}</span><br />
+            <p>
+              <u>Company: ${company}</u>
               <span>Job Title/Position: ${jobTitle}</span><br />
-            <span>Interview Type: ${interviewType}</span><br />
+              <span>Interview Type: ${interviewType}</span><br />
               <span>Interviewer's Position: ${interviewerPosition}</span>
             </p>
           </dl>
@@ -114,7 +114,7 @@ class InterviewService implements IInterviewService {
               ${questions.map((q, index) => `
                 <p><strong>${index + 1}. ${q.question}</strong></p>
                 <p>
-                  <span>Type: ${q.type}</span><br />
+                  <p>Type: ${q.type}</p><br />
                   <span>Difficulty: ${q.difficulty}</span><br />
                   <span>Topic: ${q.topic}</span><br />
                 </p>

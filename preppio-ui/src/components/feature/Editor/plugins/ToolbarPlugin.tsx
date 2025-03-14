@@ -1,16 +1,9 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
 import {
   $getSelection,
   $isRangeSelection,
-  // $createTextNode,
+  $createTextNode,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
   FORMAT_ELEMENT_COMMAND,
@@ -20,6 +13,8 @@ import {
   UNDO_COMMAND,
 } from 'lexical';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { $createUnderlineNode } from '../CustomNode/UnderlineNode';
+import { $isUnderlineNode } from '../CustomNode/UnderlineNode';
 
 const LowPriority = 1;
 
@@ -41,25 +36,16 @@ export default function ToolbarPlugin() {
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
       const nodes = selection.getNodes();
-      
-      const hasTag = (tagName: string) => {
-        return nodes.some(node => {
-          const element = editor.getElementByKey(node.getKey());
-          if (!element) return false;
-          
-          // Check if element is the tag or has the tag as parent
-          return element.tagName.toLowerCase() === tagName.toLowerCase() ||
-                 !!element.closest(tagName.toLowerCase());
-        });
-      };
-
       // Update format states based on HTML tags
-      setIsBold(hasTag('strong') || hasTag('b'));
-      setIsItalic(hasTag('em') || hasTag('i'));
-      setIsUnderline(hasTag('u'));
-      setIsStrikethrough(hasTag('s'));
+      setIsBold(selection.hasFormat('bold'));
+      setIsItalic(selection.hasFormat('italic'));
+      setIsStrikethrough(selection.hasFormat('strikethrough'));
+
+        // Check for custom underline node
+      const allUnderlined = nodes.every((node) => $isUnderlineNode(node));
+      setIsUnderline(allUnderlined);
     }
-  }, [editor]);
+  }, []);
 
   useEffect(() => {
     return mergeRegister(
@@ -94,6 +80,33 @@ export default function ToolbarPlugin() {
       ),
     );
   }, [editor, $updateToolbar]);
+
+  const toggleUnderline = () => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if (!$isRangeSelection(selection)) return;
+
+      const isCurrentlyUnderlined = selection.getNodes().every((node) => 
+        $isUnderlineNode(node)
+      );
+
+      if (isCurrentlyUnderlined) {
+        // Remove underline from selection
+        selection.getNodes().forEach((node) => {
+          if ($isUnderlineNode(node)) {
+            const textContent = node.getTextContent();
+            const textNode = $createTextNode(textContent);
+            node.replace(textNode);
+          }
+        });
+      } else {
+        // Format only the selected text
+        const textContent = selection.getTextContent();
+        const underlineNode = $createUnderlineNode(textContent);
+        selection.insertNodes([underlineNode]);
+      }
+    });
+  };
 
   return (
     <div className="toolbar" ref={toolbarRef}>
@@ -133,9 +146,7 @@ export default function ToolbarPlugin() {
         <i className="format italic" />
       </button>
       <button
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
-        }}
+        onClick={toggleUnderline}
         className={'toolbar-item spaced ' + (isUnderline ? 'active' : '')}
         aria-label="Format Underline">
         <i className="format underline" />

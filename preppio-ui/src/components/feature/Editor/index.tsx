@@ -14,6 +14,8 @@ import { getSerializedLexicalEditorState } from '../../../store/slices/interview
 import UpdatePlugin from './plugins/UpdatePlugin';
 import { EditorThemeClasses } from 'lexical';
 import './styles.css';
+import { UnderlineNode } from './CustomNode/UnderlineNode';
+
 
 const Editor: React.FC = () => {
   const serializedLexicalEditorState = useAppSelector(getSerializedLexicalEditorState);
@@ -51,14 +53,15 @@ const Editor: React.FC = () => {
       ListNode,
       ListItemNode,
       LinkNode,
+      UnderlineNode,
     ],
     onError: (err: Error) => console.log(err),
     editable: true,
   };
 
   return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <div className="editor-container prose prose-neutral max-w-none">
+    <LexicalComposer initialConfig={initialConfig}> 
+      <div className="editor-container ">
         <ToolbarPlugin />
         <div className="editor-content">
           <RichTextPlugin
