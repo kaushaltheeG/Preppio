@@ -15,6 +15,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { $createUnderlineNode } from '../CustomNode/UnderlineNode';
 import { $isUnderlineNode } from '../CustomNode/UnderlineNode';
+import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND } from '@lexical/list';
 
 const LowPriority = 1;
 
@@ -191,7 +192,23 @@ export default function ToolbarPlugin() {
         className="toolbar-item"
         aria-label="Justify Align">
         <i className="format justify-align" />
-      </button>{' '}
+      </button>
+      <button
+        onClick={() => {
+          editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
+        }}
+        className="toolbar-item spaced"
+        aria-label="Insert Ordered List">
+        <i className="format order-list" />
+      </button>
+      <button
+        onClick={() => {
+          editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+        }}
+        className="toolbar-item spaced"
+        aria-label="Insert Unordered List">
+        <i className="format unorder-list" />
+      </button>
     </div>
   );
 };

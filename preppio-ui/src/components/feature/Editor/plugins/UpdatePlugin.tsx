@@ -2,7 +2,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { useEffect } from 'react';
 import { $generateNodesFromDOM } from '@lexical/html';
 import { ISerializedEditorState } from '../../../../services/interview/api';
-import { $getRoot, $insertNodes } from 'lexical';
+import { $getRoot, $insertNodes} from 'lexical';
 export interface UpdatePluginProps {
   serializedLexicalEditorState: ISerializedEditorState;
 }
@@ -19,9 +19,11 @@ export default function UpdatePlugin({ serializedLexicalEditorState }: UpdatePlu
       root.clear();
       const parser = new DOMParser();
 
+
       // Parse the HTML content into a DOM object
       const dom = parser.parseFromString(serializedLexicalEditorState.root.htmlContent, 'text/html');
 
+      // processNode(dom.body);
       // Generate Lexical nodes from the DOM object
       const nodes = $generateNodesFromDOM(editor, dom);
       $insertNodes(nodes);

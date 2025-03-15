@@ -92,14 +92,10 @@ class InterviewService implements IInterviewService {
     const { company, jobTitle, interviewType, interviewerPosition, questions, analysis } = data;
     const htmlContent = `
       <article>
-        <header>
-          <h2>Potential ${company} Interview Questions</h2>
-        </header>
-        <br />
-        
+        <h1>Potential ${company} Interview Questions</h1>
+  
         <section>
           <h3>Interview Background</h3>
-          <dl>
             <p>
               <span><u>Company</u>:</span>
               <span>${company}</span><br />
@@ -110,12 +106,11 @@ class InterviewService implements IInterviewService {
               <span><u>Interviewer's Position</u>:</span>
               <span>${interviewerPosition}</span>
             </p>
-          </dl>
         </section>
         <br />
 
         <section>
-          <h2>Potential Interview Questions:</h2>
+          <h3>Potential Interview Questions:</h3>
             <dl>
               ${questions.map((q, index) => `
                 <p><strong>${index + 1}. ${q.question}</strong></p>
@@ -138,7 +133,7 @@ class InterviewService implements IInterviewService {
         <br />
 
         <section>
-          <h2>Analysis:</h2>
+          <h3>Analysis:</h3>
           <dl>
             <p>
               <span><u>Strength Areas</u>:</span>

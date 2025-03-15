@@ -1,7 +1,7 @@
 import React from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { HeadingNode, QuoteNode } from '@lexical/rich-text';
+import { QuoteNode, HeadingNode } from '@lexical/rich-text';
 import { LinkNode } from '@lexical/link';
 import { ListNode, ListItemNode } from '@lexical/list';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
@@ -15,7 +15,11 @@ import UpdatePlugin from './plugins/UpdatePlugin';
 import { EditorThemeClasses } from 'lexical';
 import './styles.css';
 import { UnderlineNode } from './CustomNode/UnderlineNode';
-
+import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
+import { TRANSFORMERS } from '@lexical/markdown';
+import { CodeNode } from '@lexical/code';
 
 const Editor: React.FC = () => {
   const serializedLexicalEditorState = useAppSelector(getSerializedLexicalEditorState);
@@ -35,6 +39,7 @@ const Editor: React.FC = () => {
       ol: 'ol',
       listitem: 'li',
     },
+    dl: 'dl',
     quote: 'blockquote',
     text: {
       bold: 'strong',
@@ -53,6 +58,8 @@ const Editor: React.FC = () => {
       ListItemNode,
       LinkNode,
       UnderlineNode,
+      HeadingNode,
+      CodeNode,
     ],
     onError: (err: Error) => console.log(err),
     editable: true,
@@ -60,7 +67,7 @@ const Editor: React.FC = () => {
 
   return (
     <LexicalComposer initialConfig={initialConfig}> 
-      <div className="editor-container ">
+      <div className="editor-container">
         <ToolbarPlugin />
         <div className="editor-content">
           <RichTextPlugin
@@ -74,6 +81,9 @@ const Editor: React.FC = () => {
           />
           <HistoryPlugin />
           <AutoFocusPlugin />
+          <TabIndentationPlugin />
+          <ListPlugin />
+          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
           {serializedLexicalEditorState && (
             <UpdatePlugin serializedLexicalEditorState={serializedLexicalEditorState} />
           )}
