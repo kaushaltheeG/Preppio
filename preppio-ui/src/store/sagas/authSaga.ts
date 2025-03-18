@@ -5,37 +5,54 @@ import { Session } from '@supabase/supabase-js';
 import { EventChannel } from 'redux-saga';
 import {
   setSession,
+  setUser,
   checkSession,
   subscribeToAuthChanges,
-  unsubscribeFromAuthChanges
+  unsubscribeFromAuthChanges,
+  logoutUser,
 } from '../slices/authSlice';
 
 function* handleCheckSession() {
   try {
     const { data: { session } } = yield call([supabase.auth, 'getSession']);
     yield put(setSession(session));
+    yield put(setUser(session?.user || null));
   } catch (error) {
     console.error('Error checking session:', error);
   }
 }
 
+function* handleLogout() {
+  yield call([supabase.auth, 'signOut'], {scope: 'local'});
+  yield put(setSession(null));
+  yield put(setUser(null));
+}
+
 function createAuthChannel() {
   return eventChannel(emit => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      emit(session);
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      emit({ session });
     });
     
-    return () => subscription.unsubscribe();
+    // Ensure subscription exists before returning the unsubscribe function
+    if (data && data.subscription) {
+      return () => data.subscription.unsubscribe();
+    }
+    
+    // Return a no-op function if no subscription exists
+    return () => {};
   });
 }
 
 function* watchAuthStateChange() {
   const channel: EventChannel<Session | null> = yield call(createAuthChannel);
-
   try {
     while (true) {
-      const session: Session | null = yield take(channel);
+      const { session }: { session: Session | null } = yield take(channel);
       yield put(setSession(session));
+
+      const loggedInUserData = (session && session.user) || null;
+      yield put(setUser(loggedInUserData));
     }
   } finally {
     channel.close();
@@ -45,6 +62,9 @@ function* watchAuthStateChange() {
 function* authSaga() {
   // Start watching for session checks
   yield takeLatest(checkSession.type, handleCheckSession);
+  
+  // Logout user
+  yield takeLatest(logoutUser.type, handleLogout);
   
   // Start auth state watching immediately
   let authTask: Task = yield fork(watchAuthStateChange);
