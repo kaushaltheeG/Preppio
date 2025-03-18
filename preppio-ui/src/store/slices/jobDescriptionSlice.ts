@@ -16,11 +16,14 @@ export const jobDescriptionSlice = createSlice({
     setJobDescription: (state, action: PayloadAction<string>) => {
       state.content = action.payload;
     },
+    setJobDescriptionInitialState: () => {
+      return { ...initialState };
+    },
   },
 });
 
 // Selectors
 export const getJobDescription = (state: RootState) => state.jobDescription.content;
 
-export const { setJobDescription } = jobDescriptionSlice.actions;
+export const { setJobDescription, setJobDescriptionInitialState } = jobDescriptionSlice.actions;
 export default jobDescriptionSlice.reducer;

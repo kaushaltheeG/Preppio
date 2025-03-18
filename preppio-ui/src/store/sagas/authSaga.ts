@@ -11,6 +11,11 @@ import {
   unsubscribeFromAuthChanges,
   logoutUser,
 } from '../slices/authSlice';
+import { setAppInitialState } from '../slices/appSlice';
+import { setJobDescriptionInitialState } from '../slices/jobDescriptionSlice';
+import { setResumeInitialState } from '../slices/resumeSlice';
+import { setTuneInitialState } from '../slices/tuneSlice';
+import { setInterviewInitialState } from '../slices/interviewSlice';
 
 function* handleCheckSession() {
   try {
@@ -24,8 +29,11 @@ function* handleCheckSession() {
 
 function* handleLogout() {
   yield call([supabase.auth, 'signOut'], {scope: 'local'});
-  yield put(setSession(null));
-  yield put(setUser(null));
+  yield put(setAppInitialState());
+  yield put(setJobDescriptionInitialState());
+  yield put(setResumeInitialState());
+  yield put(setTuneInitialState());
+  yield put(setInterviewInitialState());
 }
 
 function createAuthChannel() {

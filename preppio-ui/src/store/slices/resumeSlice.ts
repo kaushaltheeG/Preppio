@@ -15,11 +15,14 @@ export const resumeSlice = createSlice({
     setResume: (state, action: PayloadAction<string>) => {
       state.content = action.payload;
     },
+    setResumeInitialState: () => {
+      return { ...initialState };
+    },
   },
 });
 
 // Selectors
 export const getResume = (state: RootState) => state.resume.content;
 
-export const { setResume } = resumeSlice.actions;
+export const { setResume, setResumeInitialState } = resumeSlice.actions;
 export default resumeSlice.reducer;

@@ -26,6 +26,9 @@ export const tuneSlice = createSlice({
     setExtraInformation: (state, action: PayloadAction<string>) => {
       state.extraInformation = action.payload;
     },
+    setTuneInitialState: () => {
+      return { ...initialState };
+    },
   },
 });
 
@@ -34,5 +37,10 @@ export const getInterviewType = (state: RootState) => state.tune.interviewType;
 export const getInterviewerPosition = (state: RootState) => state.tune.interviewerPosition;
 export const getExtraInformation = (state: RootState) => state.tune.extraInformation;
 
-export const { setInterviewType, setInterviewerPosition, setExtraInformation } = tuneSlice.actions;
+export const {
+  setInterviewType,
+  setInterviewerPosition,
+  setExtraInformation,
+  setTuneInitialState,
+} = tuneSlice.actions;
 export default tuneSlice.reducer;

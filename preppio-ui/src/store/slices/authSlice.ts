@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAction } from '@reduxjs/toolkit';
 import { Session, User } from '@supabase/supabase-js';
 import { RootState } from '../../store';
 
@@ -18,21 +18,22 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    checkSession: (state) => {},
     setSession: (state, action: PayloadAction<Session | null>) => {
       state.session = action.payload;
     },
     setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
     },
-    logoutUser: {
-      reducer: (state) => {}, // No state change needed
-      prepare: () => ({ payload: null }),
+    logoutUser: () => {
+      return { ...initialState };
     },
-    subscribeToAuthChanges: (state) => {},
-    unsubscribeFromAuthChanges: (state) => {},
   },
 })
+
+// Actions
+export const checkSession = createAction('auth/checkSession');
+export const subscribeToAuthChanges = createAction('auth/subscribeToAuthChanges');
+export const unsubscribeFromAuthChanges = createAction('auth/unsubscribeFromAuthChanges');
 
 // Selectors
 export const hasSessionSelector = (state: RootState): boolean => Boolean(state.auth.session !== null);
@@ -40,11 +41,8 @@ export const getLoggedInUser = (state: RootState): User | null => state.auth.use
 
 
 export const {
-  checkSession,
   setSession,
   setUser,
-  subscribeToAuthChanges,
-  unsubscribeFromAuthChanges,
   logoutUser,
 } = authSlice.actions;
 

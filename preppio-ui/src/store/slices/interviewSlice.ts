@@ -62,6 +62,9 @@ const interviewSlice = createSlice({
     setSerializedLexicalEditorState: (state, action: PayloadAction<ISerializedEditorState>) => {
       state.serializedLexicalEditorState = action.payload;
     },
+    setInterviewInitialState: () => {
+      return { ...initialState };
+    },
   },
 });
 
@@ -71,5 +74,14 @@ export const getAnalysis = (state: RootState) => state.interview.analysis;
 export const getIsLoadingQuestions = (state: RootState) => state.interview.isLoading;
 export const getSerializedLexicalEditorState = (state: RootState) => state.interview.serializedLexicalEditorState;
 
-export const { setQuestions, setAnalysis, setSerializedLexicalEditorState, analyzeRequest, analyzeSuccess, analyzeFailure } = interviewSlice.actions;
+export const {
+  setQuestions,
+  setAnalysis,
+  setSerializedLexicalEditorState,
+  analyzeRequest,
+  analyzeSuccess,
+  analyzeFailure,
+  setInterviewInitialState,
+} = interviewSlice.actions;
+
 export default interviewSlice.reducer;

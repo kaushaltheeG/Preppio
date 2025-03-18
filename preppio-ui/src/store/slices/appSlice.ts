@@ -26,6 +26,9 @@ export const appSlice = createSlice({
     setErrorMessage: (state, action: PayloadAction<AppState['errorMessage']>) => {
       state.errorMessage = action.payload;
     },
+    setAppInitialState: () => {
+      return { ...initialState };
+    },
   },
 });
 
@@ -37,5 +40,5 @@ export const onJobDescription = (state: RootState) => state.app.formState === 'j
 export const onResume = (state: RootState) => state.app.formState === 'resume';
 export const onTune = (state: RootState) => state.app.formState === 'tune';
 
-export const { setFormState, setIsLoading, setErrorMessage } = appSlice.actions;
+export const { setFormState, setIsLoading, setErrorMessage, setAppInitialState } = appSlice.actions;
 export default appSlice.reducer;
