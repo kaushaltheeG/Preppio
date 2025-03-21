@@ -9,6 +9,8 @@ export interface IInsertGoogleDocParams {
 export interface IInsertGoogleDocObject {
   url: string;
   documentId: string;
+  text: string;
+  htmlContent: string;
 }
 
 export interface ICreateGoogleDocParams {

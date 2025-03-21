@@ -7,6 +7,7 @@ import IGoogleDriveService, {
   IInsertGoogleDocParams,
   IInsertGoogleDocObject,
 } from '../interfaces/services/IGoogleService';
+import { convert, HtmlToTextOptions } from 'html-to-text';
 
 class GoogleDriveService implements IGoogleDriveService {
   private driveV3: drive_v3.Drive;
@@ -28,16 +29,20 @@ class GoogleDriveService implements IGoogleDriveService {
   }
 
   async insertGoogleDoc(params: IInsertGoogleDocParams): Promise<IInsertGoogleDocObject> {
-    const { newDoc, htmlContent } = params;
+    const { newDoc } = params;
+    const htmlContent = this.cleanHtml(params.htmlContent);
     assert(newDoc.id, 'document id was not found');
+    const options = this.getConverterOptions();
 
+    const text = convert(htmlContent, options);
+  
     await this.docsV1.documents.batchUpdate({
       documentId: newDoc.id!,
       requestBody: {
         requests: [
           {
             insertText: {
-              text: htmlContent,
+              text,
               location: {
                 index: 1
               }
@@ -49,7 +54,52 @@ class GoogleDriveService implements IGoogleDriveService {
 
     return {
       url: `https://docs.google.com/document/d/${newDoc.id}`,
-      documentId: newDoc.id!
+      documentId: newDoc.id!,
+      text,
+      htmlContent
+    };
+  }
+
+  private cleanHtml(htmlContent: string): string {
+    return htmlContent
+      .replace(/\n\s*/g, '')
+      .trim();
+      // .replace(/>\s+</g, '><')
+  }
+
+  private getConverterOptions(): HtmlToTextOptions {
+    return {
+      preserveNewlines: true,
+      wordwrap: false,
+      selectors: [
+        // { selector: 'article', format: 'blockquote' },
+        // { selector: 'section', format: 'blockquote' },
+        { selector: 'p', options: { leadingLineBreaks: 1, trailingLineBreaks: 1 } },
+        { selector: 'br', format: 'lineBreak' },
+        { selector: 'h1', format: 'heading' },
+        { selector: 'h2', format: 'heading' },
+        { selector: 'h3', format: 'heading' },
+        { selector: 'strong', format: 'blockText' },
+        { selector: 'u', format: 'blockText' },
+        { selector: 'ul', options: { itemPrefix: ' • ' } },
+      ],
+      formatters: {
+        'blockText': function(elem, walk, builder) {
+          builder.openBlock();
+          walk(elem.children, builder);
+          builder.closeBlock();
+        },
+        'heading': function(elem, walk, builder) {
+          builder.openBlock();
+          builder.addInline('** ');
+          walk(elem.children, builder);
+          builder.addInline(' **');
+          builder.closeBlock();
+        },
+        'lineBreak': function(elem, walk, builder) {
+          builder.addLineBreak();
+        }
+      }
     };
   }
 }

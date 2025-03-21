@@ -22,9 +22,9 @@ router.post('/create-save-doc', async (req: Request, res: Response) => {
   try {
     const googleDriveService: IGoogleDriveService = GoogleDriveServiceFactory.createGoogleDriveService(accessToken);
     const newDoc = await googleDriveService.createGoogleDoc({ title });
-    const { url, documentId } = await googleDriveService.insertGoogleDoc({ newDoc, htmlContent });
+    const result = await googleDriveService.insertGoogleDoc({ newDoc, htmlContent });
 
-    return res.status(200).json({ url, documentId });
+    return res.status(200).json(result);
   } catch (error) {
     console.error('Error creating and saving document to google drive:', error);
     return res.status(500).json({ error: 'Failed creating and saving document to google drive' });
