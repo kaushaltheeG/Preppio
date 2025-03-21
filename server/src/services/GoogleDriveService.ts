@@ -29,34 +29,143 @@ class GoogleDriveService implements IGoogleDriveService {
   }
 
   async insertGoogleDoc(params: IInsertGoogleDocParams): Promise<IInsertGoogleDocObject> {
-    const { newDoc } = params;
-    const htmlContent = this.cleanHtml(params.htmlContent);
+    const { newDoc, interviewContent } = params;
     assert(newDoc.id, 'document id was not found');
-    const options = this.getConverterOptions();
+    const { company, jobTitle, interviewType, interviewerPosition, questions, analysis } = interviewContent;
 
-    const text = convert(htmlContent, options);
-  
-    await this.docsV1.documents.batchUpdate({
-      documentId: newDoc.id!,
-      requestBody: {
-        requests: [
+    let currentIndex = 1;
+    const titleText = `Potential Interview Questions for ${company}\n`;
+    const backgroundText = `Company: ${company}\n` +
+                         `Job Title: ${jobTitle}\n` +
+                         `Interview Type: ${interviewType}\n` +
+                         `Interviewer Position: ${interviewerPosition}\n\n`;
+    
+
+    const requests = [
+      // Title
+      {
+        insertText: {
+          text: titleText,
+          location: { index: currentIndex }
+        }
+      },
+      {
+        updateParagraphStyle: {
+          range: { 
+            startIndex: currentIndex, 
+            endIndex: currentIndex + titleText.length - 1
+          },
+          paragraphStyle: { namedStyleType: 'HEADING_1' },
+          fields: 'namedStyleType'
+        }
+      },
+
+      // Background Info with Heading 4
+      {
+        insertText: {
+          text: backgroundText,
+          location: { index: currentIndex += titleText.length } // Here's where we update currentIndex
+        }
+      },
+      {
+        updateParagraphStyle: {
+          range: { 
+            startIndex: currentIndex,
+            endIndex: currentIndex + backgroundText.length - 1
+          },
+          paragraphStyle: { namedStyleType: 'HEADING_5' },
+          fields: 'namedStyleType'
+        }
+      },
+      // need to seperate questions into a function and process it;
+      // Questions
+      ...interviewContent.questions.flatMap((q, idx) => {
+        const questionText = `${q.question}\n`;
+        const metadataText = `Type: ${q.type}\n` +
+                            `Difficulty: ${q.difficulty}\n` +
+                            `Topic: ${q.topic}\n` +
+                            `Key Points:\n` +
+                            `${q.keyPoints.map(point => `${point}\n`).join('')}\n\n`;
+        
+        const startIndex = currentIndex;
+        currentIndex += questionText.length + metadataText.length;
+        
+        return [
           {
             insertText: {
-              text,
-              location: {
-                index: 1
-              }
+              text: questionText,
+              location: { index: startIndex }
+            }
+          },
+          {
+            createParagraphBullets: {
+              range: {
+                startIndex: startIndex,
+                endIndex: startIndex + questionText.length - 1
+              },
+              bulletPreset: 'NUMBERED_DECIMAL_NESTED'
+            }
+          },
+          {
+            updateTextStyle: {
+              range: {
+                startIndex: startIndex,
+                endIndex: startIndex + questionText.length - 1
+              },
+              textStyle: { bold: true },
+              fields: 'bold'
+            }
+          },
+          {
+            insertText: {
+              text: metadataText,
+              location: { index: startIndex + questionText.length }
+            }
+          },
+          // {
+          //   createParagraphBullets: {
+          //     range: {
+          //       startIndex: startIndex + questionText.length,
+          //       endIndex: startIndex + questionText.length + metadataText.length - 1
+          //     },
+          //     bulletPreset: 'BULLET_DISC_CIRCLE_SQUARE'
+          //   }
+          // },
+          {
+            updateParagraphStyle: {
+              range: {
+                startIndex: startIndex,
+                endIndex: startIndex + questionText.length + metadataText.length - 1
+              },
+              paragraphStyle: { namedStyleType: 'NORMAL_TEXT' },
+              fields: 'namedStyleType'
             }
           }
-        ]
-      }
+        ];
+      }),
+
+      // // Analysis
+      // {
+      //   insertText: {
+      //     text: `\nAnalysis:\n` +
+      //           `Strength Areas: ${interviewContent.analysis.strengthAreas}\n` +
+      //           `Gap Areas: ${interviewContent.analysis.gapAreas}\n` +
+      //           `Recommended Focus: ${interviewContent.analysis.recommendedFocus}\n`,
+      //     location: { index: currentIndex }
+      //   }
+      // }
+    ];
+
+    await this.docsV1.documents.batchUpdate({
+      documentId: newDoc.id!,
+      requestBody: { requests }
     });
 
     return {
       url: `https://docs.google.com/document/d/${newDoc.id}`,
       documentId: newDoc.id!,
-      text,
-      htmlContent
+      text: '',
+      htmlContent: ''
     };
   }
 
@@ -118,6 +227,15 @@ class GoogleDriveServiceFactory {
     const { driveV3Client, docsV1Client } = this.createClient(accessToken);
     return new GoogleDriveService(driveV3Client, docsV1Client);
   }
+}
+
+// Helper function to calculate indices (simplified version)
+function getQuestionIndex(questionNum: number): number {
+  return 150 + (questionNum * 300); // Approximate spacing
+}
+
+function getFinalIndex(): number {
+  return 3000; // Approximate final position
 }
 
 export default GoogleDriveServiceFactory;

@@ -1,9 +1,13 @@
 import { drive_v3 } from '@googleapis/drive'; 
 import { docs_v1 } from '@googleapis/docs';
+import { IGetQuestionsResponse } from './IInterviewService';
 
+
+export type InterviewContentType = Omit<IGetQuestionsResponse, 'serializedLexicalEditorState'>;
 export interface IInsertGoogleDocParams {
   newDoc: drive_v3.Schema$File;
   htmlContent: string;
+  interviewContent: InterviewContentType;
 }
 
 export interface IInsertGoogleDocObject {
