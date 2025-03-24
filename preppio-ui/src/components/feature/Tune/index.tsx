@@ -30,7 +30,7 @@ const Tune: React.FC = () => {
         <Input placeholder="Type of Interview" value={interviewType} onChange={handleInterviewTypeChange} />
         <Input placeholder="Interviewer's Position" value={interviewerPosition} onChange={handleInterviewerPositionChange} />
       </div>
-      <TextBox placeholder="Extra Information" value={extraInformation} onChange={handleExtraInformationChange} />
+      <TextBox placeholder="Extra Information (Optional)" value={extraInformation} onChange={handleExtraInformationChange} />
     </div>
   );
 };

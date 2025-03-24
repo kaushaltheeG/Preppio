@@ -1,54 +1,115 @@
 import React from 'react';
-import { Accordion, AccordionSummary, Typography, AccordionDetails, Button } from '@mui/material';
+import { Box, List, ListItem, ListItemButton, ListItemText, Button, CircularProgress } from '@mui/material';
+import DescriptionIcon from '@mui/icons-material/Description';
+import WorkIcon from '@mui/icons-material/Work';
+import TuneIcon from '@mui/icons-material/Tune';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import Resume from './../Resume';
 import JobDescription from '../JobDescription';
 import Tune from '../Tune';
-import { useAppDispatch } from '../../../hooks/useAppDispatch';
-import { analyzeRequest } from '../../../store/slices/interviewSlice';
+import useUserInputHook from '../../../hooks/useUserInputHook';
+
+interface StatusIndicatorProps {
+  isComplete: boolean;
+}
+
+const StatusIndicator: React.FC<StatusIndicatorProps> = ({ isComplete }) => {  
+  return (
+    <Box className="ml-auto">
+      {isComplete ? (
+        <CheckCircleIcon className="text-green-500" fontSize="small" />
+      ) : (
+        <RadioButtonUncheckedIcon className="text-gray-300" fontSize="small" />
+      )}
+    </Box>
+  );
+};
 
 const UserInputs: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const {
+    hasResumeEntered,
+    hasJobDescriptionEntered,
+    hasRequiredTuneInfo,
+    isGeneratingQuestions,
+    isGenerateButtonDisabled,
+    selectedTab,
+    handleGenerate,
+    handleResumeTab,
+    handleJobDescriptionTab,
+    handleTuneTab,
+  } = useUserInputHook();
 
-  const handleGenerate = React.useCallback(() => {
-    dispatch(analyzeRequest());
-  }, [dispatch]);
+  const renderContent = React.useCallback(() => {
+    switch (selectedTab) {
+      case 0:
+        return <Resume />;
+      case 1:
+        return <JobDescription />;
+      case 2:
+        return <Tune />;
+      default:
+        return null;
+    }
+  }, [selectedTab]);
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex flex-col h-full">
-        <Accordion defaultExpanded={true}>
-          <AccordionSummary>
-            <Typography component="h2" variant="h6">
-              Input Resume
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Resume />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion defaultExpanded={true}>
-          <AccordionSummary>
-            <Typography component="h2" variant="h6">
-              Input Job Description
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <JobDescription />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion defaultExpanded={true}>
-          <AccordionSummary>
-            <Typography component="h2" variant="h6">
-              Extra Information
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Tune />
-          </AccordionDetails>
-        </Accordion>
-      </div>
-      <Button variant="contained" className="w-full mt-8" color="primary" onClick={handleGenerate}>Generate</Button>
-    </div>
+    <Box className="flex h-full">
+      <List className="w-64 border-r h-[90%]">
+        <ListItem disablePadding>
+          <ListItemButton 
+            selected={selectedTab === 0}
+            onClick={handleResumeTab}
+          >
+            <DescriptionIcon className="mr-3" />
+            <ListItemText primary="Resume" />
+            <StatusIndicator isComplete={hasResumeEntered} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton 
+            selected={selectedTab === 1}
+            onClick={handleJobDescriptionTab}
+          >
+            <WorkIcon className="mr-3" />
+            <ListItemText primary="Job Description" />
+            <StatusIndicator isComplete={hasJobDescriptionEntered} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton 
+            selected={selectedTab === 2}
+            onClick={handleTuneTab}
+          >
+            <TuneIcon className="mr-3" />
+            <ListItemText primary="Tune" />
+            <StatusIndicator isComplete={hasRequiredTuneInfo} />
+          </ListItemButton>
+        </ListItem>
+      </List>
+
+      <Box className="flex-1 flex p-4 gap-2 flex-col h-full">
+        <Box className="flex-1">
+          {renderContent()}
+        </Box>
+        <Button 
+          variant="contained" 
+          fullWidth
+          size="large"
+          onClick={handleGenerate}
+          disabled={isGenerateButtonDisabled}
+        >
+          {isGeneratingQuestions ? (
+            <Box className="flex items-center gap-2">
+              <CircularProgress size={20} color="inherit" />
+              <span>Generating...</span>
+            </Box>
+          ) : (
+            'Generate Potential Questions'
+          )}
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

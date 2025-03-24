@@ -23,6 +23,7 @@ export const resumeSlice = createSlice({
 
 // Selectors
 export const getResume = (state: RootState) => state.resume.content;
+export const hasResume = (state: RootState) => state.resume.content.length > 0;
 
 export const { setResume, setResumeInitialState } = resumeSlice.actions;
 export default resumeSlice.reducer;

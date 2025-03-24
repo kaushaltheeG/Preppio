@@ -24,6 +24,7 @@ export const jobDescriptionSlice = createSlice({
 
 // Selectors
 export const getJobDescription = (state: RootState) => state.jobDescription.content;
+export const hasJobDescription = (state: RootState) => state.jobDescription.content.length > 0;
 
 export const { setJobDescription, setJobDescriptionInitialState } = jobDescriptionSlice.actions;
 export default jobDescriptionSlice.reducer;

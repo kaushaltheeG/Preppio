@@ -13,7 +13,7 @@ const JobDescription: React.FC = () => {
   };
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 h-full">
       <PasteOnlyTextBox
         value={jobDescriptionContent}
         onChange={handleJobDescriptionChange}
