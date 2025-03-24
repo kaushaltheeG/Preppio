@@ -29,9 +29,9 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
 
   const renderNotesSection = React.useCallback(() => {
     return(
-      <CardContent className="h-full">
+      <CardContent>
         <Typography variant="h6" color="primary">
-          Your Notes
+          Notes
         </Typography>
         <TextField
           multiline
@@ -40,7 +40,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
           variant="outlined"  
           value={localNotes}
           onChange={(e) => setLocalNotes(e.target.value)}
-          className="h-full"
+        
         />
       </CardContent>
     );
@@ -97,7 +97,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
   }, [keyPoints]);
 
   return (
-    <Box className="p-6 h-full">
+    <Box className="p-6">
       {/* Main Question Section */}
       <Paper elevation={1} className="p-6 mb-6 bg-blue-50">
         <Typography variant="h5">
@@ -110,13 +110,13 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
         </Box>
       </Paper>
 
-      <Stack direction="row" spacing={3} className="h-full">
+      <Stack direction="row" spacing={3}>    
         {/* Left Column */}
         <Stack spacing={2} sx={{ flex: 2 }}>
           <Card>
             {renderFollowUpQuestions()}
           </Card>
-          <Card className="h-full pb-8">
+          <Card className="pb-8">
             {renderNotesSection()}
           </Card>
         </Stack>
