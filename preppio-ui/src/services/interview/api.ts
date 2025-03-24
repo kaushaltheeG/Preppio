@@ -19,6 +19,7 @@ export interface IQuestion {
   followUp: string[],
   keyPoints: string[],
   skillsAssessed: string[],
+  notes?: string;
 }
 
 export interface IAnalysis {

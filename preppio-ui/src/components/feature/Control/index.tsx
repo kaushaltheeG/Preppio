@@ -23,7 +23,7 @@ const Control: React.FC = () => {
         const expandedQuestionKey = formState.split('Question')[1];
         const expandedQuestion = questions[Number(expandedQuestionKey) - 1];
         if (expandedQuestion) {
-          return <ExpandedQuestion question={expandedQuestion} />;
+          return <ExpandedQuestion questionObject={expandedQuestion} />;
         }
         if (!questions.length) {
           return <Questions />;
