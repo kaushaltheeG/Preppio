@@ -1,19 +1,20 @@
-import { Accordion, AccordionSummary, Typography, AccordionDetails, AccordionActions, Button } from '@mui/material';
+import { Accordion, AccordionSummary, Typography, AccordionDetails, AccordionActions, Button, Chip } from '@mui/material';
 import { IQuestion } from '../../../services/interview/api';
 import React from 'react';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
-import { setOpenTabs } from '../../../store/slices/appSlice';
+import { setOpenTabs, setFormState } from '../../../store/slices/appSlice';
 interface IQuestionProps {
   questionObject: IQuestion;
   id: number;
 }
 
 const Question: React.FC<IQuestionProps> = ({ questionObject, id }) => {
-  const { question, } = questionObject;
+  const { question, type, difficulty, topic } = questionObject;
   const dispatch = useAppDispatch();
   
   const handleExpand = React.useCallback(() => {
     dispatch(setOpenTabs(`Question ${id}`));
+    dispatch(setFormState(`Question ${id}`));
   }, [dispatch, id])
 
   return (
@@ -23,13 +24,10 @@ const Question: React.FC<IQuestionProps> = ({ questionObject, id }) => {
           {question}
         </Typography>
       </AccordionSummary>
-      <AccordionDetails>
-        <Typography component="p" variant="body1">
-          {`Topic: ${questionObject.topic}`}
-        </Typography>
-        <Typography component="p" variant="body1">
-          {`Relevance: ${questionObject.relevance}`}
-        </Typography>
+      <AccordionDetails className="flex gap-2">
+          <Chip label={type} color="primary" variant="outlined" />
+          <Chip label={difficulty} color="secondary" variant="outlined" />
+          <Chip label={topic} color="info" variant="outlined" />
       </AccordionDetails>
       <AccordionActions>
         <Button variant="contained" color="primary" onClick={handleExpand}>

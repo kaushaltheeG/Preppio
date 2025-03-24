@@ -5,7 +5,6 @@ import { useAppSelector } from '../../../hooks/useAppSelector';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { FormState, getOpenTabsArray, setFormState, closeOpenTab } from '../../../store/slices/appSlice';
 
-
 interface ITabsProps {
   formState: FormState;
 }
@@ -30,8 +29,9 @@ const Tabs: React.FC<ITabsProps> = ({ formState }) => {
     dispatch(setFormState(newValue));
   }, [dispatch]);
   
-  const hanldeCloseTab = React.useCallback((tab: string) => {
-    dispatch(closeOpenTab(tab));  
+  const hanldeCloseTab = React.useCallback((id: string) => {
+    dispatch(closeOpenTab(id));
+    dispatch(setFormState('questions'));
   }, [dispatch]);
 
   return (
@@ -43,9 +43,9 @@ const Tabs: React.FC<ITabsProps> = ({ formState }) => {
     >
       <Tab value="userInputs" label="Inputs" sx={tabStyle} />
       <Tab value="questions" label="Questions" sx={tabStyle} />
-      {openTabs.map((tab) => (
+      {openTabs.map(([id, tab]) => (
         <Tab
-          key={tab}
+          key={id}
           value={tab}
           label={
             <div className="flex items-center gap-2">
@@ -54,7 +54,7 @@ const Tabs: React.FC<ITabsProps> = ({ formState }) => {
                 size="small"
                 onClick={(e) => {
                   e.stopPropagation();
-                  hanldeCloseTab(tab);
+                  hanldeCloseTab(id);
                 }}
               >
                 <CloseIcon fontSize="small" />
