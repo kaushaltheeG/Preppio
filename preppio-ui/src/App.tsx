@@ -1,7 +1,5 @@
 import Control from './components/feature/Control';
-// import Editor from './components/feature/Editor';
 import Header from './components/feature/Header';
-import Questions from './components/feature/Questions';
 
 function App() {
 
@@ -14,7 +12,6 @@ function App() {
             {/* add past history here */}
           </div>
           <div className="w-[70%]">
-            {/* <Questions /> */}
             <Control />
           </div>
          

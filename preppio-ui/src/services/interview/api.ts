@@ -10,6 +10,7 @@ export interface IGetInterviewQuestionsRequest {
 }
 
 export interface IQuestion {
+  id?: string;
   question: string;
   type: string;
   difficulty: string;

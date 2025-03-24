@@ -1,13 +1,21 @@
-import { Accordion, AccordionSummary, Typography, AccordionDetails } from '@mui/material';
+import { Accordion, AccordionSummary, Typography, AccordionDetails, AccordionActions, Button } from '@mui/material';
 import { IQuestion } from '../../../services/interview/api';
 import React from 'react';
-
+import { useAppDispatch } from '../../../hooks/useAppDispatch';
+import { setOpenTabs } from '../../../store/slices/appSlice';
 interface IQuestionProps {
   questionObject: IQuestion;
+  id: number;
 }
 
-const Question: React.FC<IQuestionProps> = ({ questionObject }) => {
-  const { question } = questionObject;
+const Question: React.FC<IQuestionProps> = ({ questionObject, id }) => {
+  const { question, } = questionObject;
+  const dispatch = useAppDispatch();
+  
+  const handleExpand = React.useCallback(() => {
+    dispatch(setOpenTabs(`Question ${id}`));
+  }, [dispatch, id])
+
   return (
     <Accordion>
       <AccordionSummary>
@@ -20,21 +28,14 @@ const Question: React.FC<IQuestionProps> = ({ questionObject }) => {
           {`Topic: ${questionObject.topic}`}
         </Typography>
         <Typography component="p" variant="body1">
-          {`Difficulty: ${questionObject.difficulty}`}
-        </Typography>
-        <Typography component="p" variant="body1">
           {`Relevance: ${questionObject.relevance}`}
         </Typography>
-        <Typography component="p" variant="body1">
-          {`Follow-up: ${questionObject.followUp.join(', ')}`}
-        </Typography>
-        <Typography component="p" variant="body1">
-          {`Key Points: ${questionObject.keyPoints.join(', ')}`}
-        </Typography>
-        <Typography component="p" variant="body1">
-          {`Skills Assessed: ${questionObject.skillsAssessed.join(', ')}`}
-        </Typography>
       </AccordionDetails>
+      <AccordionActions>
+        <Button variant="contained" color="primary" onClick={handleExpand}>
+          Expand
+        </Button>
+      </AccordionActions>
     </Accordion>
   );
 };
