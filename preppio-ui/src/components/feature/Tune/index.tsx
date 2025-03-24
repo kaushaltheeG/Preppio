@@ -24,8 +24,6 @@ const Tune: React.FC = () => {
     dispatch(setExtraInformation(newValue));
   }, [dispatch]);
 
-  
-
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-row gap-2">
@@ -33,7 +31,6 @@ const Tune: React.FC = () => {
         <Input placeholder="Interviewer's Position" value={interviewerPosition} onChange={handleInterviewerPositionChange} />
       </div>
       <TextBox placeholder="Extra Information" value={extraInformation} onChange={handleExtraInformationChange} />
-      {/* <Button variant="contained" color="primary" onClick={handleGenerate}>Generate</Button> */}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { Accordion, AccordionSummary, Typography, AccordionDetails, AccordionActions, Button, Chip } from '@mui/material';
+import { Accordion, AccordionSummary, Typography, AccordionActions, Button, Chip, Box } from '@mui/material';
 import { IQuestion } from '../../../services/interview/api';
 import React from 'react';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
@@ -18,17 +18,17 @@ const Question: React.FC<IQuestionProps> = ({ questionObject, id }) => {
   }, [dispatch, id])
 
   return (
-    <Accordion>
-      <AccordionSummary>
-        <Typography component="h2" variant="h6">
-          {question}
+    <Accordion className="rounded-lg border border-gray-200">
+      <AccordionSummary className="flex gap-2">
+        <Typography component="h6" variant="h6" className="pr-4">
+          {`${id}. ${question}`}
         </Typography>
-      </AccordionSummary>
-      <AccordionDetails className="flex gap-2">
+        <Box className="flex gap-4">
           <Chip label={type} color="primary" variant="outlined" />
           <Chip label={difficulty} color="secondary" variant="outlined" />
           <Chip label={topic} color="info" variant="outlined" />
-      </AccordionDetails>
+        </Box>
+      </AccordionSummary>
       <AccordionActions>
         <Button variant="contained" color="primary" onClick={handleExpand}>
           Expand
