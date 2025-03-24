@@ -4,6 +4,7 @@ import { analyzeRequest, analyzeSuccess, analyzeFailure } from '../slices/interv
 import { getJobDescription } from '../slices/jobDescriptionSlice';
 import { getResume } from '../slices/resumeSlice';
 import { getInterviewType, getInterviewerPosition, getExtraInformation } from '../slices/tuneSlice';
+import { setFormState } from '../slices/appSlice';
 
 function* analyzeInterview() {
   try {
@@ -25,6 +26,7 @@ function* analyzeInterview() {
     }
     
     yield put(analyzeSuccess(response));
+    yield put(setFormState('questions'));
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     yield put(analyzeFailure(errorMessage));

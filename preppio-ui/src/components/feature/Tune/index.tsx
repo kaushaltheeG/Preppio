@@ -4,8 +4,6 @@ import TextBox from "../../ui/TextBox";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { setInterviewType, setInterviewerPosition, setExtraInformation } from "../../../store/slices/tuneSlice";
-import { Button } from "@mui/material";
-import { analyzeRequest } from "../../../store/slices/interviewSlice";
 
 const Tune: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -26,9 +24,7 @@ const Tune: React.FC = () => {
     dispatch(setExtraInformation(newValue));
   }, [dispatch]);
 
-  const handleGenerate = React.useCallback(() => {
-    dispatch(analyzeRequest());
-  }, [dispatch]);
+  
 
   return (
     <div className="flex flex-col gap-2">
@@ -37,7 +33,7 @@ const Tune: React.FC = () => {
         <Input placeholder="Interviewer's Position" value={interviewerPosition} onChange={handleInterviewerPositionChange} />
       </div>
       <TextBox placeholder="Extra Information" value={extraInformation} onChange={handleExtraInformationChange} />
-      <Button variant="contained" color="primary" onClick={handleGenerate}>Generate</Button>
+      {/* <Button variant="contained" color="primary" onClick={handleGenerate}>Generate</Button> */}
     </div>
   );
 };

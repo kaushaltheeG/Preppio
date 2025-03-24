@@ -8,8 +8,9 @@ import { Tabs, Tab, Box } from '@mui/material';
 import Resume from "../Resume";
 import JobDescription from "../JobDescription";
 import Tune from "../Tune";
-
-type FormState = 'jobDescription' | 'resume' | 'tune';
+import UserInputs from "./UserInputs";
+import Questions from "../Questions";
+type FormState = 'questions' | 'userInputs';
 
 const Control: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -33,28 +34,26 @@ const Control: React.FC = () => {
 
   const renderControlComponent = React.useCallback(() => {
     switch (formState) {
-      case 'resume':
-        return <Resume />;
-      case 'jobDescription':
-        return <JobDescription />;
-      case 'tune':
-        return <Tune />;
+      case 'userInputs':
+        return <UserInputs />;
+      case 'questions':
+        return <Questions />;
       default:
         return null;
     }
   }, [formState]);
 
   return (
-    <div className="flex flex-col gap-2 h-[60%]">
+    <div className="flex flex-col h-full">
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs 
           value={formState} 
           onChange={handleChange}
-          aria-label="document type tabs"
+          aria-label="document type tabs" 
+          className="w-full"
         >
-          <Tab value="resume" label="Resume" sx={tabStyle} />
-          <Tab value="jobDescription" label="Job Description" sx={tabStyle} />
-          <Tab value="tune" label="Generate" sx={tabStyle} />
+          <Tab value="userInputs" label="Inputs" sx={tabStyle} />
+          <Tab value="questions" label="Questions" sx={tabStyle} />
         </Tabs>
       </Box>
       {renderControlComponent()}
