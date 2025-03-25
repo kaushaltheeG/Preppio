@@ -17,7 +17,7 @@ const Control: React.FC = () => {
       case 'userInputs':
         return <UserInputs />;
       case 'questions':
-        return <Questions />;
+        return <Questions questions={questions} />;
       default:
         // [TODO] - improve this logic
         const expandedQuestionKey = formState.split('Question')[1];
@@ -25,8 +25,8 @@ const Control: React.FC = () => {
         if (expandedQuestion) {
           return <ExpandedQuestion questionObject={expandedQuestion} />;
         }
-        if (!questions.length) {
-          return <Questions />;
+        if (questions.length !== 0) {
+          return <Questions questions={questions} />;
         }
         return <UserInputs />;
     }
@@ -35,7 +35,7 @@ const Control: React.FC = () => {
   return (
     <div className="flex flex-col h-full">
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs formState={formState} />
+        <Tabs formState={formState} hasQuestions={Boolean(questions.length)} />
       </Box>
       {renderControlComponent()}
     </div>

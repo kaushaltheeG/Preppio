@@ -5,14 +5,18 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { FormState, getOpenTabsArray, setFormState, closeOpenTab } from '../../../store/slices/appSlice';
+import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 
 interface ITabsProps {
   formState: FormState;
+  hasQuestions: boolean;
 }
 
-const Tabs: React.FC<ITabsProps> = ({ formState }) => {
+const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions }) => {
   const openTabs = useAppSelector(getOpenTabsArray);
   const dispatch = useAppDispatch();
+  const onQuestionsFormState = React.useMemo(() => formState === 'questions', [formState]);
+
 
   const tabStyle = React.useMemo(() => ({
     minHeight: '32px',
@@ -38,6 +42,7 @@ const Tabs: React.FC<ITabsProps> = ({ formState }) => {
   }, [dispatch]);
 
   return (
+    <div className="flex items-center gap-2">
     <MuiTabs 
       value={formState} 
       onChange={handleChange}
@@ -84,6 +89,15 @@ const Tabs: React.FC<ITabsProps> = ({ formState }) => {
         />
       ))}
     </MuiTabs>
+    {onQuestionsFormState && hasQuestions && (
+        <Tooltip title="Save to your Google Drive" placement="right">
+          <IconButton size="medium">
+            <DriveFileMoveIcon fontSize="medium" />
+          </IconButton>
+        </Tooltip>
+      )
+    }
+    </div>
   );
 };
 

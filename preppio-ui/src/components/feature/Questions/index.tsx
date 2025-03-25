@@ -1,10 +1,13 @@
 import React from 'react';
 import { useAppSelector } from '../../../hooks/useAppSelector';
-import { getQuestions, getIsLoadingQuestions } from '../../../store/slices/interviewSlice';
+import { getIsLoadingQuestions } from '../../../store/slices/interviewSlice';
 import Question from './Question';
+import { IQuestion } from '../../../services/interview/api';
+interface IQuestionsProps {
+  questions: IQuestion[];
+}
 
-const Questions: React.FC = () => {
-  const questions = useAppSelector(getQuestions);
+const Questions: React.FC<IQuestionsProps> = ({ questions }) => {
   const isLoadingQuestions = useAppSelector(getIsLoadingQuestions);
 
   if (isLoadingQuestions) {
