@@ -32,7 +32,6 @@ function* createGoogleDriveDocumentSaga(action: PayloadAction<{ title: string }>
       lastCreatedDocument: new Date().getTime(),
     }));
     yield put(setFormState('iframe'));
-    console.log('url', response.url);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'An error occurred within the google drive saga';
     yield put(setGoogleDocumentError(errorMessage));

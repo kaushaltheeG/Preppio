@@ -267,14 +267,14 @@ export const getQuestions = (state: RootState) => state.interview.questions;
 export const getAnalysis = (state: RootState) => state.interview.analysis;
 export const getIsLoadingQuestions = (state: RootState) => state.interview.isLoading;
 export const getSerializedLexicalEditorState = (state: RootState) => state.interview.serializedLexicalEditorState;
-export const getCompany = (state: RootState) => state.interview.company;
+export const getCompanyName = (state: RootState) => state.interview.company;
 export const getJobTitle = (state: RootState) => state.interview.jobTitle;
 export const getInterviewerPosition = (state: RootState) => state.interview.interviewerPosition;
 export const getInterviewType = (state: RootState) => state.interview.interviewType;
 export const getInterviewContent = (state: RootState): InterviewContentType => {
   const questions = getQuestions(state);
   const analysis = getAnalysis(state);
-  const company = getCompany(state);
+  const company = getCompanyName(state);
   const jobTitle = getJobTitle(state);
   const interviewerPosition = getInterviewerPosition(state);
   const interviewType = getInterviewType(state);

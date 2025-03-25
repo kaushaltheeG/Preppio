@@ -9,12 +9,23 @@ import {
 import { hasSessionSelector, getLoggedInUser } from '../../../store/slices/authSlice';
 import GoogleLogin from './GoogleLogin';
 import UserProfile from './UserProfile';
-
+import { getCompanyName } from '../../../store/slices/interviewSlice';
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const hasSession = useAppSelector(hasSessionSelector);
   const loggedInUser = useAppSelector(getLoggedInUser);
+  const companyName = useAppSelector(getCompanyName);
   const firstName: string = React.useMemo(() => loggedInUser?.user_metadata.full_name?.split(' ')[0] || '', [loggedInUser]);
+
+  const renderSubText = React.useMemo(() => {
+    if (hasSession && loggedInUser && companyName) {
+      return `Let's get prepped for your upcoming interview at ${companyName}, ${firstName}!`;
+    }
+    if (hasSession && loggedInUser) {
+      return `Let's get prepped for your upcoming interview, ${firstName}!`;
+    }
+    return 'Get Prepped for Your Upcoming Interview';
+  }, [hasSession, loggedInUser, firstName, companyName]);
 
   const renderLogin = React.useCallback(() => {
     if (!hasSession || !loggedInUser) {
@@ -39,7 +50,7 @@ const Header: React.FC = () => {
       <div className="text-2xl font-bold text-gray-800 pb-1">
         Preppio
         <div className="text-sm text-gray-500">
-          {loggedInUser ? `Let's get prepped for your upcoming interview, ${firstName}!` : 'Get Prepped for Your Upcoming Interview'}
+          {renderSubText}
         </div>
       </div>
       {renderLogin()}
