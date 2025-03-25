@@ -16,8 +16,8 @@ const Question: React.FC<IQuestionProps> = ({ questionObject, id }) => {
   const dispatch = useAppDispatch();
   
   const handleExpand = React.useCallback(() => {
-    dispatch(setOpenTabs(`Question ${id}`));
-    dispatch(setFormState(`Question ${id}`));
+    dispatch(setOpenTabs(`Q${id}`));
+    dispatch(setFormState(`Q${id}`));
   }, [dispatch, id])
 
   return (

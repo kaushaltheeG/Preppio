@@ -25,7 +25,7 @@ const Control: React.FC = () => {
         return <EmbeddedView url={googleDocUrl} />;
       default:
         // [TODO] - improve this logic
-        const expandedQuestionKey = formState.split('Question')[1];
+        const expandedQuestionKey = formState.split('Q')[1];
         const expandedQuestion = questions[Number(expandedQuestionKey) - 1];
         if (expandedQuestion) {
           return <ExpandedQuestion questionObject={expandedQuestion} />;
@@ -38,11 +38,27 @@ const Control: React.FC = () => {
   }, [formState, questions, googleDocUrl]);
 
   return (
-    <div className="flex flex-col h-full">
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs formState={formState} hasQuestions={Boolean(questions.length)} />
+    <div className={`flex ${formState === 'iframe' ? 'flex-row' : 'flex-col'} h-full`}>
+      <Box sx={{ 
+        borderLeft: formState === 'iframe' ? 1 : 0,
+        borderBottom: formState !== 'iframe' ? 1 : 0,
+        borderColor: 'divider',
+        display: 'flex',
+        flexDirection: formState === 'iframe' ? 'column' : 'row',
+        height: formState === 'iframe' ? '100%' : 'auto',
+        width: formState === 'iframe' ? 'auto' : '100%'
+      }}
+      className={`${formState === 'iframe' ? 'order-2' : ''}`}
+      >
+        <Tabs 
+          formState={formState} 
+          hasQuestions={Boolean(questions.length)} 
+          orientation={formState === 'iframe' ? 'vertical' : 'horizontal'}
+        />
       </Box>
-      {renderControlComponent()}
+      <div className={`${formState === 'iframe' ? 'flex-1, order-1, w-full' : 'h-full'}`}>
+        {renderControlComponent()}
+      </div>
     </div>
   );
 };

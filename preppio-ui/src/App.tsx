@@ -10,7 +10,7 @@ function App() {
           <div className="w-[15%]">
             {/* add past history here */}
           </div>
-          <div className="w-[70%]">
+          <div className="w-[80%]">
             <Control />
           </div>
         </div>

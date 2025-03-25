@@ -11,19 +11,21 @@ import OpenFileButton from '../GoogleDrive/OpenFileButton';
 interface ITabsProps {
   formState: FormState;
   hasQuestions: boolean;
+  orientation?: 'vertical' | 'horizontal';
 }
 
-const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions }) => {
+const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions, orientation = 'horizontal' }) => {
   const { handleSaveToGoogleDrive, getCreatedDocumentUrl, hadDocumentUrl } = useGoogleDriveHook();
   const { handleTabChange, hanldeCloseTab, tabStyle, openTabs, onQuestionsFormState, onIframeFormState } = useTabsHook(formState);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={`flex items-center gap-2 space-between ${formState === 'iframe' ? 'flex-col h-full' : 'flex-row w-full'}`}>
       <MuiTabs 
         value={formState} 
         onChange={handleTabChange}
         aria-label="document type tabs" 
         className="w-full"
+        orientation={orientation}
         sx={{
           minHeight: '32px',
           '& .MuiTabs-indicator': {
@@ -50,7 +52,7 @@ const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions }) => {
             value={tab}
             label={
               <div className="flex items-center gap-2">
-                <span>{tab}</span>
+                <span>{id}</span>
                 <IconButton
                   size="small"
                   onClick={(e) => {
@@ -72,7 +74,6 @@ const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions }) => {
       {onIframeFormState && (
         <OpenFileButton url={getCreatedDocumentUrl} />
       )}
-
     </div>
   );
 };

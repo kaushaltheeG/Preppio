@@ -9,7 +9,7 @@ const EmbeddedView: React.FC<IEmbeddedViewProps> = ({ url }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative pb-2 shadow-lg rounded-lg border border-gray-200">
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center flex-col bg-white/50">
           <CircularProgress />
