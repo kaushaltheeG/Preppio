@@ -7,10 +7,13 @@ import Questions from "../Questions";
 import Tabs from "./Tabs";
 import ExpandedQuestion from "../Questions/ExpandedQuestion";
 import { getQuestions } from "../../../store/slices/interviewSlice";
+import { getGoogleDocUrl } from "../../../store/slices/googleDriveSlice";
+import EmbeddedView from "../GoogleDrive/EmbeddedView";
 
 const Control: React.FC = () => {
   const formState = useAppSelector(getFormState);
   const questions = useAppSelector(getQuestions);
+  const googleDocUrl = useAppSelector(getGoogleDocUrl);
 
   const renderControlComponent = React.useCallback(() => {
     switch (formState) {
@@ -18,6 +21,8 @@ const Control: React.FC = () => {
         return <UserInputs />;
       case 'questions':
         return <Questions questions={questions} />;
+      case 'iframe':
+        return <EmbeddedView url={googleDocUrl} />;
       default:
         // [TODO] - improve this logic
         const expandedQuestionKey = formState.split('Question')[1];
@@ -30,7 +35,7 @@ const Control: React.FC = () => {
         }
         return <UserInputs />;
     }
-  }, [formState, questions]);
+  }, [formState, questions, googleDocUrl]);
 
   return (
     <div className="flex flex-col h-full">

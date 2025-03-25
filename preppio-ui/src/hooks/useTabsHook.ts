@@ -7,7 +7,6 @@ const useTabsHook = (formState: FormState) => {
   const dispatch = useAppDispatch();
   const openTabs = useAppSelector(getOpenTabsArray);
 
-
   const tabStyle = React.useMemo(() => ({
     minHeight: '32px',
     height: '32px',
@@ -23,10 +22,12 @@ const useTabsHook = (formState: FormState) => {
   }), []);
 
   const onQuestionsFormState = React.useMemo(() => formState === 'questions', [formState]);
+  const onIframeFormState = React.useMemo(() => formState === 'iframe', [formState]);
+
   const handleTabChange = React.useCallback((_event: React.SyntheticEvent, newValue: FormState) => {
     dispatch(setFormState(newValue));
   }, [dispatch]);
-  
+
   const hanldeCloseTab = React.useCallback((id: string) => {
     dispatch(closeOpenTab(id));
     dispatch(setFormState('questions'));
@@ -37,6 +38,7 @@ const useTabsHook = (formState: FormState) => {
     openTabs,
     dispatch,
     onQuestionsFormState,
+    onIframeFormState,
     handleTabChange,
     hanldeCloseTab,
     formState,

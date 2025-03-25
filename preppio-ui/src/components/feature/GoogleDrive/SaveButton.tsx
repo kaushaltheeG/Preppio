@@ -19,10 +19,10 @@ const SaveButton: React.FC<SaveButtonProps> = ({
 
   return (
     <Tooltip title={tooltipTitle} placement={tooltipPlacement}>
-        <IconButton size={fontSize} onClick={onClick}>
-          <DriveFileMoveIcon fontSize={fontSize} />
-        </IconButton>
-      </Tooltip>
+      <IconButton size={fontSize} onClick={onClick}>
+        <DriveFileMoveIcon fontSize={fontSize} />
+      </IconButton>
+    </Tooltip>
   );
 };
 

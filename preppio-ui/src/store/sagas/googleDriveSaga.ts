@@ -5,6 +5,8 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { getGoogleAccessToken } from '../slices/authSlice';
 import { getInterviewContent } from '../slices/interviewSlice';
 import { refreshGooglePermissions } from '../../services/auth/api';
+import { setFormState } from '../slices/appSlice';
+
 
 function* createGoogleDriveDocumentSaga(action: PayloadAction<{ title: string }>) {
   try {
@@ -29,6 +31,7 @@ function* createGoogleDriveDocumentSaga(action: PayloadAction<{ title: string }>
       error: null,
       lastCreatedDocument: new Date().getTime(),
     }));
+    yield put(setFormState('iframe'));
     console.log('url', response.url);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'An error occurred within the google drive saga';

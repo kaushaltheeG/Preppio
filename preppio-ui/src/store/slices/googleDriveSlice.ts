@@ -46,7 +46,7 @@ const googleDriveSlice = createSlice({
 
 // Selectors
 export const getGoogleDriveDocuments = (state: RootState) => state.googleDrive.documents;
-export const getGoogleDriveUrl = (state: RootState) => state.googleDrive.documents.url;
+export const getGoogleDocUrl = (state: RootState) => state.googleDrive.documents.url;
 export const getGoogleDriveDocumentId = (state: RootState) => state.googleDrive.documents.documentId;
 export const isCreatingGoogleDriveDocument = (state: RootState) => state.googleDrive.documents.isLoading;
 export const getGoogleDriveError = (state: RootState) => state.googleDrive.documents.error;

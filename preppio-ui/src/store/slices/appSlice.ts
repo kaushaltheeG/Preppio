@@ -4,7 +4,7 @@ import { enableMapSet } from 'immer';
 
 enableMapSet();
 
-export type FormState = 'questions' | 'userInputs' | string;
+export type FormState = 'questions' | 'userInputs' | 'iframe' | string;
 
 interface AppState {
   isLoading: boolean;
@@ -51,6 +51,7 @@ export const getIsLoading = (state: RootState) => state.app.isLoading;
 export const getAppErrorMessage = (state: RootState) => state.app.errorMessage;
 export const onQuestions = (state: RootState) => state.app.formState === 'questions';
 export const onUserInputs = (state: RootState) => state.app.formState === 'userInputs';
+export const onIframeSelector = (state: RootState) => state.app.formState === 'iframe';
 export const getOpenTabs = (state: RootState) => state.app.openTabs;
 export const getOpenTabsArray = (state: RootState) => Array.from(state.app.openTabs.entries());
 
