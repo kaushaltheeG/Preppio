@@ -51,7 +51,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
         <Typography component="span" color="primary">
           Relevance
         </Typography>
-        <Typography variant="body1">
+        <Typography>
           {relevance}
         </Typography>
       </CardContent>
@@ -95,7 +95,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
   }, [keyPoints]);
 
   return (
-    <Box className="p-6 pt-2">
+    <Box className="pt-2">
       {/* Main Question Section */}
       <Paper elevation={1} className="p-6 mb-6 bg-blue-50">
         <Typography variant="h6">
@@ -109,7 +109,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
         />
       </Paper>
 
-      <Stack direction="row" spacing={3}>    
+      <Stack direction="row" spacing={3}>
         {/* Left Column */}
         <Stack spacing={2} sx={{ flex: 2 }}>
           <Card>
@@ -121,7 +121,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
         </Stack>
 
         {/* Right Column */}
-        <Stack spacing={2} sx={{ flex: 1 }}>
+        <Stack spacing={2} sx={{ flex: 1, justifyContent: 'space-between' }}>
           <Card className="mb-4">
             {renderRelevanceSection()}
           </Card>

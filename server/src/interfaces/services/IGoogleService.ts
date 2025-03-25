@@ -6,15 +6,12 @@ import { IGetQuestionsResponse } from './IInterviewService';
 export type InterviewContentType = Omit<IGetQuestionsResponse, 'serializedLexicalEditorState'>;
 export interface IInsertGoogleDocParams {
   newDoc: drive_v3.Schema$File;
-  htmlContent: string;
   interviewContent: InterviewContentType;
 }
 
 export interface IInsertGoogleDocObject {
   url: string;
   documentId: string;
-  text: string;
-  htmlContent: string;
 }
 
 export interface ICreateGoogleDocParams {

@@ -164,8 +164,6 @@ class GoogleDriveService implements IGoogleDriveService {
     return {
       url: `https://docs.google.com/document/d/${newDoc.id}`,
       documentId: newDoc.id!,
-      text: '',
-      htmlContent: ''
     };
   }
 

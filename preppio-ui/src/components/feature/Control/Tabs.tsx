@@ -2,10 +2,10 @@ import React from 'react';
 import { Tabs as MuiTabs, Tab, IconButton, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import { useAppSelector } from '../../../hooks/useAppSelector';
-import { useAppDispatch } from '../../../hooks/useAppDispatch';
-import { FormState, getOpenTabsArray, setFormState, closeOpenTab } from '../../../store/slices/appSlice';
-import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
+import SaveToGoogleDriveButton from '../GoogleDrive/SaveButton';
+import useGoogleDriveHook from '../../../hooks/useGoogleDriveHook';
+import useTabsHook from '../../../hooks/useTabsHook';
+import { FormState } from '../../../store/slices/appSlice';
 
 interface ITabsProps {
   formState: FormState;
@@ -13,39 +13,14 @@ interface ITabsProps {
 }
 
 const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions }) => {
-  const openTabs = useAppSelector(getOpenTabsArray);
-  const dispatch = useAppDispatch();
-  const onQuestionsFormState = React.useMemo(() => formState === 'questions', [formState]);
-
-
-  const tabStyle = React.useMemo(() => ({
-    minHeight: '32px',
-    height: '32px',
-    '&.Mui-selected': {
-      backgroundColor: '#e8f0fe',
-      color: '#1a73e8',
-      borderRadius: '4px 4px 0 0'
-    },
-    '&:hover': {
-      backgroundColor: '#f1f3f4',
-      borderRadius: '4px 4px 0 0'
-    }
-  }), []);
-
-  const handleChange = React.useCallback((_event: React.SyntheticEvent, newValue: FormState) => {
-    dispatch(setFormState(newValue));
-  }, [dispatch]);
-  
-  const hanldeCloseTab = React.useCallback((id: string) => {
-    dispatch(closeOpenTab(id));
-    dispatch(setFormState('questions'));
-  }, [dispatch]);
+  const { handleSaveToGoogleDrive } = useGoogleDriveHook();
+  const { handleTabChange, hanldeCloseTab, tabStyle, openTabs, onQuestionsFormState } = useTabsHook(formState);
 
   return (
     <div className="flex items-center gap-2">
     <MuiTabs 
       value={formState} 
-      onChange={handleChange}
+      onChange={handleTabChange}
       aria-label="document type tabs" 
       className="w-full"
       sx={{
@@ -90,11 +65,7 @@ const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions }) => {
       ))}
     </MuiTabs>
     {onQuestionsFormState && hasQuestions && (
-        <Tooltip title="Save to your Google Drive" placement="right">
-          <IconButton size="medium">
-            <DriveFileMoveIcon fontSize="medium" />
-          </IconButton>
-        </Tooltip>
+        <SaveToGoogleDriveButton onClick={handleSaveToGoogleDrive} />
       )
     }
     </div>

@@ -16,6 +16,7 @@ import { setJobDescriptionInitialState } from '../slices/jobDescriptionSlice';
 import { setResumeInitialState } from '../slices/resumeSlice';
 import { setTuneInitialState } from '../slices/tuneSlice';
 import { setInterviewInitialState } from '../slices/interviewSlice';
+import { setGoogleDriveInitialState } from '../slices/googleDriveSlice';
 
 function* handleCheckSession() {
   try {
@@ -34,6 +35,7 @@ function* handleLogout() {
   yield put(setResumeInitialState());
   yield put(setTuneInitialState());
   yield put(setInterviewInitialState());
+  yield put(setGoogleDriveInitialState());
 }
 
 function createAuthChannel() {
@@ -70,7 +72,6 @@ function* watchAuthStateChange() {
 function* authSaga() {
   // Start watching for session checks
   yield takeLatest(checkSession.type, handleCheckSession);
-  
   // Logout user
   yield takeLatest(logoutUser.type, handleLogout);
   

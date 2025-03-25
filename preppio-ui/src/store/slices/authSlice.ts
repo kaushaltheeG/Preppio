@@ -38,7 +38,8 @@ export const unsubscribeFromAuthChanges = createAction('auth/unsubscribeFromAuth
 // Selectors
 export const hasSessionSelector = (state: RootState): boolean => Boolean(state.auth.session !== null);
 export const getLoggedInUser = (state: RootState): User | null => state.auth.user;
-
+export const getGoogleAccessToken = (state: RootState): string => state.auth.session?.provider_token || '';
+export const getRefreshToken = (state: RootState): string | null => state.auth.session?.refresh_token || null;
 
 export const {
   setSession,

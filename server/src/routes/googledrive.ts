@@ -7,7 +7,6 @@ const router = Router();
 router.post('/create-save-doc', async (req: Request, res: Response) => {
   const { title } = req.body;
   const { accessToken } = req.body;
-  const { htmlContent } = req.body;
   const { interviewContent } = req.body;
 
   if (!title) {
@@ -16,9 +15,6 @@ router.post('/create-save-doc', async (req: Request, res: Response) => {
   if (!accessToken) {
     return res.status(400).json({ error: 'Access token is required' });
   }
-  if (!htmlContent) {
-    return res.status(400).json({ error: 'HTML content is required' });
-  }
   if (!interviewContent) {
     return res.status(400).json({ error: 'Interview content is required' });
   }
@@ -26,7 +22,7 @@ router.post('/create-save-doc', async (req: Request, res: Response) => {
   try {
     const googleDriveService: IGoogleDriveService = GoogleDriveServiceFactory.createGoogleDriveService(accessToken);
     const newDoc = await googleDriveService.createGoogleDoc({ title });
-    const result = await googleDriveService.insertGoogleDoc({ newDoc, htmlContent, interviewContent });
+    const result = await googleDriveService.insertGoogleDoc({ newDoc, interviewContent });
 
     return res.status(200).json(result);
   } catch (error) {

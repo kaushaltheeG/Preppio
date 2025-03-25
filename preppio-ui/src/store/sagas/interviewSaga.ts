@@ -28,7 +28,7 @@ function* analyzeInterview() {
     yield put(analyzeSuccess(response));
     yield put(setFormState('questions'));
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    const errorMessage = error instanceof Error ? error.message : 'An error occurred within the interview saga';
     yield put(analyzeFailure(errorMessage));
   }
 }
