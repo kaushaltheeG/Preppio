@@ -1,6 +1,7 @@
 import React from 'react';
-import { Tabs as MuiTabs, Tab, IconButton } from '@mui/material';
+import { Tabs as MuiTabs, Tab, IconButton, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { FormState, getOpenTabsArray, setFormState, closeOpenTab } from '../../../store/slices/appSlice';
@@ -14,6 +15,8 @@ const Tabs: React.FC<ITabsProps> = ({ formState }) => {
   const dispatch = useAppDispatch();
 
   const tabStyle = React.useMemo(() => ({
+    minHeight: '32px',
+    height: '32px',
     '&.Mui-selected': {
       backgroundColor: '#e8f0fe',
       color: '#1a73e8',
@@ -40,8 +43,24 @@ const Tabs: React.FC<ITabsProps> = ({ formState }) => {
       onChange={handleChange}
       aria-label="document type tabs" 
       className="w-full"
+      sx={{
+        minHeight: '32px',
+        '& .MuiTabs-indicator': {
+          height: '2px'
+        }
+      }}
     >
-      <Tab value="userInputs" label="Inputs" sx={tabStyle} />
+      <Tab 
+        value="userInputs" 
+        label={
+          <Tooltip title="Inputs for the AI Model" placement="left">
+            <div className="flex items-center gap-1">
+              <ListAltIcon fontSize="small" />
+            </div>
+          </Tooltip>
+        } 
+        sx={tabStyle} 
+      />
       <Tab value="questions" label="Questions" sx={tabStyle} />
       {openTabs.map(([id, tab]) => (
         <Tab

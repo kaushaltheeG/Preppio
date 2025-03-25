@@ -14,9 +14,8 @@ const PasteOnlyTextBox: React.FC<PasteOnlyTextBoxProps> = ({
   className = ''
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Allow: Ctrl+V (paste), Ctrl+C (copy), Ctrl+A (select all), Delete, Backspace
     const allowedKeys = ['Delete', 'Backspace'];
-    const isCtrlKey = e.ctrlKey || e.metaKey; // metaKey for Mac
+    const isCtrlKey = e.ctrlKey || e.metaKey;
     const isAllowedCtrlCommand = isCtrlKey && ['v', 'c', 'a', 'z', 'x'].includes(e.key.toLowerCase());
     
     if (!isAllowedCtrlCommand && !allowedKeys.includes(e.key)) {
@@ -37,7 +36,17 @@ const PasteOnlyTextBox: React.FC<PasteOnlyTextBoxProps> = ({
       onKeyDown={handleKeyDown}
       onPaste={handlePaste}
       placeholder={placeholder}
-      className={`w-full h-[80%] p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none ${className}`}
+      className={`
+        w-full
+        h-[80%]
+        bg-white dark:bg-gray-800
+        text-gray-900
+        dark:text-gray-100
+        p-3 border border-gray-300
+        rounded-lg focus:ring-2
+        focus:ring-blue-500 focus:border-blue-500
+        outline-none resize-none ${className}`
+      }
     />
   );
 };

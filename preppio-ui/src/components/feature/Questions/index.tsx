@@ -12,7 +12,7 @@ const Questions: React.FC = () => {
   }
 
   return (
-    <div className='flex flex-col gap-4 pb-16'>
+    <div className='flex flex-col gap-2 pt-2'>
       {questions.map((questionObject, index) => (
         <Question key={index} questionObject={questionObject} id={index + 1} />
       ))}

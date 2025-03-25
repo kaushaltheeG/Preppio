@@ -118,7 +118,7 @@ const mockData: IGetQuestionsResponse = {
           ]
       },
       {
-          "question": "Discuss a project where you had to optimize performance. What steps did you take, and what was the outcome?",
+          "question": "Discuss a project where you had to optimize performance?",
           "type": "technical",
           "difficulty": "intermediate",
           "topic": "Performance Optimization",

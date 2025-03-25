@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, Paper, Typography, Chip, List, ListItem, ListItemText, Card, CardContent, Stack, TextField } from '@mui/material';
+import { Box, Paper, Typography, Chip, Card, CardContent, Stack, TextField } from '@mui/material';
 import { IQuestion } from '@/services/interview/api';
+import QuestionChips from './QuestionChips';
 
 interface IExpandedQuestionProps {
   questionObject: IQuestion;
@@ -13,16 +14,15 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
   const renderFollowUpQuestions = React.useCallback(() => {
     return(
       <CardContent>
-        <Typography variant="h6" color="primary">
+        <Typography component="span" color="primary">
           Follow-up Questions
         </Typography>
-        <List>
           {followUp.map((item, index) => (
-            <ListItem key={index}>
-              <ListItemText primary={`${index + 1}. ${item}`} />
-            </ListItem>
+            <div key={index} className='flex flex-row gap-2'>
+              <span>{index + 1}.</span>
+              <span>{item}</span>
+            </div>
           ))}
-        </List>
       </CardContent>
     );
   }, [followUp]);
@@ -30,7 +30,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
   const renderNotesSection = React.useCallback(() => {
     return(
       <CardContent>
-        <Typography variant="h6" color="primary">
+        <Typography component="span" color="primary">
           Notes
         </Typography>
         <TextField
@@ -40,7 +40,6 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
           variant="outlined"  
           value={localNotes}
           onChange={(e) => setLocalNotes(e.target.value)}
-        
         />
       </CardContent>
     );
@@ -49,7 +48,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
   const renderRelevanceSection = React.useCallback(() => {
     return(
       <CardContent>
-        <Typography variant="h6" color="primary">
+        <Typography component="span" color="primary">
           Relevance
         </Typography>
         <Typography variant="body1">
@@ -62,7 +61,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
   const renderSkillsAssessedSection = React.useCallback(() => {
     return(
       <CardContent>
-        <Typography variant="h6" color="primary">
+        <Typography component="span" color="primary">
           Skills Assessed
         </Typography>
         <Box className="flex flex-wrap gap-1">
@@ -82,32 +81,32 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
   const renderKeyPointsSection = React.useCallback(() => {
     return(
       <CardContent>
-        <Typography variant="h6" color="primary">
+        <Typography component="span" color="primary">
           Key Points
         </Typography>
-        <List>
-          {keyPoints.map((point, index) => (
-            <ListItem key={index}>
-              <ListItemText primary={`• ${point}`} />
-            </ListItem>
-          ))}
-        </List>
+        {keyPoints.map((point, index) => (
+          <div key={index} className='flex flex-row gap-2'>
+            <span>•</span>
+            <span>{point}</span>
+          </div>
+        ))}
       </CardContent>
     );
   }, [keyPoints]);
 
   return (
-    <Box className="p-6">
+    <Box className="p-6 pt-2">
       {/* Main Question Section */}
       <Paper elevation={1} className="p-6 mb-6 bg-blue-50">
-        <Typography variant="h5">
+        <Typography variant="h6">
           {question}
         </Typography>
-        <Box className="flex gap-2 mt-2">
-          <Chip label={type} color="primary" variant="outlined" />
-          <Chip label={difficulty} color="secondary" variant="outlined" />
-          <Chip label={topic} color="info" variant="outlined" />
-        </Box>
+        <QuestionChips
+          type={type}
+          difficulty={difficulty}
+          topic={topic}
+          className="flex gap-2 mt-2"
+        />
       </Paper>
 
       <Stack direction="row" spacing={3}>    
@@ -116,7 +115,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
           <Card>
             {renderFollowUpQuestions()}
           </Card>
-          <Card className="pb-8">
+          <Card className="pb-4">
             {renderNotesSection()}
           </Card>
         </Stack>
