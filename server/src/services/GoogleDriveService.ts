@@ -6,8 +6,9 @@ import IGoogleDriveService, {
   ICreateGoogleDocParams,
   IInsertGoogleDocParams,
   IInsertGoogleDocObject,
+  ICreateGoogleDocRequestObject,
+  ICreateGoogleDocBackgroundRequestObject,
 } from '../interfaces/services/IGoogleService';
-import { convert, HtmlToTextOptions } from 'html-to-text';
 
 class GoogleDriveService implements IGoogleDriveService {
   private driveV3: drive_v3.Drive;
@@ -34,115 +35,76 @@ class GoogleDriveService implements IGoogleDriveService {
     const { company, jobTitle, interviewType, interviewerPosition, questions, analysis } = interviewContent;
 
     let currentIndex = 1;
-    const titleText = `Potential Interview Questions for ${company}\n`;
-    const backgroundText = `Company: ${company}\n` +
-                         `Job Title: ${jobTitle}\n` +
-                         `Interview Type: ${interviewType}\n` +
-                         `Interviewer Position: ${interviewerPosition}\n\n`;
     
-
-    const requests = [
-      // Title
-      {
-        insertText: {
-          text: titleText,
-          location: { index: currentIndex }
-        }
-      },
-      {
-        updateParagraphStyle: {
-          range: { 
-            startIndex: currentIndex, 
-            endIndex: currentIndex + titleText.length - 1
-          },
-          paragraphStyle: { namedStyleType: 'HEADING_1' },
-          fields: 'namedStyleType'
-        }
-      },
-
-      // Background Info with Heading 4
-      {
-        insertText: {
-          text: backgroundText,
-          location: { index: currentIndex += titleText.length } // Here's where we update currentIndex
-        }
-      },
-      {
-        updateParagraphStyle: {
-          range: { 
-            startIndex: currentIndex,
-            endIndex: currentIndex + backgroundText.length - 1
-          },
-          paragraphStyle: { namedStyleType: 'HEADING_5' },
-          fields: 'namedStyleType'
-        }
-      },
-      // need to seperate questions into a function and process it;
+    const titleRequestObject = this.createTitleRequestObject(company, currentIndex);
+    currentIndex = titleRequestObject.newIndex;
+    const backgroundRequestObject = this.createBackgroundRequestObject({ company, jobTitle, interviewType, interviewerPosition, currentIndex });
+    const requests = [ ...titleRequestObject.requests, ...backgroundRequestObject.requests,
       // Questions
-      ...interviewContent.questions.flatMap((q, idx) => {
-        const questionText = `${q.question}\n`;
-        const metadataText = `Type: ${q.type}\n` +
-                            `Difficulty: ${q.difficulty}\n` +
-                            `Topic: ${q.topic}\n` +
-                            `Key Points:\n` +
-                            `${q.keyPoints.map(point => `${point}\n`).join('')}\n\n`;
+      // ...interviewContent.questions.flatMap((q, idx) => {
+      //   const questionText = `${q.question}\n`;
+      //   const metadataText = `Type: ${q.type}\n` +
+      //                       `Difficulty: ${q.difficulty}\n` +
+      //                       `Topic: ${q.topic}\n` +
+      //                       `Key Points:\n` +
+      //                       `${q.keyPoints.map(point => `${point}\n`).join('')}\n\n`;
         
-        const startIndex = currentIndex;
-        currentIndex += questionText.length + metadataText.length;
+      //   const startIndex = currentIndex;
+      //   currentIndex += questionText.length + metadataText.length;
         
-        return [
-          {
-            insertText: {
-              text: questionText,
-              location: { index: startIndex }
-            }
-          },
-          {
-            createParagraphBullets: {
-              range: {
-                startIndex: startIndex,
-                endIndex: startIndex + questionText.length - 1
-              },
-              bulletPreset: 'NUMBERED_DECIMAL_NESTED'
-            }
-          },
-          {
-            updateTextStyle: {
-              range: {
-                startIndex: startIndex,
-                endIndex: startIndex + questionText.length - 1
-              },
-              textStyle: { bold: true },
-              fields: 'bold'
-            }
-          },
-          {
-            insertText: {
-              text: metadataText,
-              location: { index: startIndex + questionText.length }
-            }
-          },
-          // {
-          //   createParagraphBullets: {
-          //     range: {
-          //       startIndex: startIndex + questionText.length,
-          //       endIndex: startIndex + questionText.length + metadataText.length - 1
-          //     },
-          //     bulletPreset: 'BULLET_DISC_CIRCLE_SQUARE'
-          //   }
-          // },
-          {
-            updateParagraphStyle: {
-              range: {
-                startIndex: startIndex,
-                endIndex: startIndex + questionText.length + metadataText.length - 1
-              },
-              paragraphStyle: { namedStyleType: 'NORMAL_TEXT' },
-              fields: 'namedStyleType'
-            }
-          }
-        ];
-      }),
+      //   return [
+      //     {
+      //       insertText: {
+      //         text: questionText,
+      //         location: { index: startIndex }
+      //       }
+      //     },
+      //     {
+      //       createParagraphBullets: {
+      //         range: {
+      //           startIndex: startIndex,
+      //           endIndex: startIndex + questionText.length - 1
+      //         },
+      //         bulletPreset: 'NUMBERED_DECIMAL_NESTED'
+      //       }
+      //     },
+      //     {
+      //       updateTextStyle: {
+      //         range: {
+      //           startIndex: startIndex,
+      //           endIndex: startIndex + questionText.length - 1
+      //         },
+      //         textStyle: { bold: true },
+      //         fields: 'bold'
+      //       }
+      //     },
+      //     {
+      //       insertText: {
+      //         text: metadataText,
+      //         location: { index: startIndex + questionText.length }
+      //       }
+      //     },
+      //     // {
+      //     //   createParagraphBullets: {
+      //     //     range: {
+      //     //       startIndex: startIndex + questionText.length,
+      //     //       endIndex: startIndex + questionText.length + metadataText.length - 1
+      //     //     },
+      //     //     bulletPreset: 'BULLET_DISC_CIRCLE_SQUARE'
+      //     //   }
+      //     // },
+      //     {
+      //       updateParagraphStyle: {
+      //         range: {
+      //           startIndex: startIndex,
+      //           endIndex: startIndex + questionText.length + metadataText.length - 1
+      //         },
+      //         paragraphStyle: { namedStyleType: 'NORMAL_TEXT' },
+      //         fields: 'namedStyleType'
+      //       }
+      //     }
+      //   ];
+      // }),
 
       // // Analysis
       // {
@@ -167,46 +129,107 @@ class GoogleDriveService implements IGoogleDriveService {
     };
   }
 
-  private cleanHtml(htmlContent: string): string {
-    return htmlContent
-      .replace(/\n\s*/g, '')
-      .trim();
-      // .replace(/>\s+</g, '><')
+  private createTitleRequestObject(company: string, currentIndex: number): ICreateGoogleDocRequestObject {
+    const titleText = `Potential Interview Questions for ${company}\n`;
+    return {
+      requests: [
+        { 
+            insertText: {
+            text: titleText,
+            location: { index: currentIndex }
+          }
+        },
+        {
+          updateParagraphStyle: {
+            range: { 
+              startIndex: currentIndex, 
+              endIndex: currentIndex + titleText.length - 1
+            },
+            paragraphStyle: { namedStyleType: 'HEADING_1' },
+            fields: 'namedStyleType'
+          }
+        },
+      ],
+      newIndex: currentIndex + titleText.length
+    }
   }
 
-  private getConverterOptions(): HtmlToTextOptions {
-    return {
-      preserveNewlines: true,
-      wordwrap: false,
-      selectors: [
-        // { selector: 'article', format: 'blockquote' },
-        // { selector: 'section', format: 'blockquote' },
-        { selector: 'p', options: { leadingLineBreaks: 1, trailingLineBreaks: 1 } },
-        { selector: 'br', format: 'lineBreak' },
-        { selector: 'h1', format: 'heading' },
-        { selector: 'h2', format: 'heading' },
-        { selector: 'h3', format: 'heading' },
-        { selector: 'strong', format: 'blockText' },
-        { selector: 'u', format: 'blockText' },
-        { selector: 'ul', options: { itemPrefix: ' • ' } },
-      ],
-      formatters: {
-        'blockText': function(elem, walk, builder) {
-          builder.openBlock();
-          walk(elem.children, builder);
-          builder.closeBlock();
+  private createBackgroundRequestObject(params: ICreateGoogleDocBackgroundRequestObject): ICreateGoogleDocRequestObject {
+    let { currentIndex } = params;
+    const { company, jobTitle, interviewType, interviewerPosition } = params;
+    const backgroundTextArray = [
+      ['Company', `: ${company}\n`],
+      ['Job Title', `: ${jobTitle}\n`],
+      ['Interview Type', `: ${interviewType}\n`],
+      ['Interviewer Position', `: ${interviewerPosition}\n\n`]
+    ];
+
+    const requests = [];
+    for (let [companyLabel, companyValue] of backgroundTextArray) {
+      requests.push(
+        {
+          insertText: {
+            text: `${companyLabel}${companyValue}`,
+            location: { index: currentIndex }
+          }
         },
-        'heading': function(elem, walk, builder) {
-          builder.openBlock();
-          builder.addInline('** ');
-          walk(elem.children, builder);
-          builder.addInline(' **');
-          builder.closeBlock();
+        {
+          updateParagraphStyle: {
+            range: { 
+              startIndex: currentIndex,
+              endIndex: currentIndex + companyLabel.length + companyValue.length
+            },
+            paragraphStyle: { namedStyleType: 'HEADING_5' },
+            fields: 'namedStyleType'
+          }
         },
-        'lineBreak': function(elem, walk, builder) {
-          builder.addLineBreak();
+        {
+          updateTextStyle: {
+            range: {
+              startIndex: currentIndex,
+              endIndex: currentIndex + companyLabel.length
+            },
+            textStyle: {
+              underline: true
+            },
+            fields: 'underline'
+          }
         }
-      }
+      );
+      currentIndex += companyLabel.length + companyValue.length;
+    }
+
+    return {
+      requests,
+      newIndex: currentIndex
+    };
+  }
+
+  private createQuestionRequestObject(questionText: string, metadataText: string, currentIndex: number): ICreateGoogleDocRequestObject {
+    return {
+      requests: [
+          {
+            insertText: {
+            text: questionText,
+            location: { index: currentIndex }
+          }
+        },
+      ],
+      newIndex: currentIndex + questionText.length + metadataText.length
+    };
+  }
+  
+  private createAnalysisRequestObject(analysisText: string, currentIndex: number): ICreateGoogleDocRequestObject {
+    return {
+      requests: [
+          {
+            insertText: {
+              text: analysisText,
+            location: { index: currentIndex }
+          }
+        },
+      ],
+      newIndex: currentIndex + analysisText.length
     };
   }
 }
@@ -225,15 +248,6 @@ class GoogleDriveServiceFactory {
     const { driveV3Client, docsV1Client } = this.createClient(accessToken);
     return new GoogleDriveService(driveV3Client, docsV1Client);
   }
-}
-
-// Helper function to calculate indices (simplified version)
-function getQuestionIndex(questionNum: number): number {
-  return 150 + (questionNum * 300); // Approximate spacing
-}
-
-function getFinalIndex(): number {
-  return 3000; // Approximate final position
 }
 
 export default GoogleDriveServiceFactory;
