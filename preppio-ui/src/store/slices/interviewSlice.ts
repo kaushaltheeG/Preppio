@@ -241,6 +241,10 @@ const interviewSlice = createSlice({
       state.error = null;
       state.questions = action.payload.questions;
       state.analysis = action.payload.analysis;
+      state.company = action.payload.company;
+      state.jobTitle = action.payload.jobTitle;
+      state.interviewerPosition = action.payload.interviewerPosition;
+      state.interviewType = action.payload.interviewType;
       state.serializedLexicalEditorState = action.payload.serializedLexicalEditorState;
     },
     analyzeFailure: (state, action: PayloadAction<string>) => {
