@@ -7,8 +7,10 @@ import IGoogleDriveService, {
   IInsertGoogleDocParams,
   IInsertGoogleDocObject,
   ICreateGoogleDocRequestObject,
-  ICreateGoogleDocBackgroundRequestObject,
+  ICreateGoogleDocBackgroundRequestParams,
+  ICreateGoogleDocAnalysisRequestParams,
 } from '../interfaces/services/IGoogleService';
+import { IQuestion } from '../interfaces/services/IInterviewService';
 
 class GoogleDriveService implements IGoogleDriveService {
   private driveV3: drive_v3.Drive;
@@ -35,87 +37,19 @@ class GoogleDriveService implements IGoogleDriveService {
     const { company, jobTitle, interviewType, interviewerPosition, questions, analysis } = interviewContent;
 
     let currentIndex = 1;
-    
     const titleRequestObject = this.createTitleRequestObject(company, currentIndex);
     currentIndex = titleRequestObject.newIndex;
     const backgroundRequestObject = this.createBackgroundRequestObject({ company, jobTitle, interviewType, interviewerPosition, currentIndex });
-    const requests = [ ...titleRequestObject.requests, ...backgroundRequestObject.requests,
-      // Questions
-      // ...interviewContent.questions.flatMap((q, idx) => {
-      //   const questionText = `${q.question}\n`;
-      //   const metadataText = `Type: ${q.type}\n` +
-      //                       `Difficulty: ${q.difficulty}\n` +
-      //                       `Topic: ${q.topic}\n` +
-      //                       `Key Points:\n` +
-      //                       `${q.keyPoints.map(point => `${point}\n`).join('')}\n\n`;
-        
-      //   const startIndex = currentIndex;
-      //   currentIndex += questionText.length + metadataText.length;
-        
-      //   return [
-      //     {
-      //       insertText: {
-      //         text: questionText,
-      //         location: { index: startIndex }
-      //       }
-      //     },
-      //     {
-      //       createParagraphBullets: {
-      //         range: {
-      //           startIndex: startIndex,
-      //           endIndex: startIndex + questionText.length - 1
-      //         },
-      //         bulletPreset: 'NUMBERED_DECIMAL_NESTED'
-      //       }
-      //     },
-      //     {
-      //       updateTextStyle: {
-      //         range: {
-      //           startIndex: startIndex,
-      //           endIndex: startIndex + questionText.length - 1
-      //         },
-      //         textStyle: { bold: true },
-      //         fields: 'bold'
-      //       }
-      //     },
-      //     {
-      //       insertText: {
-      //         text: metadataText,
-      //         location: { index: startIndex + questionText.length }
-      //       }
-      //     },
-      //     // {
-      //     //   createParagraphBullets: {
-      //     //     range: {
-      //     //       startIndex: startIndex + questionText.length,
-      //     //       endIndex: startIndex + questionText.length + metadataText.length - 1
-      //     //     },
-      //     //     bulletPreset: 'BULLET_DISC_CIRCLE_SQUARE'
-      //     //   }
-      //     // },
-      //     {
-      //       updateParagraphStyle: {
-      //         range: {
-      //           startIndex: startIndex,
-      //           endIndex: startIndex + questionText.length + metadataText.length - 1
-      //         },
-      //         paragraphStyle: { namedStyleType: 'NORMAL_TEXT' },
-      //         fields: 'namedStyleType'
-      //       }
-      //     }
-      //   ];
-      // }),
-
-      // // Analysis
-      // {
-      //   insertText: {
-      //     text: `\nAnalysis:\n` +
-      //           `Strength Areas: ${interviewContent.analysis.strengthAreas}\n` +
-      //           `Gap Areas: ${interviewContent.analysis.gapAreas}\n` +
-      //           `Recommended Focus: ${interviewContent.analysis.recommendedFocus}\n`,
-      //     location: { index: currentIndex }
-      //   }
-      // }
+    currentIndex = backgroundRequestObject.newIndex;
+    const questionRequestObject = this.createQuestionRequestObject(questions, currentIndex);
+    currentIndex = questionRequestObject.newIndex;
+    const analysisRequestObject = this.createAnalysisRequestObject({ analysis, currentIndex });
+    currentIndex = analysisRequestObject.newIndex;
+    const requests = [
+      ...titleRequestObject.requests,
+      ...backgroundRequestObject.requests,
+      ...questionRequestObject.requests,
+      ...analysisRequestObject.requests,
     ];
 
     await this.docsV1.documents.batchUpdate({
@@ -154,22 +88,22 @@ class GoogleDriveService implements IGoogleDriveService {
     }
   }
 
-  private createBackgroundRequestObject(params: ICreateGoogleDocBackgroundRequestObject): ICreateGoogleDocRequestObject {
+  private createBackgroundRequestObject(params: ICreateGoogleDocBackgroundRequestParams): ICreateGoogleDocRequestObject {
     let { currentIndex } = params;
     const { company, jobTitle, interviewType, interviewerPosition } = params;
     const backgroundTextArray = [
       ['Company', `: ${company}\n`],
       ['Job Title', `: ${jobTitle}\n`],
       ['Interview Type', `: ${interviewType}\n`],
-      ['Interviewer Position', `: ${interviewerPosition}\n\n`]
+      ['Interviewer Position', `: ${interviewerPosition}\n`]
     ];
 
     const requests = [];
-    for (let [companyLabel, companyValue] of backgroundTextArray) {
+    for (let [label, value] of backgroundTextArray) {
       requests.push(
         {
           insertText: {
-            text: `${companyLabel}${companyValue}`,
+            text: `${label}${value}`,
             location: { index: currentIndex }
           }
         },
@@ -177,9 +111,9 @@ class GoogleDriveService implements IGoogleDriveService {
           updateParagraphStyle: {
             range: { 
               startIndex: currentIndex,
-              endIndex: currentIndex + companyLabel.length + companyValue.length
+              endIndex: currentIndex + label.length + value.length
             },
-            paragraphStyle: { namedStyleType: 'HEADING_5' },
+            paragraphStyle: { namedStyleType: 'NORMAL_TEXT' },
             fields: 'namedStyleType'
           }
         },
@@ -187,7 +121,7 @@ class GoogleDriveService implements IGoogleDriveService {
           updateTextStyle: {
             range: {
               startIndex: currentIndex,
-              endIndex: currentIndex + companyLabel.length
+              endIndex: currentIndex + label.length
             },
             textStyle: {
               underline: true
@@ -195,8 +129,8 @@ class GoogleDriveService implements IGoogleDriveService {
             fields: 'underline'
           }
         }
-      );
-      currentIndex += companyLabel.length + companyValue.length;
+      ); 
+      currentIndex += label.length + value.length;
     }
 
     return {
@@ -205,31 +139,238 @@ class GoogleDriveService implements IGoogleDriveService {
     };
   }
 
-  private createQuestionRequestObject(questionText: string, metadataText: string, currentIndex: number): ICreateGoogleDocRequestObject {
-    return {
-      requests: [
-          {
-            insertText: {
+  private createQuestionRequestObject(questions: IQuestion[], currentIndex: number): ICreateGoogleDocRequestObject {
+    const headingText = 'Potential Interview Questions\n';
+    const requests: docs_v1.Schema$Request[] = [
+      {
+        insertText: {
+          text: headingText,
+          location: { index: currentIndex }
+        },
+      },
+      {
+        updateParagraphStyle: {
+          range: {
+            startIndex: currentIndex,
+          endIndex: currentIndex + headingText.length - 1
+        },
+        paragraphStyle: { namedStyleType: 'HEADING_2' },
+        fields: 'namedStyleType'
+        }
+      }
+    ];
+
+    currentIndex += headingText.length;
+    const startQuestionIndex = currentIndex; // apply to all questions
+    // push questions with metadata
+    for (let question of questions) {
+      const questionText = `${question.question}\n`;
+      // push question text
+      requests.push(
+        {
+          insertText: {
             text: questionText,
             location: { index: currentIndex }
           }
         },
-      ],
-      newIndex: currentIndex + questionText.length + metadataText.length
-    };
-  }
-  
-  private createAnalysisRequestObject(analysisText: string, currentIndex: number): ICreateGoogleDocRequestObject {
-    return {
-      requests: [
-          {
-            insertText: {
-              text: analysisText,
+        {
+          updateParagraphStyle: {
+            range: {
+              startIndex: currentIndex,
+              endIndex: currentIndex + questionText.length - 1
+            },
+            paragraphStyle: { namedStyleType: 'NORMAL_TEXT' },
+            fields: 'namedStyleType'
+          }
+        },
+        {
+          updateTextStyle: {
+            range: {
+              startIndex: currentIndex,
+              endIndex: currentIndex + questionText.length - 1
+            },
+            textStyle: { bold: true },
+            fields: 'bold'
+          }
+        },
+      );
+      currentIndex += questionText.length;
+      // push metadata text
+      const metadataArray = [
+        ['Type', `: ${question.type}\n`],
+        ['Difficulty', `: ${question.difficulty}\n`],
+        ['Topic', `: ${question.topic}\n`],
+        ['Key Points', `: ${question.keyPoints.join(', ')}\n`]
+      ];
+      for (let [label, value] of metadataArray) {
+        requests.push(
+        {
+          insertText: {
+            text: `${label}${value}`,
             location: { index: currentIndex }
           }
         },
-      ],
-      newIndex: currentIndex + analysisText.length
+        {
+          updateParagraphStyle: {
+            range: { 
+              startIndex: currentIndex,
+              endIndex: currentIndex + label.length + value.length
+            },
+            paragraphStyle: { 
+              namedStyleType: 'NORMAL_TEXT',
+              indentFirstLine: {
+                magnitude: 36,
+                unit: 'PT'
+              },
+              indentStart: {
+                magnitude: 36,
+                unit: 'PT'
+              }
+            },
+            fields: 'namedStyleType,indentFirstLine,indentStart'
+          },
+        },
+        {
+          updateTextStyle: {
+            range: {
+              startIndex: currentIndex,
+              endIndex: currentIndex + label.length
+            },
+            textStyle: {
+              underline: true
+            },
+            fields: 'underline'
+          },
+        }); 
+        currentIndex += label.length + value.length;
+      }
+    }
+
+    // push NUMBERED_UPPERROMAN bullets to questions
+    requests.push(
+      {
+        createParagraphBullets: {
+          range: {
+            startIndex: startQuestionIndex,
+            endIndex: currentIndex,
+          },
+          bulletPreset: 'NUMBERED_UPPERROMAN_UPPERALPHA_DECIMAL'
+        }
+      }
+    );
+
+    return {
+      requests,
+      newIndex: currentIndex
+    };
+  }
+  
+  private createAnalysisRequestObject(params: ICreateGoogleDocAnalysisRequestParams): ICreateGoogleDocRequestObject {
+    let { analysis, currentIndex } = params;
+    const { strengthAreas, gapAreas, recommendedFocus } = analysis;
+    const headingText = 'Analysis\n';
+    const requests: docs_v1.Schema$Request[] = [
+      {
+        insertText: {
+          text: headingText,
+          location: { index: currentIndex }
+        }
+      },
+      {
+        updateParagraphStyle: { 
+          range: {
+            startIndex: currentIndex,
+            endIndex: currentIndex + headingText.length - 1
+          },
+          paragraphStyle: { namedStyleType: 'HEADING_2' },
+          fields: 'namedStyleType'
+        }
+      }
+    ];
+    currentIndex += headingText.length;
+
+    const analysisTextArray: [string, string[]][] = [
+      ['Strength Areas:', strengthAreas],
+      ['Gap Areas:', gapAreas],
+      ['Recommended Focus:', recommendedFocus]
+    ];
+
+    for (let [label, points] of analysisTextArray) {
+      // Insert the label (e.g., "Strength Areas:")
+      requests.push(
+        {
+          insertText: {
+            text: `${label}\n`,
+            location: { index: currentIndex }
+          }
+        },
+        {
+          updateTextStyle: {
+            range: {
+              startIndex: currentIndex,
+              endIndex: currentIndex + label.length
+            },
+            textStyle: { bold: true },
+            fields: 'bold'
+          }
+        }
+      );
+      currentIndex += label.length + 1;
+
+      // Insert each bullet point
+      for (let point of points) {
+        const pointText = `${point}\n`;
+        const pointStartIndex = currentIndex;
+        
+        requests.push(
+          {
+            insertText: {
+              text: pointText,
+              location: { index: currentIndex }
+            }
+          },
+          {
+            updateParagraphStyle: {
+              range: {
+                startIndex: pointStartIndex,
+                endIndex: pointStartIndex + pointText.length - 1
+              },
+              paragraphStyle: {
+                namedStyleType: 'NORMAL_TEXT',
+                indentStart: {
+                  magnitude: 36,
+                  unit: 'PT'
+                }
+              },
+              fields: 'namedStyleType,indentStart'
+            }
+          },
+          {
+            createParagraphBullets: {
+              range: {
+                startIndex: pointStartIndex,
+                endIndex: pointStartIndex + pointText.length - 1
+              },
+              bulletPreset: 'BULLET_DISC_CIRCLE_SQUARE'
+            }
+          }
+        );
+        currentIndex += pointText.length;
+      }
+
+      // Add extra newline after each section
+      requests.push({
+        insertText: {
+          text: '\n',
+          location: { index: currentIndex }
+        }
+      });
+      currentIndex += 1;
+    }
+
+    return {
+      requests,
+      newIndex: currentIndex
     };
   }
 }

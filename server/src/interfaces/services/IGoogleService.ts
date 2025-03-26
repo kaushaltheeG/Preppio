@@ -23,11 +23,16 @@ export interface ICreateGoogleDocRequestObject {
   newIndex: number;
 }
 
-export interface ICreateGoogleDocBackgroundRequestObject {
+export interface ICreateGoogleDocBackgroundRequestParams {
   company: string;
   jobTitle: string;
   interviewType: string;
   interviewerPosition: string;
+  currentIndex: number;
+}
+
+export interface ICreateGoogleDocAnalysisRequestParams {
+  analysis: IGetQuestionsResponse['analysis'];
   currentIndex: number;
 }
 
