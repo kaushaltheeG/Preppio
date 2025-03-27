@@ -40,6 +40,7 @@ export const hasSessionSelector = (state: RootState): boolean => Boolean(state.a
 export const getLoggedInUser = (state: RootState): User | null => state.auth.user;
 export const getGoogleAccessToken = (state: RootState): string => state.auth.session?.provider_token || '';
 export const getRefreshToken = (state: RootState): string | null => state.auth.session?.refresh_token || null;
+export const getSessionToken = (state: RootState): string | null => state.auth.session?.access_token || null;
 
 export const {
   setSession,

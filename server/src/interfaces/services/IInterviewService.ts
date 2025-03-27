@@ -1,4 +1,7 @@
 import { IPromptProps } from "./IGPTService";
+import { SupabaseClient } from "@supabase/supabase-js";
+import IGPTService from "./IGPTService";
+import IInterviewSession from "../models/IInterviewSession";
 
 export interface ICreateInterviewQuestionPrompt {
   jobDescription: string;
@@ -6,6 +9,12 @@ export interface ICreateInterviewQuestionPrompt {
   extraNotes?: string;
   interviewType: string;
   interviewerPosition: string;
+  userId: string;
+}
+
+export interface InterviewServiceParams {
+  supabase: SupabaseClient;
+  gptService: IGPTService;
 }
 
 export interface IGetQuestionsResponse {
@@ -15,6 +24,7 @@ export interface IGetQuestionsResponse {
   interviewerPosition: string;
   questions: IQuestion[];
   analysis: IAnalysis;
+  interviewSession: IInterviewSession;
 }
 
 export interface IQuestion {
@@ -34,9 +44,18 @@ export interface IAnalysis {
   recommendedFocus: string[],
 }
 
+export interface ICreateInterviewSession {
+  userId: string;
+  company: string;
+  jobTitle: string;
+  interviewType: string;
+  interviewerPosition: string;
+}
+
 interface IInterviewService {
   createInterviewQuestionsPrompt(interviewRequest: ICreateInterviewQuestionPrompt): IPromptProps;
-  getAnalysis(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse>;
+  createInterviewSession(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse>;
+  insertInterviewSession(interviewRequest: ICreateInterviewSession): Promise<IInterviewSession>;
 }
 
 export default IInterviewService;

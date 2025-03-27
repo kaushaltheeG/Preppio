@@ -9,8 +9,6 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
-import { useAppSelector } from '../../../hooks/useAppSelector';
-import { getSerializedLexicalEditorState } from '../../../store/slices/interviewSlice';  
 import UpdatePlugin from './plugins/UpdatePlugin';
 import { EditorThemeClasses } from 'lexical';
 import './styles.css';
@@ -22,7 +20,7 @@ import { TRANSFORMERS } from '@lexical/markdown';
 import { CodeNode } from '@lexical/code';
 
 const Editor: React.FC = () => {
-  const serializedLexicalEditorState = useAppSelector(getSerializedLexicalEditorState);
+  const serializedLexicalEditorState = ''; // non functional for now
 
   const theme: EditorThemeClasses = {
     ltr: 'ltr',

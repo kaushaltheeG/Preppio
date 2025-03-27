@@ -1,23 +1,49 @@
 import IGPTService, { IPromptProps } from "../interfaces/services/IGPTService";
-import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse } from "../interfaces/services/IInterviewService";
+import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse, ICreateInterviewSession } from "../interfaces/services/IInterviewService";
+import { SupabaseClient } from "@supabase/supabase-js";
+import IInterviewSession from "../interfaces/models/IInterviewSession";
+import InterviewSession from "../models/interviewSession";
 
 class InterviewService implements IInterviewService {
   private gptService: IGPTService;
+  private supabase: SupabaseClient;
 
-  constructor(gptService: IGPTService) {
+  constructor(gptService: IGPTService, supabase: SupabaseClient) {
     this.gptService = gptService;
+    this.supabase = supabase;
   }
 
-  async getAnalysis(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse> {
+  async insertInterviewSession(interviewRequest: ICreateInterviewSession): Promise<IInterviewSession> {
+    const interviewSession = new InterviewSession(interviewRequest);
+    const { data, error } = await this.supabase.from('interview_sessions').insert(interviewSession.toSupabase()).select().single();
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return InterviewSession.fromSupabase(data);
+  }
+
+  async createInterviewSession(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse> {
     const prompt = this.createInterviewQuestionsPrompt(interviewRequest);
     const response = await this.gptService.promptModel(prompt);
     if (!response || !response.choices[0].message.content) {
       throw new Error('No response from GPT');
     }
 
-    const analysis = this.gptService.cleanResponse<IGetQuestionsResponse>(response.choices[0].message.content);
+    const aiResponse = this.gptService.cleanResponse<IGetQuestionsResponse>(response.choices[0].message.content);
 
-    return analysis;
+    // insert interview session data
+    const interviewSessionDto = {
+      userId: interviewRequest.userId,
+      company: aiResponse.company,
+      jobTitle: aiResponse.jobTitle,
+      interviewType: aiResponse.interviewType,
+      interviewerPosition: aiResponse.interviewerPosition,
+    }
+    await this.insertInterviewSession(interviewSessionDto);
+    // add questions and analysis insert
+
+    return aiResponse;
   }
 
   createInterviewQuestionsPrompt(interviewRequest: ICreateInterviewQuestionPrompt): IPromptProps {

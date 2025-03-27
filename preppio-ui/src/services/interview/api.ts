@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { API_URL } from '../utils';
+import { store } from '../../store';
+import { getSessionToken } from '../../store/slices/authSlice';
 
 export interface IGetInterviewQuestionsRequest {
   jobDescription: string;
@@ -45,7 +47,20 @@ export interface ISerializedEditorState {
 
 export const getInterviewQuestions = async (requestBody: IGetInterviewQuestionsRequest): Promise<IGetQuestionsResponse | null> => {
   try {
-    const response = await axios.post<IGetQuestionsResponse>(`${API_URL}/api/interview/questions`,  requestBody);
+    const accessToken = getSessionToken(store.getState());
+    if (!accessToken) {
+      throw new Error('User not authenticated');
+    }
+
+    const response = await axios.post<IGetQuestionsResponse>(
+      `${API_URL}/api/interview/questions`,
+      requestBody,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
     return response.data;
   } catch (error) {
     return null;
