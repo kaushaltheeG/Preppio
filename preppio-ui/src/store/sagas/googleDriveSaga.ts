@@ -5,8 +5,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { getGoogleAccessToken } from '../slices/authSlice';
 import { getInterviewContent } from '../slices/interviewSlice';
 import { refreshGooglePermissions } from '../../services/auth/api';
-import { setFormState } from '../slices/appSlice';
-
+import { checkSession } from '../slices/authSlice';
 
 function* createGoogleDriveDocumentSaga(action: PayloadAction<{ title: string }>) {
   try {
@@ -17,6 +16,7 @@ function* createGoogleDriveDocumentSaga(action: PayloadAction<{ title: string }>
     // Refresh access not found, user isn't logged in
     if (!accessToken) {
       yield call(refreshGooglePermissions);
+      yield call(checkSession);
     }
 
     const response: ICreateAndSaveDocumentResponse = yield call(
