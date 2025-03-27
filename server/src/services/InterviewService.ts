@@ -30,6 +30,34 @@ class InterviewService implements IInterviewService {
     return InterviewSession.fromSupabase(data);
   }
 
+  async getUsersInterviewSessions(userId: string): Promise<IInterviewSession[]> {
+    const { data, error } = await this.supabase.from('interview_sessions').select('*').eq('userId', userId).limit(50);
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data.map((interviewSession) => InterviewSession.fromSupabase(interviewSession));
+  }
+
+  async getPopulatedInterviewSession(userId: string, interviewSessionId: string): Promise<IInterviewSession> {
+    const { data, error } = await this.supabase
+      .from('interview_sessions')
+      .select(`
+        *,
+        questions:interview_questions(*),
+        analysis:interview_analysis(*)
+      `)
+      .eq('userId', userId)
+      .eq('id', interviewSessionId)
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    }
+    if (!data) {
+      throw new Error('Interview session not found');
+    }
+    return InterviewSession.fromSupabase(data);
+  }
+
   async createInterviewSession(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse> {
     const prompt = this.createInterviewQuestionsPrompt(interviewRequest);
     const response = await this.gptService.promptModel(prompt);

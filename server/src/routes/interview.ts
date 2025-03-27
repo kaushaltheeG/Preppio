@@ -21,6 +21,39 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
   const interviewService = new InterviewService(gptService, supabase, questionService, analysisService);
   const authMiddleware = createAuthMiddleware(supabase);
 
+  router.get('/user/sessions', authMiddleware, async (req: Request, res: Response) => {
+    const userId = req.user.id;
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    try {
+      const interviewSessions = await interviewService.getUsersInterviewSessions(userId);
+      return res.json(interviewSessions);
+    } catch (error) {
+      console.error('Error getting interview sessions:', error);
+      return res.status(500).json({ error: 'Failed to get interview sessions' });
+    }
+  });
+
+  router.get('/user/sessions/:id', authMiddleware, async (req: Request, res: Response) => {
+    const userId = req.user.id; 
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const interviewSessionId = req.params.id;
+    if (!interviewSessionId) {
+      return res.status(400).json({ error: 'Interview session ID is required' });
+    }
+    try {
+      const interviewSession = await interviewService.getPopulatedInterviewSession(userId, interviewSessionId);
+      return res.json(interviewSession);
+    } catch (error) {
+      console.error('Error getting interview session:', error);
+      return res.status(500).json({ error: 'Failed to get interview session' });
+    } 
+  });
+  
+
   router.post('/questions', authMiddleware, async (req: Request<{}, {}, InterviewRequest>, res: Response) => {
     const { jobDescription, resume, extraNotes, interviewType, interviewerPosition } = req.body;
     const userId = req.user.id;

@@ -41,6 +41,7 @@ export interface ICreateInterviewSession {
 interface IInterviewService {
   createInterviewQuestionsPrompt(interviewRequest: ICreateInterviewQuestionPrompt): IPromptProps;
   createInterviewSession(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse>;
+  getUsersInterviewSessions(userId: string): Promise<IInterviewSession[]>;
   insertInterviewSession(interviewRequest: ICreateInterviewSession): Promise<IInterviewSession>;
 }
 

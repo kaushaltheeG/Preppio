@@ -32,6 +32,16 @@ export interface IAnalysis {
   recommendedFocus: string[],
 }
 
+export interface IInterviewSession {
+  id: string;
+  userId: string;
+  company: string;
+  jobTitle: string;
+  interviewerPosition: string;
+  interviewType: string;
+  createdAt: string;
+  updatedAt: string;
+}
 export interface IGetQuestionsResponse {
   company: string;
   jobTitle: string;
@@ -59,6 +69,48 @@ export const getInterviewQuestions = async (requestBody: IGetInterviewQuestionsR
     const response = await axios.post<IGetQuestionsResponse>(
       `${API_URL}/api/interview/questions`,
       requestBody,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getInterviewSessions = async (): Promise<IInterviewSession[]> => {
+  try {
+    const accessToken = getSessionToken(store.getState());
+    if (!accessToken) {
+      throw new Error('User not authenticated');
+    }
+
+    const response = await axios.get<IInterviewSession[]>(
+      `${API_URL}/api/interview/user/sessions`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getInterviewSession = async (interviewSessionId: string): Promise<IInterviewSession | null> => {
+  try {
+    const accessToken = getSessionToken(store.getState());
+    if (!accessToken) {
+      throw new Error('User not authenticated');
+    }
+
+    const response = await axios.get<IInterviewSession>(
+      `${API_URL}/api/interview/user/sessions/${interviewSessionId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`

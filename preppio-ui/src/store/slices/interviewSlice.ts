@@ -1,9 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IAnalysis, IQuestion, IGetQuestionsResponse } from '../../services/interview/api';
 import { RootState } from '../../store';
 import { InterviewContentType } from '../../services/googledrive/api';
-
+import { IInterviewSession } from '../../services/interview/api';
 export interface IInterviewState {
+  interviewSessions: IInterviewSession[];
   analysis: IAnalysis;
   company: string;
   error: string | null;
@@ -213,6 +214,7 @@ export interface IInterviewState {
 // };
 
 const initialState: IInterviewState = {
+  interviewSessions: [],
   analysis: {
     strengthAreas: [],
     gapAreas: [],
@@ -259,11 +261,17 @@ const interviewSlice = createSlice({
     setAnalysis: (state, action: PayloadAction<IAnalysis>) => {
       state.analysis = action.payload;
     },
+    setInterviewSessions: (state, action: PayloadAction<IInterviewSession[]>) => {
+      state.interviewSessions = action.payload;
+    },
     setInterviewInitialState: () => {
       return { ...initialState };
     },
   },
 });
+
+// Actions
+export const fetchInterviewSessions  = createAction('interview/fetchInterviewSessions');
 
 // Selectors
 export const getQuestions = (state: RootState) => state.interview.questions;
@@ -294,6 +302,7 @@ export const getInterviewContent = (state: RootState): InterviewContentType => {
     interviewSessionId: getInterviewSessionId(state),
   };
 };
+export const getInterviewSessions = (state: RootState) => state.interview.interviewSessions;
 
 export const {
   setQuestions,
@@ -302,6 +311,7 @@ export const {
   analyzeSuccess,
   analyzeFailure,
   setInterviewInitialState,
+  setInterviewSessions,
 } = interviewSlice.actions;
 
 export default interviewSlice.reducer;

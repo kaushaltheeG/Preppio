@@ -1,12 +1,12 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { getInterviewQuestions, IGetQuestionsResponse } from '../../services/interview/api';
-import { analyzeRequest, analyzeSuccess, analyzeFailure } from '../slices/interviewSlice';
+import { getInterviewQuestions, getInterviewSessions, IGetQuestionsResponse, IInterviewSession } from '../../services/interview/api';
+import { analyzeRequest, analyzeSuccess, analyzeFailure, setInterviewSessions, fetchInterviewSessions } from '../slices/interviewSlice';
 import { getJobDescription } from '../slices/jobDescriptionSlice';
 import { getResume } from '../slices/resumeSlice';
 import { getInterviewType, getInterviewerPosition, getExtraInformation } from '../slices/tuneSlice';
 import { setFormState } from '../slices/appSlice';
 
-function* analyzeInterview() {
+function* analyzeInterviewSaga() {
   try {
     const jobDescription: string = yield select(getJobDescription);
     const resume: string = yield select(getResume);
@@ -33,6 +33,12 @@ function* analyzeInterview() {
   }
 }
 
+function* getInterviewSessionsSaga() {
+  const interviewSessions: IInterviewSession[] = yield call(getInterviewSessions);
+  yield put(setInterviewSessions(interviewSessions));
+}
+
 export function* interviewSaga() {
-  yield takeLatest(analyzeRequest.type, analyzeInterview);
+  yield takeLatest(analyzeRequest.type, analyzeInterviewSaga);
+  yield takeLatest(fetchInterviewSessions.type, getInterviewSessionsSaga);
 }
