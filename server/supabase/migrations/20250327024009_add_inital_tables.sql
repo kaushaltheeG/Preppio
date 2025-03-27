@@ -22,8 +22,7 @@ CREATE TABLE questions (
   notes TEXT,
   skills TEXT[],  -- Array of skills
   follow_up_questions TEXT[],  -- Array of follow-up questions
-  prompt_id UUID,
-  interview_session_id UUID REFERENCES interview_sessions(id) ,
+  interview_session_id UUID NOT NULL REFERENCES interview_sessions(id) ,
   key_points TEXT[],  -- Array of key points
   skills_assessed TEXT[],  -- Array of assessed skills
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
