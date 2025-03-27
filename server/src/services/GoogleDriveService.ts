@@ -11,14 +11,19 @@ import IGoogleDriveService, {
   ICreateGoogleDocAnalysisRequestParams,
 } from '../interfaces/services/IGoogleService';
 import IQuestion from '../interfaces/models/IQuestion';
+import { SupabaseClient } from '@supabase/supabase-js';
+import IGoogleDrive from '../interfaces/models/IGoogleDrive';
+import GoogleDrive from '../models/googleDrive';
 
 class GoogleDriveService implements IGoogleDriveService {
   private driveV3: drive_v3.Drive;
   private docsV1: docs_v1.Docs;
+  private supabase: SupabaseClient;
 
-  constructor(driveV3: drive_v3.Drive, docsV1: docs_v1.Docs) {
+  constructor(driveV3: drive_v3.Drive, docsV1: docs_v1.Docs, supabase: SupabaseClient) {
     this.driveV3 = driveV3;
     this.docsV1 = docsV1;
+    this.supabase = supabase;
   }
 
   async createGoogleDoc(params: ICreateGoogleDocParams): Promise<drive_v3.Schema$File> {
@@ -31,7 +36,16 @@ class GoogleDriveService implements IGoogleDriveService {
     return doc.data;
   }
 
-  async insertGoogleDoc(params: IInsertGoogleDocParams): Promise<IInsertGoogleDocObject> {
+  async insertGoogleDrive(googleDriveDto: IGoogleDrive): Promise<IGoogleDrive> {
+    const googleDrive = new GoogleDrive(googleDriveDto);
+    const { data, error } = await this.supabase.from('google_drive').insert(googleDrive.toSupabase()).select().single();
+    if (error) {
+      throw new Error(`GoogleDrive Data was not inserted into Supabase: ${error.message}`);
+    }
+    return GoogleDrive.fromSupabase(data);
+  }
+
+  async insertGoogleDocToDrive(params: IInsertGoogleDocParams): Promise<IInsertGoogleDocObject> {
     const { newDoc, interviewContent } = params;
     assert(newDoc.id, 'document id was not found');
     const { company, jobTitle, interviewType, interviewerPosition, questions, analysis } = interviewContent;
@@ -57,9 +71,20 @@ class GoogleDriveService implements IGoogleDriveService {
       requestBody: { requests }
     });
 
-    return {
-      url: `https://docs.google.com/document/d/${newDoc.id}`,
+    const googleDriveDto: IGoogleDrive = {
+      userId: interviewContent.userId,
+      interviewSessionId: interviewContent.interviewSessionId,
+      service: 'google_docs',
       documentId: newDoc.id!,
+    }
+    const googleDriveData = await this.insertGoogleDrive(googleDriveDto);
+
+    return {
+      url: `https://docs.google.com/document/d/${googleDriveData.documentId}`,
+      documentId: googleDriveData.documentId,
+      userId: googleDriveData.userId,
+      interviewSessionId: googleDriveData.interviewSessionId,
+      service: googleDriveData.service,
     };
   }
 
@@ -376,7 +401,7 @@ class GoogleDriveService implements IGoogleDriveService {
 }
 
 class GoogleDriveServiceFactory {
-  static createClient(accessToken: string): ICreateClientObject {
+  static createClient(accessToken: string, supabase: SupabaseClient): ICreateClientObject {
     const clientAuth = new auth.OAuth2();
     clientAuth.setCredentials({ access_token: accessToken });
 
@@ -385,9 +410,9 @@ class GoogleDriveServiceFactory {
     return { driveV3Client, docsV1Client };
   }
 
-  static createGoogleDriveService(accessToken: string): IGoogleDriveService {
-    const { driveV3Client, docsV1Client } = this.createClient(accessToken);
-    return new GoogleDriveService(driveV3Client, docsV1Client);
+  static createGoogleDriveService(accessToken: string, supabase: SupabaseClient): IGoogleDriveService {
+    const { driveV3Client, docsV1Client } = this.createClient(accessToken, supabase);
+    return new GoogleDriveService(driveV3Client, docsV1Client, supabase);
   }
 }
 

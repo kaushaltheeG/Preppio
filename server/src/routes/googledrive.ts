@@ -23,9 +23,9 @@ const createGoogleDriveRouter = (supabase: SupabaseClient) => {
     }
 
     try {
-      const googleDriveService: IGoogleDriveService = GoogleDriveServiceFactory.createGoogleDriveService(accessToken);
+      const googleDriveService: IGoogleDriveService = GoogleDriveServiceFactory.createGoogleDriveService(accessToken, supabase);
       const newDoc = await googleDriveService.createGoogleDoc({ title });
-      const result = await googleDriveService.insertGoogleDoc({ newDoc, interviewContent });
+      const result = await googleDriveService.insertGoogleDocToDrive({ newDoc, interviewContent });
 
       return res.status(200).json(result);
     } catch (error) {

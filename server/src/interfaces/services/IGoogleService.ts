@@ -12,6 +12,9 @@ export interface IInsertGoogleDocParams {
 export interface IInsertGoogleDocObject {
   url: string;
   documentId: string;
+  userId: string;
+  interviewSessionId: string;
+  service: string;
 }
 
 export interface ICreateGoogleDocParams {
@@ -38,7 +41,7 @@ export interface ICreateGoogleDocAnalysisRequestParams {
 
 interface IGoogleDriveService {
   createGoogleDoc(params: ICreateGoogleDocParams): Promise<drive_v3.Schema$File>;
-  insertGoogleDoc(params: IInsertGoogleDocParams): Promise<IInsertGoogleDocObject>;
+  insertGoogleDocToDrive(params: IInsertGoogleDocParams): Promise<IInsertGoogleDocObject>;
 }
 
 export interface ICreateClientObject {
