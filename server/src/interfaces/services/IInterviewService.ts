@@ -15,7 +15,6 @@ export interface IGetQuestionsResponse {
   interviewerPosition: string;
   questions: IQuestion[];
   analysis: IAnalysis;
-  serializedLexicalEditorState: ISerializedEditorState;
 }
 
 export interface IQuestion {
@@ -34,13 +33,6 @@ export interface IAnalysis {
   gapAreas: string[],
   recommendedFocus: string[],
 }
-
-export interface ISerializedEditorState {
-  root: {
-    htmlContent: string;
-  };
-}
-
 
 interface IInterviewService {
   createInterviewQuestionsPrompt(interviewRequest: ICreateInterviewQuestionPrompt): IPromptProps;

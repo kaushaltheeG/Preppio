@@ -35,7 +35,6 @@ export interface IGetQuestionsResponse {
   interviewerPosition: string;
   questions: IQuestion[];
   analysis: IAnalysis;
-  serializedLexicalEditorState: ISerializedEditorState;
 }
 
 export interface ISerializedEditorState {

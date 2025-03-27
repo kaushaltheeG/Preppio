@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAnalysis, IQuestion, IGetQuestionsResponse, ISerializedEditorState } from '../../services/interview/api';
+import { IAnalysis, IQuestion, IGetQuestionsResponse } from '../../services/interview/api';
 import { RootState } from '../../store';
 import { InterviewContentType } from '../../services/googledrive/api';
 
@@ -12,7 +12,6 @@ export interface IInterviewState {
   interviewType: string;
   jobTitle: string;
   questions: IQuestion[];
-  serializedLexicalEditorState: ISerializedEditorState;
 }
 
 
@@ -209,11 +208,6 @@ const mockData: IGetQuestionsResponse = {
           "Discuss approaches to working in constrained environments"
       ]
   },
-  serializedLexicalEditorState: {
-    root: {
-      htmlContent: '',
-    },
-  }
 };
 
 const initialState: IInterviewState = {
@@ -225,7 +219,6 @@ const initialState: IInterviewState = {
   interviewType: mockData.interviewType,
   jobTitle: mockData.jobTitle,
   questions: mockData.questions,
-  serializedLexicalEditorState: mockData.serializedLexicalEditorState,
 };
 
 const interviewSlice = createSlice({
@@ -245,7 +238,6 @@ const interviewSlice = createSlice({
       state.jobTitle = action.payload.jobTitle;
       state.interviewerPosition = action.payload.interviewerPosition;
       state.interviewType = action.payload.interviewType;
-      state.serializedLexicalEditorState = action.payload.serializedLexicalEditorState;
     },
     analyzeFailure: (state, action: PayloadAction<string>) => {
       state.isLoading = false;
@@ -257,9 +249,6 @@ const interviewSlice = createSlice({
     setAnalysis: (state, action: PayloadAction<IAnalysis>) => {
       state.analysis = action.payload;
     },
-    setSerializedLexicalEditorState: (state, action: PayloadAction<ISerializedEditorState>) => {
-      state.serializedLexicalEditorState = action.payload;
-    },
     setInterviewInitialState: () => {
       return { ...initialState };
     },
@@ -270,7 +259,6 @@ const interviewSlice = createSlice({
 export const getQuestions = (state: RootState) => state.interview.questions;
 export const getAnalysis = (state: RootState) => state.interview.analysis;
 export const getIsLoadingQuestions = (state: RootState) => state.interview.isLoading;
-export const getSerializedLexicalEditorState = (state: RootState) => state.interview.serializedLexicalEditorState;
 export const getCompanyName = (state: RootState) => state.interview.company;
 export const getJobTitle = (state: RootState) => state.interview.jobTitle;
 export const getInterviewerPosition = (state: RootState) => state.interview.interviewerPosition;
@@ -296,7 +284,6 @@ export const getInterviewContent = (state: RootState): InterviewContentType => {
 export const {
   setQuestions,
   setAnalysis,
-  setSerializedLexicalEditorState,
   analyzeRequest,
   analyzeSuccess,
   analyzeFailure,
