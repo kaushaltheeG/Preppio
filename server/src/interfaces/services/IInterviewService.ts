@@ -2,6 +2,7 @@ import { IPromptProps } from "./IGPTService";
 import { SupabaseClient } from "@supabase/supabase-js";
 import IGPTService from "./IGPTService";
 import IInterviewSession from "../models/IInterviewSession";
+import IQuestion from "../models/IQuestion";
 
 export interface ICreateInterviewQuestionPrompt {
   jobDescription: string;
@@ -24,18 +25,8 @@ export interface IGetQuestionsResponse {
   interviewerPosition: string;
   questions: IQuestion[];
   analysis: IAnalysis;
-  interviewSession: IInterviewSession;
-}
-
-export interface IQuestion {
-  question: string;
-  type: string;
-  difficulty: string;
-  topic: string;
-  relevance: string;
-  followUp: string[],
-  keyPoints: string[],
-  skillsAssessed: string[],
+  userId: string;
+  interviewSessionId: string;
 }
 
 export interface IAnalysis {

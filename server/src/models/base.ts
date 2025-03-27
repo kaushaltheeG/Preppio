@@ -1,14 +1,5 @@
-interface IBaseModel {
-  id?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface IBaseSupabase {
-  id: string;
-  created_at: string;
-  updated_at: string;
-}
+import IBaseModel, { IBaseSupabase } from "../interfaces/models/IBaseModel";
+import { camelCase, snakeCase } from 'lodash';
 
 abstract class Base<T extends IBaseModel> {
   readonly id!: string;
@@ -29,14 +20,12 @@ abstract class Base<T extends IBaseModel> {
     data: T
   ): U {
     const camelCaseData = Object.entries(data).reduce((acc, [key, value]) => {
-      const camelKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
       return {
         ...acc,
-        [camelKey]: key.endsWith('_at') ? new Date(value) : value,
+        [camelCase(key)]: value,
       };
     }, {});
-
-    return new this(camelCaseData);
+    return camelCaseData as U;
   }
 
   // Convert our camelCase model to Supabase snake_case
@@ -44,17 +33,9 @@ abstract class Base<T extends IBaseModel> {
     const snakeCaseData = Object.entries(this).reduce((acc, [key, value]) => {
       // Remove leading underscore from private fields
       const cleanKey = key.startsWith('_') ? key.slice(1) : key;
-      // Convert to snake_case
-      const snakeKey = cleanKey.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-      
-      // Skip id, created_at, and updated_at
-      if (['id', 'createdAt', 'updatedAt'].includes(cleanKey)) {
-        return acc;
-      }
-
       return {
         ...acc,
-        [snakeKey]: value,
+        [snakeCase(cleanKey)]: value,
       };
     }, {});
 
@@ -71,5 +52,3 @@ abstract class Base<T extends IBaseModel> {
 }
 
 export default Base;
-export type { IBaseModel, IBaseSupabase };
-

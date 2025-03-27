@@ -1,16 +1,20 @@
 import IGPTService, { IPromptProps } from "../interfaces/services/IGPTService";
-import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse, ICreateInterviewSession } from "../interfaces/services/IInterviewService";
+import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse, ICreateInterviewSession, IAnalysis } from "../interfaces/services/IInterviewService";
 import { SupabaseClient } from "@supabase/supabase-js";
 import IInterviewSession from "../interfaces/models/IInterviewSession";
 import InterviewSession from "../models/interviewSession";
+import IQuestionService from "../interfaces/services/IQuestionService";
+import IQuestion from "../interfaces/models/IQuestion";
 
 class InterviewService implements IInterviewService {
   private gptService: IGPTService;
   private supabase: SupabaseClient;
+  private questionService: IQuestionService;
 
-  constructor(gptService: IGPTService, supabase: SupabaseClient) {
+  constructor(gptService: IGPTService, supabase: SupabaseClient, questionService: IQuestionService) {
     this.gptService = gptService;
     this.supabase = supabase;
+    this.questionService = questionService;
   }
 
   async insertInterviewSession(interviewRequest: ICreateInterviewSession): Promise<IInterviewSession> {
@@ -40,10 +44,33 @@ class InterviewService implements IInterviewService {
       interviewType: aiResponse.interviewType,
       interviewerPosition: aiResponse.interviewerPosition,
     }
-    await this.insertInterviewSession(interviewSessionDto);
+    const interviewSessionData = await this.insertInterviewSession(interviewSessionDto);
+    if (!interviewSessionData.id) {
+      throw new Error('Interview session was not created');
+    }
+    const questionPromises = [];
+    for (const question of aiResponse.questions) {
+      questionPromises.push(this.questionService.insertQuestion({ ...question, interviewSessionId: interviewSessionData.id, userId: interviewRequest.userId }));
+    }
+    const questions = await Promise.all(questionPromises);
+    const analysis = aiResponse.analysis;
     // add questions and analysis insert
 
-    return aiResponse;
+
+    return this.createInterviewSessionResponse(questions, analysis, interviewSessionData);
+  }
+
+  createInterviewSessionResponse(questions: IQuestion[], analysis: IAnalysis, interviewSessionData: IInterviewSession): IGetQuestionsResponse {
+    return {
+      company: interviewSessionData.company,
+      jobTitle: interviewSessionData.jobTitle,
+      interviewType: interviewSessionData.interviewType,
+      interviewerPosition: interviewSessionData.interviewerPosition,
+      questions,
+      analysis,
+      userId: interviewSessionData.userId,
+      interviewSessionId: interviewSessionData.id!
+    }
   }
 
   createInterviewQuestionsPrompt(interviewRequest: ICreateInterviewQuestionPrompt): IPromptProps {

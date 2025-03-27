@@ -1,11 +1,11 @@
-import { IBaseModel } from "../../models/base";
+import IBaseModel from "../models/IBaseModel";
 
-interface IInterviewSession extends IBaseModel {
+export interface IInterviewSession extends IBaseModel {
   userId: string;
   company: string;
   jobTitle: string;
-  interviewType: string;
   interviewerPosition: string;
+  interviewType: string;
 }
 
 export default IInterviewSession;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Paper, Typography, Chip, Card, CardContent, Stack, TextField } from '@mui/material';
-import { IQuestion } from '@/services/interview/api';
+import { IQuestion } from '../../../services/interview/api';
 import QuestionChips from './QuestionChips';
 
 interface IExpandedQuestionProps {

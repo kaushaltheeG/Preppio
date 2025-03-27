@@ -13,15 +13,17 @@ export interface IGetInterviewQuestionsRequest {
 
 export interface IQuestion {
   id?: string;
+  userId: string;
   question: string;
   type: string;
   difficulty: string;
   topic: string;
-  relevance: string;
-  followUp: string[],
-  keyPoints: string[],
-  skillsAssessed: string[],
   notes?: string;
+  relevance: string;
+  followUp: string[];
+  keyPoints: string[];
+  skillsAssessed: string[];
+  interviewSessionId: string;
 }
 
 export interface IAnalysis {
@@ -37,6 +39,8 @@ export interface IGetQuestionsResponse {
   interviewerPosition: string;
   questions: IQuestion[];
   analysis: IAnalysis;
+  userId: string;
+  interviewSessionId: string;
 }
 
 export interface ISerializedEditorState {

@@ -10,7 +10,7 @@ import IGoogleDriveService, {
   ICreateGoogleDocBackgroundRequestParams,
   ICreateGoogleDocAnalysisRequestParams,
 } from '../interfaces/services/IGoogleService';
-import { IQuestion } from '../interfaces/services/IInterviewService';
+import IQuestion from '../interfaces/models/IQuestion';
 
 class GoogleDriveService implements IGoogleDriveService {
   private driveV3: drive_v3.Drive;
