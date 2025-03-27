@@ -15,7 +15,7 @@ interface ITabsProps {
 }
 
 const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions, orientation = 'horizontal' }) => {
-  const { handleSaveToGoogleDrive, getCreatedDocumentUrl, hadDocumentUrl } = useGoogleDriveHook();
+  const { handleSaveToGoogleDrive, getCreatedDocumentUrl, hadDocumentUrl, isCreatingGoogleDriveDocument } = useGoogleDriveHook();
   const { handleTabChange, hanldeCloseTab, tabStyle, openTabs, onQuestionsFormState, onIframeFormState } = useTabsHook(formState);
 
   return (
@@ -69,7 +69,7 @@ const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions, orientation = 'ho
         ))}
       </MuiTabs>
       {onQuestionsFormState && hasQuestions && (
-        <SaveToGoogleDriveButton onClick={handleSaveToGoogleDrive} />
+        <SaveToGoogleDriveButton handleSaveToGoogleDrive={handleSaveToGoogleDrive} isLoading={isCreatingGoogleDriveDocument} />
       )}
       {onIframeFormState && (
         <OpenFileButton url={getCreatedDocumentUrl} />

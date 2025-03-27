@@ -48,7 +48,7 @@ const googleDriveSlice = createSlice({
 export const getGoogleDriveDocuments = (state: RootState) => state.googleDrive.documents;
 export const getGoogleDocUrl = (state: RootState) => state.googleDrive.documents.url;
 export const getGoogleDriveDocumentId = (state: RootState) => state.googleDrive.documents.documentId;
-export const isCreatingGoogleDriveDocument = (state: RootState) => state.googleDrive.documents.isLoading;
+export const isCreatingGoogleDriveDocumentSelector = (state: RootState) => state.googleDrive.documents.isLoading;
 export const getGoogleDriveError = (state: RootState) => state.googleDrive.documents.error;
 
 export const { setGoogleDocumentData, setGoogleDocumentError, createGoogleDriveDocument, setLastCreatedDocument, setGoogleDriveInitialState } = googleDriveSlice.actions;
