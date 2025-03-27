@@ -3,6 +3,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import IGPTService from "./IGPTService";
 import IInterviewSession from "../models/IInterviewSession";
 import IQuestion from "../models/IQuestion";
+import IAnalysis from "../models/IAnalysis";
 
 export interface ICreateInterviewQuestionPrompt {
   jobDescription: string;
@@ -27,12 +28,6 @@ export interface IGetQuestionsResponse {
   analysis: IAnalysis;
   userId: string;
   interviewSessionId: string;
-}
-
-export interface IAnalysis {
-  strengthAreas: string[],
-  gapAreas: string[],
-  recommendedFocus: string[],
 }
 
 export interface ICreateInterviewSession {

@@ -1,20 +1,23 @@
 import IGPTService, { IPromptProps } from "../interfaces/services/IGPTService";
-import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse, ICreateInterviewSession, IAnalysis } from "../interfaces/services/IInterviewService";
+import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse, ICreateInterviewSession } from "../interfaces/services/IInterviewService";
 import { SupabaseClient } from "@supabase/supabase-js";
 import IInterviewSession from "../interfaces/models/IInterviewSession";
 import InterviewSession from "../models/interviewSession";
 import IQuestionService from "../interfaces/services/IQuestionService";
 import IQuestion from "../interfaces/models/IQuestion";
-
+import IAnalysisService from "../interfaces/services/IAnalysisService";
+import IAnalysis from "../interfaces/models/IAnalysis";
 class InterviewService implements IInterviewService {
   private gptService: IGPTService;
   private supabase: SupabaseClient;
   private questionService: IQuestionService;
+  private analysisService: IAnalysisService;
 
-  constructor(gptService: IGPTService, supabase: SupabaseClient, questionService: IQuestionService) {
+  constructor(gptService: IGPTService, supabase: SupabaseClient, questionService: IQuestionService, analysisService: IAnalysisService) {
     this.gptService = gptService;
     this.supabase = supabase;
     this.questionService = questionService;
+    this.analysisService = analysisService;
   }
 
   async insertInterviewSession(interviewRequest: ICreateInterviewSession): Promise<IInterviewSession> {
@@ -53,11 +56,15 @@ class InterviewService implements IInterviewService {
       questionPromises.push(this.questionService.insertQuestion({ ...question, interviewSessionId: interviewSessionData.id, userId: interviewRequest.userId }));
     }
     const questions = await Promise.all(questionPromises);
-    const analysis = aiResponse.analysis;
-    // add questions and analysis insert
+    
+    const analysisDto: IAnalysis = {
+      ...aiResponse.analysis,
+      userId: interviewRequest.userId,
+      interviewSessionId: interviewSessionData.id!,
+    }
+    const analysisData = await this.analysisService.insertAnalysis(analysisDto);
 
-
-    return this.createInterviewSessionResponse(questions, analysis, interviewSessionData);
+    return this.createInterviewSessionResponse(questions, analysisData, interviewSessionData);
   }
 
   createInterviewSessionResponse(questions: IQuestion[], analysis: IAnalysis, interviewSessionData: IInterviewSession): IGetQuestionsResponse {

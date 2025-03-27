@@ -4,6 +4,7 @@ import InterviewService from '../services/InterviewService';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { createAuthMiddleware } from '../middleware/auth';
 import QuestionService from '../services/QuestionService';
+import AnalysisService from '../services/AnalysisService';
 interface InterviewRequest {
   jobDescription: string;
   resume: string;
@@ -16,7 +17,8 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
   const router = Router();
   const gptService = new GPTService();
   const questionService = new QuestionService(supabase);
-  const interviewService = new InterviewService(gptService, supabase, questionService);
+  const analysisService = new AnalysisService(supabase);
+  const interviewService = new InterviewService(gptService, supabase, questionService, analysisService);
   const authMiddleware = createAuthMiddleware(supabase);
 
   router.post('/questions', authMiddleware, async (req: Request<{}, {}, InterviewRequest>, res: Response) => {
