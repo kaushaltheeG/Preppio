@@ -4,11 +4,17 @@ import React from 'react';
 import HistoryIcon from '@mui/icons-material/History';
 import Tooltip from '@mui/material/Tooltip';
 import { useAppSelector } from '../../../hooks/useAppSelector';
-import { getInterviewSessions } from '../../../store/slices/interviewSlice';
+import { useAppDispatch } from '../../../hooks/useAppDispatch';
+import { fetchInterviewSession, getInterviewSessions } from '../../../store/slices/interviewSlice';
 
 const PastSessionSidebar: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const pastSessions = useAppSelector((getInterviewSessions));
+  const dispatch = useAppDispatch();
+
+  const handleSessionClick = React.useCallback((interviewSessionId: string) => {
+    dispatch(fetchInterviewSession({ interviewSessionId }));
+  }, [dispatch]);
 
   const renderPastSessions = React.useCallback(() => {
     return pastSessions.map((session) => (
@@ -16,14 +22,15 @@ const PastSessionSidebar: React.FC = () => {
         <div
           key={session.id}
           className="p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
-      >
-        <h3 className="font-medium text-gray-900 dark:text-gray-100">{session.company}</h3>
+          onClick={() => handleSessionClick(session.id)}
+        >
+          <h3 className="font-medium text-gray-900 dark:text-gray-100">{session.company}</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400">{session.jobTitle}</p>
           <p className="text-sm text-gray-500 dark:text-gray-400">{new Date(session.updatedAt).toLocaleDateString()}</p>
         </div>
       </Tooltip>
     ));
-  }, [pastSessions]);
+  }, [pastSessions, handleSessionClick]);
 
   return (
     <>

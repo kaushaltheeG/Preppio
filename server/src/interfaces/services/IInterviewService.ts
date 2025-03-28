@@ -4,6 +4,7 @@ import IGPTService from "./IGPTService";
 import IInterviewSession from "../models/IInterviewSession";
 import IQuestion from "../models/IQuestion";
 import IAnalysis from "../models/IAnalysis";
+import IInterviewSessionInput from "../models/IInterviewSessionInput";
 
 export interface ICreateInterviewQuestionPrompt {
   jobDescription: string;
@@ -38,11 +39,29 @@ export interface ICreateInterviewSession {
   interviewerPosition: string;
 }
 
+export interface ICreateInterviewSessionInput {
+  userId: string;
+  interviewSessionId: string;
+  resume: string;
+  jobDescription: string;
+  interviewType: string;
+  interviewerPosition: string;
+  extraInformation: string;
+}
+
+export interface IGetPopulatedInterviewSessionResponse extends IGetQuestionsResponse {
+  resume: string;
+  jobDescription: string;
+  extraInformation: string;
+}
+
 interface IInterviewService {
   createInterviewQuestionsPrompt(interviewRequest: ICreateInterviewQuestionPrompt): IPromptProps;
   createInterviewSession(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse>;
   getUsersInterviewSessions(userId: string): Promise<IInterviewSession[]>;
   insertInterviewSession(interviewRequest: ICreateInterviewSession): Promise<IInterviewSession>;
+  insertInterviewSessionInput(interviewRequest: ICreateInterviewSessionInput): Promise<IInterviewSessionInput>;
+  getPopulatedInterviewSession(userId: string, interviewSessionId: string): Promise<IGetPopulatedInterviewSessionResponse>;
 }
 
 export default IInterviewService;

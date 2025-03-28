@@ -35,7 +35,7 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
     }
   });
 
-  router.get('/user/sessions/:id', authMiddleware, async (req: Request, res: Response) => {
+  router.get('/user/sessions/:id/populate', authMiddleware, async (req: Request, res: Response) => {
     const userId = req.user.id; 
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });

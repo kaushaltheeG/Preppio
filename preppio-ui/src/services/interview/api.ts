@@ -53,6 +53,21 @@ export interface IGetQuestionsResponse {
   interviewSessionId: string;
 }
 
+export interface IInterviewSessionInput {
+  id: string;
+  userId: string;
+  interviewSessionId: string;
+  resume: string;
+  jobDescription: string;
+  interviewType: string;
+  interviewerPosition: string;
+  extraInformation: string;
+}
+export interface IGetPopulatedInterviewSessionResponse extends IGetQuestionsResponse {
+  resume: string;
+  jobDescription: string;
+  extraInformation: string;
+}
 export interface ISerializedEditorState {
   root: {
     htmlContent: string;
@@ -101,15 +116,15 @@ export const getInterviewSessions = async (): Promise<IInterviewSession[]> => {
   }
 };
 
-export const getInterviewSession = async (interviewSessionId: string): Promise<IInterviewSession | null> => {
+export const getPopulatedInterviewSession = async (interviewSessionId: string): Promise<IGetPopulatedInterviewSessionResponse | null> => {
   try {
     const accessToken = getSessionToken(store.getState());
     if (!accessToken) {
       throw new Error('User not authenticated');
     }
 
-    const response = await axios.get<IInterviewSession>(
-      `${API_URL}/api/interview/user/sessions/${interviewSessionId}`,
+    const response = await axios.get<IGetPopulatedInterviewSessionResponse>(
+      `${API_URL}/api/interview/user/sessions/${interviewSessionId}/populate`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`

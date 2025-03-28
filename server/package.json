@@ -8,7 +8,13 @@
     "dev": "nodemon",
     "build": "tsc",
     "watch-ts": "tsc -w",
-    "go": "yarn build && yarn start"
+    "run:dev": "yarn build && yarn start",
+    "db:migrate:remote": "cd src/supabase &&supabase db push",
+    "db:reset": "cd src/supabase && supabase db reset",
+    "db:new": "cd src/supabase && supabase migration new",
+    "db:start:local": "cd src/supabase && supabase start",
+    "db:stop:local": "cd src/supabase && supabase stop",
+    "db:status": "cd src/supabase && supabase status"
   },
   "dependencies": {
     "@googleapis/docs": "^3.3.0",

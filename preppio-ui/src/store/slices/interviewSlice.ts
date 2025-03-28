@@ -272,6 +272,7 @@ const interviewSlice = createSlice({
 
 // Actions
 export const fetchInterviewSessions  = createAction('interview/fetchInterviewSessions');
+export const fetchInterviewSession = createAction<{ interviewSessionId: string }>('interview/fetchInterviewSession');
 
 // Selectors
 export const getQuestions = (state: RootState) => state.interview.questions;

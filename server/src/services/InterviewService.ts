@@ -1,5 +1,5 @@
 import IGPTService, { IPromptProps } from "../interfaces/services/IGPTService";
-import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse, ICreateInterviewSession } from "../interfaces/services/IInterviewService";
+import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse, ICreateInterviewSession, ICreateInterviewSessionInput, IGetPopulatedInterviewSessionResponse } from "../interfaces/services/IInterviewService";
 import { SupabaseClient } from "@supabase/supabase-js";
 import IInterviewSession from "../interfaces/models/IInterviewSession";
 import InterviewSession from "../models/interviewSession";
@@ -7,6 +7,10 @@ import IQuestionService from "../interfaces/services/IQuestionService";
 import IQuestion from "../interfaces/models/IQuestion";
 import IAnalysisService from "../interfaces/services/IAnalysisService";
 import IAnalysis from "../interfaces/models/IAnalysis";
+import Question from "../models/question";
+import Analysis from "../models/analysis";
+import InterviewSessionInput from "../models/interviewSessionInput";
+import IInterviewSessionInput from "../interfaces/models/IInterviewSessionInput";
 class InterviewService implements IInterviewService {
   private gptService: IGPTService;
   private supabase: SupabaseClient;
@@ -30,6 +34,15 @@ class InterviewService implements IInterviewService {
     return InterviewSession.fromSupabase(data);
   }
 
+  async insertInterviewSessionInput(interviewRequest: ICreateInterviewSessionInput): Promise<IInterviewSessionInput> {
+    const interviewSessionInput = new InterviewSessionInput(interviewRequest);
+    const { data, error } = await this.supabase.from('interview_session_inputs').insert(interviewSessionInput.toSupabase()).select().single();
+    if (error) {
+      throw new Error(error.message);
+    }
+    return InterviewSessionInput.fromSupabase(data);
+  }
+
   async getUsersInterviewSessions(userId: string): Promise<IInterviewSession[]> {
     // []TODO: add pagination
     const { data, error } = await this.supabase
@@ -44,15 +57,20 @@ class InterviewService implements IInterviewService {
     return data.map((interviewSession) => InterviewSession.fromSupabase(interviewSession));
   }
 
-  async getPopulatedInterviewSession(userId: string, interviewSessionId: string): Promise<IInterviewSession> {
+  async getPopulatedInterviewSession(userId: string, interviewSessionId: string): Promise<IGetPopulatedInterviewSessionResponse> {
     const { data, error } = await this.supabase
       .from('interview_sessions')
       .select(`
         *,
-        questions:interview_questions(*),
-        analysis:interview_analysis(*)
+        questions:questions(*),
+        analysis:analysis(*),
+        interview_session_inputs:interview_session_inputs(
+          extra_information,
+          job_description,
+          resume
+        )
       `)
-      .eq('userId', userId)
+      .eq('user_id', userId)
       .eq('id', interviewSessionId)
       .single();
     if (error) {
@@ -61,7 +79,19 @@ class InterviewService implements IInterviewService {
     if (!data) {
       throw new Error('Interview session not found');
     }
-    return InterviewSession.fromSupabase(data);
+
+    let { questions, analysis, ...restOfQueryData } = data;
+    questions = questions.map((question: any) => Question.fromSupabase(question));
+
+    analysis = Analysis.fromSupabase(analysis[0]);
+    const interviewSession = InterviewSession.fromSupabase(restOfQueryData);
+
+    return {
+      ...this.createInterviewSessionResponse(questions, analysis, interviewSession),
+      resume: restOfQueryData.interview_session_inputs[0].resume,
+      jobDescription: restOfQueryData.interview_session_inputs[0].job_description,
+      extraInformation: restOfQueryData.interview_session_inputs[0].extra_information,
+    };
   }
 
   async createInterviewSession(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse> {
@@ -96,7 +126,19 @@ class InterviewService implements IInterviewService {
       userId: interviewRequest.userId,
       interviewSessionId: interviewSessionData.id!,
     }
-    const analysisData = await this.analysisService.insertAnalysis(analysisDto);
+
+    const [analysisData] = await Promise.all([
+      this.analysisService.insertAnalysis(analysisDto),
+      this.insertInterviewSessionInput({
+        userId: interviewRequest.userId,
+        interviewSessionId: interviewSessionData.id!,
+        resume: interviewRequest.resume,
+        jobDescription: interviewRequest.jobDescription,
+        interviewType: interviewRequest.interviewType,
+        interviewerPosition: interviewRequest.interviewerPosition,
+        extraInformation: interviewRequest.extraNotes || '',
+      }),
+    ]);
 
     return this.createInterviewSessionResponse(questions, analysisData, interviewSessionData);
   }
