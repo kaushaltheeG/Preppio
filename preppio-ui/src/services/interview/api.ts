@@ -87,7 +87,6 @@ export const getInterviewSessions = async (): Promise<IInterviewSession[]> => {
     if (!accessToken) {
       throw new Error('User not authenticated');
     }
-
     const response = await axios.get<IInterviewSession[]>(
       `${API_URL}/api/interview/user/sessions`,
       {

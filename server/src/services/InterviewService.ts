@@ -31,7 +31,13 @@ class InterviewService implements IInterviewService {
   }
 
   async getUsersInterviewSessions(userId: string): Promise<IInterviewSession[]> {
-    const { data, error } = await this.supabase.from('interview_sessions').select('*').eq('userId', userId).limit(50);
+    // []TODO: add pagination
+    const { data, error } = await this.supabase
+      .from('interview_sessions')
+      .select('*')
+      .eq('user_id', userId)
+      .limit(50)
+      .order('updated_at', { ascending: false });
     if (error) {
       throw new Error(error.message);
     }

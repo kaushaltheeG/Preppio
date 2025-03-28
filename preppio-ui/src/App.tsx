@@ -1,5 +1,6 @@
 import Control from './components/feature/Control';
 import Header from './components/feature/Header';
+import React from 'react';
 
 function App() {
   return (

@@ -25,7 +25,7 @@ abstract class Base<T extends IBaseModel> {
         [camelCase(key)]: value,
       };
     }, {});
-    return new this(camelCaseData);
+    return camelCaseData as U;
   }
 
   // Convert our camelCase model to Supabase snake_case

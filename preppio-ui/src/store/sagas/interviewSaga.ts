@@ -5,6 +5,7 @@ import { getJobDescription } from '../slices/jobDescriptionSlice';
 import { getResume } from '../slices/resumeSlice';
 import { getInterviewType, getInterviewerPosition, getExtraInformation } from '../slices/tuneSlice';
 import { setFormState } from '../slices/appSlice';
+import { setSession } from '../slices/authSlice';
 
 function* analyzeInterviewSaga() {
   try {
@@ -41,4 +42,5 @@ function* getInterviewSessionsSaga() {
 export function* interviewSaga() {
   yield takeLatest(analyzeRequest.type, analyzeInterviewSaga);
   yield takeLatest(fetchInterviewSessions.type, getInterviewSessionsSaga);
+  yield takeLatest(setSession.type, getInterviewSessionsSaga);
 }
