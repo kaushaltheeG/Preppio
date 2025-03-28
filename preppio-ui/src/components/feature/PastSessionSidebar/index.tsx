@@ -3,32 +3,28 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import React from 'react';
 import HistoryIcon from '@mui/icons-material/History';
 import Tooltip from '@mui/material/Tooltip';
-
-interface InterviewSession {
-  id: string;
-  date: string;
-  title: string;
-  duration: string;
-}
+import { useAppSelector } from '../../../hooks/useAppSelector';
+import { getInterviewSessions } from '../../../store/slices/interviewSlice';
 
 const PastSessionSidebar: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
-  // Mock data - replace with actual data from your backend
-  const mockSessions: InterviewSession[] = [
-    {
-      id: '1',
-      date: '2024-03-26',
-      title: 'Software Engineer Interview',
-      duration: '45 min',
-    },
-    {
-      id: '2',
-      date: '2024-03-25',
-      title: 'System Design Discussion',
-      duration: '60 min',
-    },
-  ];
-  console.log('isOpen', isOpen);
+  const pastSessions = useAppSelector((getInterviewSessions));
+
+  const renderPastSessions = React.useCallback(() => {
+    return pastSessions.map((session) => (
+      <Tooltip title={`${session.jobTitle} interview at ${session.company} with ${session.interviewerPosition}`} placement='right'>
+        <div
+          key={session.id}
+          className="p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
+      >
+        <h3 className="font-medium text-gray-900 dark:text-gray-100">{session.company}</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{session.jobTitle}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{new Date(session.updatedAt).toLocaleDateString()}</p>
+        </div>
+      </Tooltip>
+    ));
+  }, [pastSessions]);
+
   return (
     <>
       {/* Overlay */}
@@ -55,16 +51,7 @@ const PastSessionSidebar: React.FC = () => {
             </div>
             <div className="flex-1 overflow-y-auto p-4">
               <div className="space-y-4">
-                {mockSessions.map((session) => (
-                  <div
-                    key={session.id}
-                    className="p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
-                  >
-                    <h3 className="font-medium text-gray-900 dark:text-gray-100">{session.title}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{session.date}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{session.duration}</p>
-                  </div>
-                ))}
+                {renderPastSessions()}
               </div>
             </div>
           </div>
