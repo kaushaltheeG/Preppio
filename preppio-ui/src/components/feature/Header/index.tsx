@@ -10,6 +10,8 @@ import { hasSessionSelector, getLoggedInUser } from '../../../store/slices/authS
 import GoogleLogin from './GoogleLogin';
 import UserProfile from './UserProfile';
 import { getCompanyName } from '../../../store/slices/interviewSlice';
+
+
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const hasSession = useAppSelector(hasSessionSelector);
@@ -46,15 +48,19 @@ const Header: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <header className="h-12 bg-white shadow-md flex items-center justify-between px-8 z-10">
-      <div className="text-2xl font-bold text-gray-800 pb-1">
-        Preppio
-        <div className="text-sm text-gray-500">
-          {renderSubText}
+    <>
+      <header className="h-12 bg-white shadow-md flex items-center justify-between pr-8 pl-4 z-10">
+        <div className="flex items-center gap-4">
+          <div className="text-2xl font-bold text-gray-800 pb-1">
+            Preppio
+            <div className="text-sm text-gray-500">
+              {renderSubText}
+            </div>
+          </div>
         </div>
-      </div>
-      {renderLogin()}
-    </header>
+        {renderLogin()}
+      </header>
+    </>
   );
 };
 

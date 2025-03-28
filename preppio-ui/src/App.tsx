@@ -1,21 +1,20 @@
 import Control from './components/feature/Control';
 import Header from './components/feature/Header';
 import React from 'react';
+import PastSessionSidebar from './components/feature/PastSessionSidebar';
 
 function App() {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <Header />
-      <main className="flex-1 bg-gray-100 overflow-y-auto">
-        <div className="h-full px-2 py-2 flex gap-8">
-          <div className="w-[15%]">
-            {/* add past history here */}
-          </div>
-          <div className="w-[80%]">
+      <div className="flex-1 flex overflow-hidden">
+        <PastSessionSidebar />
+        <main className="flex-1 bg-gray-100 overflow-y-auto">
+          <div className="h-full px-2 py-2">
             <Control />
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
