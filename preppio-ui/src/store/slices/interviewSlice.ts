@@ -1,6 +1,6 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IAnalysis, IQuestion, IGetQuestionsResponse } from '../../services/interview/api';
-import { RootState } from '../../store';
+import { RootState } from '../types';
 import { InterviewContentType } from '../../services/googledrive/api';
 import { IInterviewSession } from '../../services/interview/api';
 export interface IInterviewState {

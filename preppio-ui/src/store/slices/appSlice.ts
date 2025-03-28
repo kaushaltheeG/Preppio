@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../index';
+import { RootState } from '../types';
 import { enableMapSet } from 'immer';
 
 enableMapSet();
 
 export type FormState = 'questions' | 'userInputs' | 'iframe' | string;
 
-interface AppState {
+export interface AppState {
   isLoading: boolean;
   errorMessage: string;
   formState: FormState;
@@ -36,6 +36,9 @@ export const appSlice = createSlice({
     setOpenTabs: (state, action: PayloadAction<string>) => {
       state.openTabs.set(action.payload, action.payload);
     },
+    setClearOpenTabs: (state) => {
+      state.openTabs = new Map();
+    },
     closeOpenTab: (state, action: PayloadAction<string>) => {
       state.openTabs.delete(action.payload);
     },
@@ -55,5 +58,14 @@ export const onIframeSelector = (state: RootState) => state.app.formState === 'i
 export const getOpenTabs = (state: RootState) => state.app.openTabs;
 export const getOpenTabsArray = (state: RootState) => Array.from(state.app.openTabs.entries());
 
-export const { setFormState, setIsLoading, setErrorMessage, setOpenTabs, closeOpenTab, setAppInitialState } = appSlice.actions;
+export const { 
+  setFormState, 
+  setIsLoading, 
+  setErrorMessage, 
+  setOpenTabs,
+  setClearOpenTabs,
+  closeOpenTab,
+  setAppInitialState
+} = appSlice.actions;
+
 export default appSlice.reducer;

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
+import { RootState } from '../types';
 
-interface JobDescriptionState {
+export interface JobDescriptionState {
   content: string;
 }
 

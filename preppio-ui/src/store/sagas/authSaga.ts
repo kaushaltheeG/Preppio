@@ -11,7 +11,7 @@ import {
   unsubscribeFromAuthChanges,
   logoutUser,
 } from '../slices/authSlice';
-import { setAppInitialState } from '../slices/appSlice';
+import { setAppInitialState } from  '../slices/appSlice';
 import { setJobDescriptionInitialState } from '../slices/jobDescriptionSlice';
 import { setResumeInitialState } from '../slices/resumeSlice';
 import { setTuneInitialState } from '../slices/tuneSlice';

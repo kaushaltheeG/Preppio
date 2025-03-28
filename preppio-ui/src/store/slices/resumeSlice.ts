@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
-interface ResumeState {
+import { RootState } from '../types';
+export interface ResumeState {
   content: string;
 }
 

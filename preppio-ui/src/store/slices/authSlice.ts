@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction, createAction } from '@reduxjs/toolkit';
 import { Session, User } from '@supabase/supabase-js';
-import { RootState } from '../../store';
+import { RootState } from '../types';
 
-interface AuthState {
+export interface AuthState {
   session: Session | null;
   error: string | null;
   user: User | null;

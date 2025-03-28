@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
+import { RootState } from '../types';
 
-interface TuneState {
+export interface TuneState {
   interviewType: string;
   interviewerPosition: string;
   extraInformation: string;

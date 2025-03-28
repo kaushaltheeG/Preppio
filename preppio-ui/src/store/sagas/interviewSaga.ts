@@ -4,7 +4,7 @@ import { analyzeRequest, analyzeSuccess, analyzeFailure, setInterviewSessions, f
 import { getJobDescription, setJobDescription } from '../slices/jobDescriptionSlice';
 import { getResume, setResume } from '../slices/resumeSlice';
 import { getInterviewType, getInterviewerPosition, getExtraInformation, setInterviewerPosition, setExtraInformation, setInterviewType } from '../slices/tuneSlice';
-import { setFormState } from '../slices/appSlice';
+import { setFormState, setClearOpenTabs } from '../slices/appSlice';
 import { setSession } from '../slices/authSlice';
 import { PayloadAction } from '@reduxjs/toolkit';
 
@@ -48,11 +48,13 @@ function* getPopulatedInterviewSessionSaga(action: PayloadAction<{ interviewSess
   }
   yield put(analyzeSuccess(interviewSession));
   yield put(setFormState('questions'));
+  yield put(setClearOpenTabs());
   yield put(setInterviewType(interviewSession.interviewType));
   yield put(setInterviewerPosition(interviewSession.interviewerPosition));
   yield put(setExtraInformation(interviewSession.extraInformation));
   yield put(setJobDescription(interviewSession.jobDescription));
   yield put(setResume(interviewSession.resume));
+  yield put(analyzeSuccess(interviewSession));
 }
 
 export function* interviewSaga() {

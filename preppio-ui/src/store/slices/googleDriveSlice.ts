@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
+import { RootState } from '../types';
 
 export interface IGoogleDocumentData {
   url: string;
@@ -8,7 +8,7 @@ export interface IGoogleDocumentData {
   error: string | null;
   lastCreatedDocument: number;
 }
-interface GoogleDriveState {
+export interface GoogleDriveState {
   documents: IGoogleDocumentData;
 } 
 

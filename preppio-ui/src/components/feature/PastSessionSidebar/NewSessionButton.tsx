@@ -8,7 +8,7 @@ import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { setNewInterviewSession } from '../../../store/slices/interviewSlice';
 import { setJobDescriptionInitialState } from '../../../store/slices/jobDescriptionSlice';
 import { setTuneInitialState } from '../../../store/slices/tuneSlice';
-import { setFormState } from '../../../store/slices/appSlice';
+import { setFormState, setClearOpenTabs } from '../../../store/slices/appSlice';
 
 interface NewSessionButtonProps {
   onClick: () => void;
@@ -21,6 +21,7 @@ const useNewSessionButtonHook = () => {
     dispatch(setJobDescriptionInitialState());
     dispatch(setTuneInitialState());
     dispatch(setFormState('userInputs'));
+    dispatch(setClearOpenTabs());
   };
 
   return {

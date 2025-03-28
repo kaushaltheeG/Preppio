@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, Store } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import resumeReducer from './slices/resumeSlice'
 import jobDescriptionReducer from './slices/jobDescriptionSlice';
@@ -8,9 +8,13 @@ import rootSaga from './sagas';
 import interviewReducer from './slices/interviewSlice';
 import authReducer from './slices/authSlice';
 import googleDriveReducer from './slices/googleDriveSlice';
-const sagaMiddleware = createSagaMiddleware();
+import sessionStorageMiddleware, { loadStateFromSessionStorage } from './middleware/sessionStorageMiddleware';
+import { RootState } from './types';
 
-export const store = configureStore({
+const sagaMiddleware = createSagaMiddleware();
+const preloadedState: Partial<RootState> = loadStateFromSessionStorage();
+
+export const store: Store<RootState> = configureStore({
   reducer: {
     app: appReducer,
     auth: authReducer,
@@ -20,11 +24,11 @@ export const store = configureStore({
     resume: resumeReducer,
     tune: tuneReducer,
   },
+  preloadedState,
   middleware: (getDefaultMiddleware) => 
-    getDefaultMiddleware().concat(sagaMiddleware),
+    getDefaultMiddleware().concat(sagaMiddleware, sessionStorageMiddleware),
 });
 
 sagaMiddleware.run(rootSaga);
 
-export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
