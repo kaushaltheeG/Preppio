@@ -29,6 +29,7 @@ function* analyzeInterviewSaga() {
     
     yield put(analyzeSuccess(response));
     yield put(setFormState('questions'));
+    yield call(getInterviewSessionsSaga);
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'An error occurred within the interview saga';
     yield put(analyzeFailure(errorMessage));

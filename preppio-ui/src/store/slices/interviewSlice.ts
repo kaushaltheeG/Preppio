@@ -264,6 +264,19 @@ const interviewSlice = createSlice({
     setInterviewSessions: (state, action: PayloadAction<IInterviewSession[]>) => {
       state.interviewSessions = action.payload;
     },
+    setNewInterviewSession: (state) => {
+      state.questions = [];
+      state.analysis = {
+        strengthAreas: [],
+        gapAreas: [],
+        recommendedFocus: [],
+      };
+      state.company = '';
+      state.jobTitle = '';
+      state.interviewerPosition = '';
+      state.interviewType = '';
+      state.interviewSessionId = '';
+    },
     setInterviewInitialState: () => {
       return { ...initialState };
     },
@@ -283,7 +296,7 @@ export const getJobTitle = (state: RootState) => state.interview.jobTitle;
 export const getInterviewerPosition = (state: RootState) => state.interview.interviewerPosition;
 export const getInterviewType = (state: RootState) => state.interview.interviewType;
 export const getUserId = (state: RootState) => state.interview.userId;
-export const getInterviewSessionId = (state: RootState) => state.interview.interviewSessionId;
+export const getActiveInterviewSessionId = (state: RootState) => state.interview.interviewSessionId;
 export const getInterviewContent = (state: RootState): InterviewContentType => {
   const questions = getQuestions(state);
   const analysis = getAnalysis(state);
@@ -300,7 +313,7 @@ export const getInterviewContent = (state: RootState): InterviewContentType => {
     interviewerPosition,
     interviewType,
     userId: getUserId(state),
-    interviewSessionId: getInterviewSessionId(state),
+    interviewSessionId: getActiveInterviewSessionId(state),
   };
 };
 export const getInterviewSessions = (state: RootState) => state.interview.interviewSessions;
@@ -313,6 +326,7 @@ export const {
   analyzeFailure,
   setInterviewInitialState,
   setInterviewSessions,
+  setNewInterviewSession,
 } = interviewSlice.actions;
 
 export default interviewSlice.reducer;

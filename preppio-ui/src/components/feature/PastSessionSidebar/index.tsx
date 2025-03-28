@@ -5,12 +5,15 @@ import HistoryIcon from '@mui/icons-material/History';
 import Tooltip from '@mui/material/Tooltip';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
-import { fetchInterviewSession, getInterviewSessions } from '../../../store/slices/interviewSlice';
+import { fetchInterviewSession, getInterviewSessions, getActiveInterviewSessionId } from '../../../store/slices/interviewSlice';
+import { NewSessionButton, NewSessionIconButton, useNewSessionButtonHook } from './NewSessionButton';
 
 const PastSessionSidebar: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const pastSessions = useAppSelector((getInterviewSessions));
   const dispatch = useAppDispatch();
+  const { onClick: onClickNewSession } = useNewSessionButtonHook();
+  const activeSessionId = useAppSelector(getActiveInterviewSessionId);
 
   const handleSessionClick = React.useCallback((interviewSessionId: string) => {
     dispatch(fetchInterviewSession({ interviewSessionId }));
@@ -21,7 +24,7 @@ const PastSessionSidebar: React.FC = () => {
       <Tooltip title={`${session.jobTitle} interview at ${session.company} with ${session.interviewerPosition}`} placement='right'>
         <div
           key={session.id}
-          className="p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
+          className={`p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors ${session.id === activeSessionId ? 'bg-gray-100' : ''}`}
           onClick={() => handleSessionClick(session.id)}
         >
           <h3 className="font-medium text-gray-900 dark:text-gray-100">{session.company}</h3>
@@ -30,7 +33,7 @@ const PastSessionSidebar: React.FC = () => {
         </div>
       </Tooltip>
     ));
-  }, [pastSessions, handleSessionClick]);
+  }, [pastSessions, handleSessionClick, activeSessionId]);
 
   return (
     <>
@@ -52,11 +55,16 @@ const PastSessionSidebar: React.FC = () => {
           <div className="h-full flex flex-col">
             <div className="p-4 border-b border-t flex justify-between items-center flex-row">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Past Sessions</h2>
-              <IconButton onClick={() => setIsOpen(false)}>
-                <ChevronLeftIcon />
-              </IconButton>
+              <div className="flex flex-row">
+                <IconButton onClick={() => setIsOpen(false)}>
+                  <ChevronLeftIcon />
+                </IconButton>
+              </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="flex flex-row justify-center items-center py-2 px-4">
+              <NewSessionButton onClick={onClickNewSession} />
+            </div>
+            <div className="flex-1 overflow-y-auto justify-center items-center p-4">
               <div className="space-y-4">
                 {renderPastSessions()}
               </div>
@@ -65,7 +73,8 @@ const PastSessionSidebar: React.FC = () => {
         )}
         {!isOpen && (
           <div className="flex flex-col flex-1 h-full">
-            <Tooltip title="View Past Sessions">
+            <NewSessionIconButton onClick={onClickNewSession} />
+            <Tooltip title="View Past Sessions" placement="right">
               <IconButton onClick={() => setIsOpen(true)}>
                 <HistoryIcon />
               </IconButton>
