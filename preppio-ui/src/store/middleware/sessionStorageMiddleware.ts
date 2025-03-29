@@ -49,4 +49,12 @@ const sessionStorageMiddleware: Middleware = (store) => (next) => (action: any) 
   return result;
 };
 
+export const clearSessionStorage = (): void => {
+  try {
+    sessionStorage.removeItem(APP_STATE_KEY);
+  } catch (err) {
+    console.error('Error clearing session storage:', err);
+  }
+};
+
 export default sessionStorageMiddleware;

@@ -17,7 +17,7 @@ import { setResumeInitialState } from '../slices/resumeSlice';
 import { setTuneInitialState } from '../slices/tuneSlice';
 import { setInterviewInitialState } from '../slices/interviewSlice';
 import { setGoogleDriveInitialState } from '../slices/googleDriveSlice';
-
+import { clearSessionStorage } from '../middleware/sessionStorageMiddleware';
 function* handleCheckSession() {
   try {
     const { data: { session } } = yield call([supabase.auth, 'getSession']);
@@ -36,6 +36,7 @@ function* handleLogout() {
   yield put(setTuneInitialState());
   yield put(setInterviewInitialState());
   yield put(setGoogleDriveInitialState());
+  yield call(clearSessionStorage);
 }
 
 function createAuthChannel() {
@@ -48,7 +49,7 @@ function createAuthChannel() {
     if (data && data.subscription) {
       return () => data.subscription.unsubscribe();
     }
-    
+
     // Return a no-op function if no subscription exists
     return () => {};
   });
