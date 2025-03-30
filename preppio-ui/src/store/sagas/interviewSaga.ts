@@ -1,12 +1,14 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { getInterviewQuestions, getInterviewSessions, getPopulatedInterviewSession, IGetQuestionsResponse, IInterviewSession, IGetPopulatedInterviewSessionResponse } from '../../services/interview/api';
-import { analyzeRequest, analyzeSuccess, analyzeFailure, setInterviewSessions, fetchInterviewSessions, fetchInterviewSession } from '../slices/interviewSlice';
+import { getInterviewQuestions, getInterviewSessions, getPopulatedInterviewSession, IGetQuestionsResponse, IInterviewSession, IGetPopulatedInterviewSessionResponse, IQuestion } from '../../services/interview/api';
+import { analyzeRequest, analyzeSuccess, analyzeFailure, setInterviewSessions, fetchInterviewSessions, fetchInterviewSession, updateQuestionDataFailure, setLoadingQuestions, setQuestions } from '../slices/interviewSlice';
 import { getJobDescription, setJobDescription } from '../slices/jobDescriptionSlice';
 import { getResume, setResume } from '../slices/resumeSlice';
 import { getInterviewType, getInterviewerPosition, getExtraInformation, setInterviewerPosition, setExtraInformation, setInterviewType } from '../slices/tuneSlice';
 import { setFormState, setClearOpenTabs } from '../slices/appSlice';
 import { setSession } from '../slices/authSlice';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { updateQuestion } from '../../services/questions/api';
+import { updateQuestionData } from '../slices/interviewSlice';
 
 function* analyzeInterviewSaga() {
   try {
@@ -47,14 +49,31 @@ function* getPopulatedInterviewSessionSaga(action: PayloadAction<{ interviewSess
     throw new Error('Failed to get interview session');
   }
   yield put(analyzeSuccess(interviewSession));
-  yield put(setFormState('questions'));
-  yield put(setClearOpenTabs());
+  // yield put(setFormState('questions'));
+  // yield put(setClearOpenTabs());
   yield put(setInterviewType(interviewSession.interviewType));
   yield put(setInterviewerPosition(interviewSession.interviewerPosition));
   yield put(setExtraInformation(interviewSession.extraInformation));
   yield put(setJobDescription(interviewSession.jobDescription));
   yield put(setResume(interviewSession.resume));
+  yield put(setQuestions(interviewSession.questions));
   yield put(analyzeSuccess(interviewSession));
+}
+
+function* updateQuestionDataSaga(action: PayloadAction<{ question: IQuestion }>) {
+  try {
+    yield put(setLoadingQuestions(true));
+    const question: IQuestion = yield call(updateQuestion, action.payload.question);
+    if (question === null) {
+      throw new Error('Failed to update question');
+    }
+    yield put(fetchInterviewSession({ interviewSessionId: question.interviewSessionId }));
+    yield put(setLoadingQuestions(false));
+    //// fix not proper notes update when toggling tabs
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'An error occurred within the update question data saga';
+    yield put(updateQuestionDataFailure(errorMessage));
+  }
 }
 
 export function* interviewSaga() {
@@ -62,4 +81,5 @@ export function* interviewSaga() {
   yield takeLatest(fetchInterviewSessions.type, getInterviewSessionsSaga);
   yield takeLatest(fetchInterviewSession.type, getPopulatedInterviewSessionSaga);
   yield takeLatest(setSession.type, getInterviewSessionsSaga);
+  yield takeLatest(updateQuestionData.type, updateQuestionDataSaga);
 }

@@ -10,6 +10,7 @@ const cors_1 = __importDefault(require("cors"));
 const interview_1 = __importDefault(require("./routes/interview"));
 const googledrive_1 = __importDefault(require("./routes/googledrive"));
 const supabase_js_1 = require("@supabase/supabase-js");
+const questions_1 = __importDefault(require("./routes/questions"));
 const app = (0, express_1.default)();
 const PORT = Number(process.env.PORT) || 5000;
 const supabase = (0, supabase_js_1.createClient)(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
@@ -19,6 +20,7 @@ app.use(express_1.default.json());
 // app routes
 app.use('/api/interview', (0, interview_1.default)(supabase));
 app.use('/api/googledrive', (0, googledrive_1.default)(supabase));
+app.use('/api/questions', (0, questions_1.default)(supabase));
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

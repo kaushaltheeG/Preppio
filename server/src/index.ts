@@ -6,6 +6,7 @@ import cors from 'cors';
 import createInterviewRouter from './routes/interview';
 import createGoogleDriveRouter from './routes/googledrive';
 import { createClient } from '@supabase/supabase-js';
+import createQuestionsRouter from './routes/questions';
 
 const app: Express = express();
 const PORT: number = Number(process.env.PORT) || 5000;
@@ -21,7 +22,7 @@ app.use(express.json());
 // app routes
 app.use('/api/interview', createInterviewRouter(supabase));
 app.use('/api/googledrive', createGoogleDriveRouter(supabase));
-
+app.use('/api/questions', createQuestionsRouter(supabase));
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

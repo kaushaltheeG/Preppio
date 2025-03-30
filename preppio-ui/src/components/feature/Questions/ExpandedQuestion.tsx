@@ -1,7 +1,10 @@
 import React from 'react';
-import { Box, Paper, Typography, Chip, Card, CardContent, Stack, TextField } from '@mui/material';
+import { Box, Paper, Typography, Chip, Card, CardContent, Stack, TextField, Button, CircularProgress } from '@mui/material';
 import { IQuestion } from '../../../services/interview/api';
 import QuestionChips from './QuestionChips';
+import { getIsLoadingQuestions, updateQuestionData } from '../../../store/slices/interviewSlice';
+import { useAppDispatch } from '../../../hooks/useAppDispatch';
+import { useAppSelector } from '../../../hooks/useAppSelector';
 
 interface IExpandedQuestionProps {
   questionObject: IQuestion;
@@ -9,7 +12,21 @@ interface IExpandedQuestionProps {
 
 const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) => {
   const { followUp, notes, question, type, difficulty, topic, relevance, skillsAssessed, keyPoints } = questionObject;
-  const [localNotes, setLocalNotes] = React.useState(notes);
+  // [TODO] make notes field string and not null
+  const originalNotes = React.useMemo(() => notes || '', [notes]);
+  const [localNotes, setLocalNotes] = React.useState(originalNotes);
+  const dispatch = useAppDispatch();
+  const isSavingNotes = useAppSelector(getIsLoadingQuestions);
+
+  const handleAddToNotes = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalNotes(e.target.value);
+  }, [setLocalNotes]);
+
+  const handleSaveNotes = React.useCallback(() => {
+    // send dispatch to update question to api
+    dispatch(updateQuestionData({ question: { ...questionObject, notes: localNotes } }));
+  }, [dispatch, questionObject, localNotes]);
+
 
   const renderFollowUpQuestions = React.useCallback(() => {
     return(
@@ -29,7 +46,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
 
   const renderNotesSection = React.useCallback(() => {
     return(
-      <CardContent>
+      <CardContent className='flex flex-col gap-2'>
         <Typography component="span" color="primary">
           Notes
         </Typography>
@@ -39,11 +56,29 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
           fullWidth
           variant="outlined"  
           value={localNotes}
-          onChange={(e) => setLocalNotes(e.target.value)}
+          onChange={handleAddToNotes}
         />
+        <div className='flex flex-row justify-end gap-2'>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSaveNotes}
+            disabled={localNotes === originalNotes}
+          >
+            {isSavingNotes ? (
+              <Box className="flex items-center gap-2">
+                <CircularProgress size={20} color="inherit" />
+                <span>Saving...</span>
+              </Box>
+            ) : (
+              'Save'
+            )}
+          </Button>
+        </div>
+        
       </CardContent>
     );
-  }, [localNotes, setLocalNotes]);
+  }, [localNotes, handleAddToNotes, handleSaveNotes, originalNotes, isSavingNotes]);
 
   const renderRelevanceSection = React.useCallback(() => {
     return(
@@ -115,7 +150,7 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
           <Card>
             {renderFollowUpQuestions()}
           </Card>
-          <Card className="pb-4">
+          <Card>
             {renderNotesSection()}
           </Card>
         </Stack>
