@@ -4,7 +4,7 @@ import { analyzeRequest, analyzeSuccess, analyzeFailure, setInterviewSessions, f
 import { getJobDescription, setJobDescription } from '../slices/jobDescriptionSlice';
 import { getResume, setResume } from '../slices/resumeSlice';
 import { getInterviewType, getInterviewerPosition, getExtraInformation, setInterviewerPosition, setExtraInformation, setInterviewType } from '../slices/tuneSlice';
-import { setFormState, setClearOpenTabs } from '../slices/appSlice';
+import { setFormState } from '../slices/appSlice';
 import { setSession } from '../slices/authSlice';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { updateQuestion } from '../../services/questions/api';
@@ -49,8 +49,6 @@ function* getPopulatedInterviewSessionSaga(action: PayloadAction<{ interviewSess
     throw new Error('Failed to get interview session');
   }
   yield put(analyzeSuccess(interviewSession));
-  // yield put(setFormState('questions'));
-  // yield put(setClearOpenTabs());
   yield put(setInterviewType(interviewSession.interviewType));
   yield put(setInterviewerPosition(interviewSession.interviewerPosition));
   yield put(setExtraInformation(interviewSession.extraInformation));
@@ -69,7 +67,6 @@ function* updateQuestionDataSaga(action: PayloadAction<{ question: IQuestion }>)
     }
     yield put(fetchInterviewSession({ interviewSessionId: question.interviewSessionId }));
     yield put(setLoadingQuestions(false));
-    //// fix not proper notes update when toggling tabs
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'An error occurred within the update question data saga';
     yield put(updateQuestionDataFailure(errorMessage));

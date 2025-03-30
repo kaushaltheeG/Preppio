@@ -12,21 +12,34 @@ interface IExpandedQuestionProps {
 
 const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) => {
   const { followUp, notes, question, type, difficulty, topic, relevance, skillsAssessed, keyPoints } = questionObject;
-  // [TODO] make notes field string and not null
-  const originalNotes = React.useMemo(() => notes || '', [notes]);
-  const [localNotes, setLocalNotes] = React.useState(originalNotes);
+  const [localNotes, setLocalNotes] = React.useState(notes || '');
+  
+  // Update local notes when prop changes
+  React.useEffect(() => {
+    setLocalNotes(notes || '');
+  }, [notes]);
+
   const dispatch = useAppDispatch();
   const isSavingNotes = useAppSelector(getIsLoadingQuestions);
 
   const handleAddToNotes = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setLocalNotes(e.target.value);
-  }, [setLocalNotes]);
+  }, []);
 
   const handleSaveNotes = React.useCallback(() => {
-    // send dispatch to update question to api
-    dispatch(updateQuestionData({ question: { ...questionObject, notes: localNotes } }));
-  }, [dispatch, questionObject, localNotes]);
+    if (localNotes.trim() === (notes || '').trim()) return;
+    
+    dispatch(updateQuestionData({ 
+      question: { 
+        ...questionObject, 
+        notes: localNotes.trim() 
+      } 
+    }));
+  }, [dispatch, questionObject, localNotes, notes]);
 
+  const hasNotesChanged = React.useMemo(() => {
+    return localNotes.trim() !== (notes || '').trim();
+  }, [localNotes, notes]);
 
   const renderFollowUpQuestions = React.useCallback(() => {
     return(
@@ -57,28 +70,31 @@ const ExpandedQuestion: React.FC<IExpandedQuestionProps> = ({ questionObject }) 
           variant="outlined"  
           value={localNotes}
           onChange={handleAddToNotes}
+          placeholder="Add your notes here..."
         />
         <div className='flex flex-row justify-end gap-2'>
           <Button
             variant="contained"
             color="primary"
             onClick={handleSaveNotes}
-            disabled={localNotes === originalNotes}
+            disabled={!hasNotesChanged || isSavingNotes}
+            sx={{ width: '120px' }}
           >
-            {isSavingNotes ? (
-              <Box className="flex items-center gap-2">
-                <CircularProgress size={20} color="inherit" />
-                <span>Saving...</span>
-              </Box>
-            ) : (
-              'Save'
-            )}
+            <Box className="flex items-center justify-center gap-2 w-full">
+              {isSavingNotes ? (
+                <>
+                  <CircularProgress size={20} color="inherit" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                'Save'
+              )}
+            </Box>
           </Button>
         </div>
-        
       </CardContent>
     );
-  }, [localNotes, handleAddToNotes, handleSaveNotes, originalNotes, isSavingNotes]);
+  }, [localNotes, handleAddToNotes, handleSaveNotes, hasNotesChanged, isSavingNotes]);
 
   const renderRelevanceSection = React.useCallback(() => {
     return(
