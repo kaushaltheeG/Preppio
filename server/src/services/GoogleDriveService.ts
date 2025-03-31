@@ -239,7 +239,7 @@ class GoogleDriveService implements IGoogleDriveService {
         ['Difficulty', `: ${question.difficulty}\n`],
         ['Topic', `: ${question.topic}\n`],
         ['Key Points', `: ${question.keyPoints.join(', ')}\n`],
-        ['Notes', `\n`]
+        ['Notes', `:\n`]
       ];
       for (let [label, value] of metadataArray) {
         requests.push(
@@ -283,71 +283,38 @@ class GoogleDriveService implements IGoogleDriveService {
         }); 
         currentIndex += label.length + value.length;
       }
-      // push notes text
-      // const noteLabel = 'Notes:\n';   
-      // requests.push(
-      //   {
-      //     insertText: {
-      //       text: noteLabel,
-      //       location: { index: currentIndex }
-      //     }
-      //   },
-      //   {
-      //     updateParagraphStyle: {
-      //       range: { 
-      //         startIndex: currentIndex,
-      //         endIndex: currentIndex + noteLabel.length
-      //       },
-      //       paragraphStyle: { 
-      //         namedStyleType: 'NORMAL_TEXT',
-      //         indentFirstLine: {
-      //           magnitude: 36,
-      //           unit: 'PT'
-      //         },
-      //         indentStart: {
-      //           magnitude: 36,
-      //           unit: 'PT'
-      //         }
-      //       },
-      //       fields: 'namedStyleType,indentFirstLine,indentStart'
-      //     },
-      //   }
-      // );
-      // currentIndex += noteLabel.length;
 
-      // Only insert notes content if it's not empty
-      // const trimmedNotes = question.notes.trim();
-      if (question.notes && question.notes.length > 0) {
-        requests.push(
+      const notes = question.notes && question.notes.length > 0 ? question.notes + '\n' : '\n';
+      const notesStartIndex = currentIndex;
+      requests.push(
           {
             insertText: {
-              text: question.notes,
+              text: notes,
               location: { index: currentIndex }
             }
           },
           {
             updateParagraphStyle: {
-              range: { 
-                startIndex: currentIndex,
-                endIndex: currentIndex + question.notes.length
+              range: {
+                startIndex: notesStartIndex,
+                endIndex: notesStartIndex + notes.length - 1
               },
               paragraphStyle: { 
                 namedStyleType: 'NORMAL_TEXT',
                 indentFirstLine: {
-                  magnitude: 48,
+                  magnitude: 72,
                   unit: 'PT'
                 },
                 indentStart: {
-                  magnitude: 48,
+                  magnitude: 72,
                   unit: 'PT'
                 }
               },
               fields: 'namedStyleType,indentFirstLine,indentStart'
             },
           }
-        );
-        currentIndex += question.notes.length;
-      }
+        )
+        currentIndex += notes.length;
     }
 
     // push NUMBERED_UPPERROMAN bullets to questions
