@@ -53,17 +53,30 @@ class GoogleDriveService implements IGoogleDriveService {
     let currentIndex = 1;
     const titleRequestObject = this.createTitleRequestObject(company, currentIndex);
     currentIndex = titleRequestObject.newIndex;
-    const backgroundRequestObject = this.createBackgroundRequestObject({ company, jobTitle, interviewType, interviewerPosition, currentIndex });
+    
+    const backgroundRequestObject = this.createBackgroundRequestObject({ 
+      company, 
+      jobTitle, 
+      interviewType, 
+      interviewerPosition, 
+      currentIndex 
+    });
     currentIndex = backgroundRequestObject.newIndex;
+    
+    const analysisRequestObject = this.createAnalysisRequestObject({ 
+      analysis, 
+      currentIndex 
+    });
+    currentIndex = analysisRequestObject.newIndex;
+    
     const questionRequestObject = this.createQuestionRequestObject(questions, currentIndex);
     currentIndex = questionRequestObject.newIndex;
-    const analysisRequestObject = this.createAnalysisRequestObject({ analysis, currentIndex });
-    currentIndex = analysisRequestObject.newIndex;
+
     const requests = [
       ...titleRequestObject.requests,
       ...backgroundRequestObject.requests,
-      ...questionRequestObject.requests,
       ...analysisRequestObject.requests,
+      ...questionRequestObject.requests,
     ];
 
     await this.docsV1.documents.batchUpdate({
@@ -225,7 +238,8 @@ class GoogleDriveService implements IGoogleDriveService {
         ['Type', `: ${question.type}\n`],
         ['Difficulty', `: ${question.difficulty}\n`],
         ['Topic', `: ${question.topic}\n`],
-        ['Key Points', `: ${question.keyPoints.join(', ')}\n`]
+        ['Key Points', `: ${question.keyPoints.join(', ')}\n`],
+        ['Notes', `\n`]
       ];
       for (let [label, value] of metadataArray) {
         requests.push(
@@ -268,6 +282,71 @@ class GoogleDriveService implements IGoogleDriveService {
           },
         }); 
         currentIndex += label.length + value.length;
+      }
+      // push notes text
+      // const noteLabel = 'Notes:\n';   
+      // requests.push(
+      //   {
+      //     insertText: {
+      //       text: noteLabel,
+      //       location: { index: currentIndex }
+      //     }
+      //   },
+      //   {
+      //     updateParagraphStyle: {
+      //       range: { 
+      //         startIndex: currentIndex,
+      //         endIndex: currentIndex + noteLabel.length
+      //       },
+      //       paragraphStyle: { 
+      //         namedStyleType: 'NORMAL_TEXT',
+      //         indentFirstLine: {
+      //           magnitude: 36,
+      //           unit: 'PT'
+      //         },
+      //         indentStart: {
+      //           magnitude: 36,
+      //           unit: 'PT'
+      //         }
+      //       },
+      //       fields: 'namedStyleType,indentFirstLine,indentStart'
+      //     },
+      //   }
+      // );
+      // currentIndex += noteLabel.length;
+
+      // Only insert notes content if it's not empty
+      // const trimmedNotes = question.notes.trim();
+      if (question.notes && question.notes.length > 0) {
+        requests.push(
+          {
+            insertText: {
+              text: question.notes,
+              location: { index: currentIndex }
+            }
+          },
+          {
+            updateParagraphStyle: {
+              range: { 
+                startIndex: currentIndex,
+                endIndex: currentIndex + question.notes.length
+              },
+              paragraphStyle: { 
+                namedStyleType: 'NORMAL_TEXT',
+                indentFirstLine: {
+                  magnitude: 48,
+                  unit: 'PT'
+                },
+                indentStart: {
+                  magnitude: 48,
+                  unit: 'PT'
+                }
+              },
+              fields: 'namedStyleType,indentFirstLine,indentStart'
+            },
+          }
+        );
+        currentIndex += question.notes.length;
       }
     }
 
