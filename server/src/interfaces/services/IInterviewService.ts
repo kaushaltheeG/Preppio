@@ -20,15 +20,9 @@ export interface InterviewServiceParams {
   gptService: IGPTService;
 }
 
-export interface IGetQuestionsResponse {
-  company: string;
-  jobTitle: string;
-  interviewType: string;
-  interviewerPosition: string;
+export interface IInterviewSessionWithQuestions extends IInterviewSession {
   questions: IQuestion[];
   analysis: IAnalysis;
-  userId: string;
-  interviewSessionId: string;
 }
 
 export interface ICreateInterviewSession {
@@ -49,7 +43,7 @@ export interface ICreateInterviewSessionInput {
   extraInformation: string;
 }
 
-export interface IGetPopulatedInterviewSessionResponse extends IGetQuestionsResponse {
+export interface IGetPopulatedInterviewSessionResponse extends IInterviewSessionWithQuestions {
   resume: string;
   jobDescription: string;
   extraInformation: string;
@@ -57,7 +51,7 @@ export interface IGetPopulatedInterviewSessionResponse extends IGetQuestionsResp
 
 interface IInterviewService {
   createInterviewQuestionsPrompt(interviewRequest: ICreateInterviewQuestionPrompt): IPromptProps;
-  createInterviewSession(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse>;
+  createInterviewSession(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IInterviewSessionWithQuestions>;
   getUsersInterviewSessions(userId: string): Promise<IInterviewSession[]>;
   insertInterviewSession(interviewRequest: ICreateInterviewSession): Promise<IInterviewSession>;
   insertInterviewSessionInput(interviewRequest: ICreateInterviewSessionInput): Promise<IInterviewSessionInput>;

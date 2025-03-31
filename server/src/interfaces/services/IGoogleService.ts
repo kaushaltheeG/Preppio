@@ -1,12 +1,10 @@
 import { drive_v3 } from '@googleapis/drive'; 
 import { docs_v1 } from '@googleapis/docs';
-import { IGetQuestionsResponse } from './IInterviewService';
+import { IInterviewSessionWithQuestions } from './IInterviewService';
 
-
-export type InterviewContentType = Omit<IGetQuestionsResponse, 'serializedLexicalEditorState'>;
 export interface IInsertGoogleDocParams {
   newDoc: drive_v3.Schema$File;
-  interviewContent: InterviewContentType;
+  interviewContent: IInterviewSessionWithQuestions;
 }
 
 export interface IInsertGoogleDocObject {
@@ -35,7 +33,7 @@ export interface ICreateGoogleDocBackgroundRequestParams {
 }
 
 export interface ICreateGoogleDocAnalysisRequestParams {
-  analysis: IGetQuestionsResponse['analysis'];
+  analysis: IInterviewSessionWithQuestions['analysis'];
   currentIndex: number;
 }
 

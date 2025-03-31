@@ -6,8 +6,6 @@ import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { setNewInterviewSession } from '../../../store/slices/interviewSlice';
-import { setJobDescriptionInitialState } from '../../../store/slices/jobDescriptionSlice';
-import { setTuneInitialState } from '../../../store/slices/tuneSlice';
 import { setFormState, setClearOpenTabs } from '../../../store/slices/appSlice';
 
 interface NewSessionButtonProps {
@@ -18,8 +16,6 @@ const useNewSessionButtonHook = () => {
   const dispatch = useAppDispatch();
   const onClick = () => {
     dispatch(setNewInterviewSession());
-    dispatch(setJobDescriptionInitialState());
-    dispatch(setTuneInitialState());
     dispatch(setFormState('userInputs'));
     dispatch(setClearOpenTabs());
   };

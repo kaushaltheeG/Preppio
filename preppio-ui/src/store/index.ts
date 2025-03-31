@@ -1,8 +1,5 @@
 import { configureStore, Store } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
-import resumeReducer from './slices/resumeSlice'
-import jobDescriptionReducer from './slices/jobDescriptionSlice';
-import tuneReducer from './slices/tuneSlice';
 import appReducer from './slices/appSlice';
 import rootSaga from './sagas';
 import interviewReducer from './slices/interviewSlice';
@@ -19,10 +16,7 @@ export const store: Store<RootState> = configureStore({
     app: appReducer,
     auth: authReducer,
     googleDrive: googleDriveReducer,
-    jobDescription: jobDescriptionReducer,
     interview: interviewReducer,
-    resume: resumeReducer,
-    tune: tuneReducer,
   },
   preloadedState,
   middleware: (getDefaultMiddleware) => 

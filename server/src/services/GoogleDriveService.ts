@@ -86,7 +86,7 @@ class GoogleDriveService implements IGoogleDriveService {
 
     const googleDriveDto: IGoogleDrive = {
       userId: interviewContent.userId,
-      interviewSessionId: interviewContent.interviewSessionId,
+      interviewSessionId: interviewContent.id!,
       service: 'google_docs',
       documentId: newDoc.id!,
     }

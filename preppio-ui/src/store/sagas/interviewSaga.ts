@@ -1,9 +1,29 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { getInterviewQuestions, getInterviewSessions, getPopulatedInterviewSession, IGetQuestionsResponse, IInterviewSession, IGetPopulatedInterviewSessionResponse, IQuestion } from '../../services/interview/api';
-import { analyzeRequest, analyzeSuccess, analyzeFailure, setInterviewSessions, fetchInterviewSessions, fetchInterviewSession, updateQuestionDataFailure, setLoadingQuestions, setQuestions } from '../slices/interviewSlice';
-import { getJobDescription, setJobDescription } from '../slices/jobDescriptionSlice';
-import { getResume, setResume } from '../slices/resumeSlice';
-import { getInterviewType, getInterviewerPosition, getExtraInformation, setInterviewerPosition, setExtraInformation, setInterviewType } from '../slices/tuneSlice';
+import { getInterviewQuestions, getInterviewSessions, getPopulatedInterviewSession, IInterviewSession, IGetPopulatedInterviewSessionResponse, IQuestion, IInterviewSessionWithQuestions } from '../../services/interview/api';
+import {
+  analyzeRequest,
+  analyzeSuccess,
+  analyzeFailure, 
+  getInputJobDescription,
+  getInputResume,
+  getInputInterviewType,
+  getInputInterviewerPosition,
+  getInputExtraInformation,
+  setInterviewSessions,
+  fetchInterviewSessions,
+  fetchInterviewSession,
+  updateQuestionDataFailure,
+  setLoadingQuestions,
+  setQuestions,
+  setInputInterviewType,
+  setInputInterviewerPosition,
+  setInputExtraInformation,
+  setInputJobDescription,
+  setInputResume
+} from '../slices/interviewSlice';
+// import { getJobDescription, setJobDescription } from '../slices/jobDescriptionSlice';
+// import { getResume, setResume } from '../slices/resumeSlice';
+// import { getInterviewType, getInterviewerPosition, getExtraInformation, setInterviewerPosition, setExtraInformation, setInterviewType } from '../slices/tuneSlice';
 import { setFormState } from '../slices/appSlice';
 import { setSession } from '../slices/authSlice';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -12,13 +32,13 @@ import { updateQuestionData } from '../slices/interviewSlice';
 
 function* analyzeInterviewSaga() {
   try {
-    const jobDescription: string = yield select(getJobDescription);
-    const resume: string = yield select(getResume);
-    const interviewType: string = yield select(getInterviewType);
-    const interviewerPosition: string = yield select(getInterviewerPosition);
-    const extraInformation: string = yield select(getExtraInformation);
+    const jobDescription: string = yield select(getInputJobDescription);
+    const resume: string = yield select(getInputResume);
+    const interviewType: string = yield select(getInputInterviewType);
+    const interviewerPosition: string = yield select(getInputInterviewerPosition);
+    const extraInformation: string = yield select(getInputExtraInformation);
 
-    const response: IGetQuestionsResponse | null = yield call(getInterviewQuestions, {
+    const response: IInterviewSessionWithQuestions | null = yield call(getInterviewQuestions, {
       jobDescription,
       resume,
       interviewType,
@@ -48,14 +68,15 @@ function* getPopulatedInterviewSessionSaga(action: PayloadAction<{ interviewSess
   if (interviewSession === null) {
     throw new Error('Failed to get interview session');
   }
+  console.log('interviewSession', interviewSession);
   yield put(analyzeSuccess(interviewSession));
-  yield put(setInterviewType(interviewSession.interviewType));
-  yield put(setInterviewerPosition(interviewSession.interviewerPosition));
-  yield put(setExtraInformation(interviewSession.extraInformation));
-  yield put(setJobDescription(interviewSession.jobDescription));
-  yield put(setResume(interviewSession.resume));
-  yield put(setQuestions(interviewSession.questions));
-  yield put(analyzeSuccess(interviewSession));
+  yield put(setInputInterviewType(interviewSession.interviewType));
+  yield put(setInputInterviewerPosition(interviewSession.interviewerPosition));
+  yield put(setInputExtraInformation(interviewSession.extraInformation));
+  yield put(setInputJobDescription(interviewSession.jobDescription));
+  yield put(setInputResume(interviewSession.resume));
+  // yield put(setQuestions(interviewSession.questions));
+  // yield put(analyzeSuccess(interviewSession));
 }
 
 function* updateQuestionDataSaga(action: PayloadAction<{ question: IQuestion }>) {

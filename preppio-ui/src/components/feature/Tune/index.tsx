@@ -3,25 +3,27 @@ import Input from "../../ui/Input";
 import TextBox from "../../ui/TextBox";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
-import { setInterviewType, setInterviewerPosition, setExtraInformation } from "../../../store/slices/tuneSlice";
+import { getInputInterviewType, getInputInterviewerPosition, getInputExtraInformation, setInputInterviewType, setInputInterviewerPosition, setInputExtraInformation } from '../../../store/slices/interviewSlice';
 
 const Tune: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { interviewType, interviewerPosition, extraInformation } = useAppSelector((state) => state.tune);
+  const interviewType = useAppSelector(getInputInterviewType);
+  const interviewerPosition = useAppSelector(getInputInterviewerPosition);
+  const extraInformation = useAppSelector(getInputExtraInformation);
 
   const handleInterviewTypeChange = React.useCallback((value: string | React.ChangeEvent<HTMLInputElement>) => {
     const newValue = typeof value === 'string' ? value : value.target.value;
-    dispatch(setInterviewType(newValue));
+    dispatch(setInputInterviewType(newValue));
   }, [dispatch]);
 
   const handleInterviewerPositionChange = React.useCallback((value: string | React.ChangeEvent<HTMLInputElement>) => {
     const newValue = typeof value === 'string' ? value : value.target.value;
-    dispatch(setInterviewerPosition(newValue));
+    dispatch(setInputInterviewerPosition(newValue));
   }, [dispatch]);
 
   const handleExtraInformationChange = React.useCallback((value: string | React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = typeof value === 'string' ? value : value.target.value;
-    dispatch(setExtraInformation(newValue));
+    dispatch(setInputExtraInformation(newValue));
   }, [dispatch]);
 
   return (

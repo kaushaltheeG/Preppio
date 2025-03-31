@@ -1,39 +1,57 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAnalysis, IQuestion, IGetQuestionsResponse } from '../../services/interview/api';
+import { IAnalysis, IQuestion, IInterviewSessionWithQuestions } from '../../services/interview/api';
 import { RootState } from '../types';
-import { InterviewContentType } from '../../services/googledrive/api';
 import { IInterviewSession } from '../../services/interview/api';
 export interface IInterviewState {
-  interviewSessions: IInterviewSession[];
-  analysis: IAnalysis;
-  company: string;
-  error: string | null;
-  isLoading: boolean;
-  interviewerPosition: string;
-  interviewType: string;
-  jobTitle: string;
-  questions: IQuestion[];
-  userId: string;
-  interviewSessionId: string;
+  sessions: IInterviewSession[];
+  activeSession: {
+    data: IInterviewSessionWithQuestions;
+    error: string | Error | null;
+    isLoading: boolean;
+  };
+  sessionInputs: {
+    resume: string;
+    jobDescription: string;
+    interviewType: string;
+    interviewerPosition: string;
+    extraInformation: string;
+    error: string | Error | null;
+    isLoading: boolean;
+  }
 }
 
 
 const initialState: IInterviewState = {
-  interviewSessions: [],
-  analysis: {
-    strengthAreas: [],
-    gapAreas: [],
-    recommendedFocus: [],
+  activeSession: {
+    data: {
+      id: '',
+      userId: '',
+      company: '',
+      jobTitle: '',
+      interviewerPosition: '',
+      interviewType: '',
+      questions: [],
+      analysis: {
+        strengthAreas: [],
+        gapAreas: [],
+        recommendedFocus: [],
+      },
+      createdAt: '',
+      updatedAt: '',
+    },
+    error: null,
+    isLoading: false,
   },
-  company: '',
-  error: null,
-  isLoading: false,
-  interviewerPosition: '',
-  interviewType: '',
-  jobTitle: '',
-  questions: [],
-  userId: '',
-  interviewSessionId: '',
+  sessions: [],
+  sessionInputs: {
+    resume: '',
+    jobDescription: '',
+    interviewType: '',
+    interviewerPosition: '',
+    extraInformation: '',
+    error: null,
+    isLoading: false,
+  },
 };
 
 const interviewSlice = createSlice({
@@ -41,53 +59,66 @@ const interviewSlice = createSlice({
   initialState,
   reducers: {
     analyzeRequest: (state) => {
-      state.isLoading = true;
-      state.error = null;
+      state.sessionInputs.isLoading = true;
+      state.sessionInputs.error = null;
     },
-    analyzeSuccess: (state, action: PayloadAction<IGetQuestionsResponse>) => {
-      state.isLoading = false;
-      state.error = null;
-      state.questions = action.payload.questions;
-      state.analysis = action.payload.analysis;
-      state.company = action.payload.company;
-      state.jobTitle = action.payload.jobTitle;
-      state.interviewerPosition = action.payload.interviewerPosition;
-      state.interviewType = action.payload.interviewType;
-      state.userId = action.payload.userId;
-      state.interviewSessionId = action.payload.interviewSessionId;
+    analyzeSuccess: (state, action: PayloadAction<IInterviewSessionWithQuestions>) => {
+      state.sessionInputs.isLoading = false;
+      console.log('action.payload', action.payload);
+      state.activeSession.data = action.payload;
+      console.log('state.activeSession', state.activeSession);
     },
     analyzeFailure: (state, action: PayloadAction<string>) => {
-      state.isLoading = false;
-      state.error = action.payload;
+      state.sessionInputs.isLoading = false;
+      state.sessionInputs.error = action.payload;
     },
     updateQuestionDataFailure: (state, action: PayloadAction<string>) => {
-      state.isLoading = false;
-      state.error = action.payload;
+      state.activeSession.isLoading = false;
+      state.activeSession.error = action.payload;
     },
     setQuestions: (state, action: PayloadAction<IQuestion[]>) => {
-      state.questions = action.payload;
+      state.activeSession.data.questions = action.payload;
     },
     setAnalysis: (state, action: PayloadAction<IAnalysis>) => {
-      state.analysis = action.payload;
+      state.activeSession.data.analysis = action.payload;
     },
     setLoadingQuestions: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload;
+      state.activeSession.isLoading = action.payload;
     },
     setInterviewSessions: (state, action: PayloadAction<IInterviewSession[]>) => {
-      state.interviewSessions = action.payload;
+      state.sessions = action.payload;
     },
     setNewInterviewSession: (state) => {
-      state.questions = [];
-      state.analysis = {
+      state.activeSession.data.questions = [];
+      state.activeSession.data.analysis = {
         strengthAreas: [],
         gapAreas: [],
         recommendedFocus: [],
       };
-      state.company = '';
-      state.jobTitle = '';
-      state.interviewerPosition = '';
-      state.interviewType = '';
-      state.interviewSessionId = '';
+      state.activeSession.data.company = '';
+      state.activeSession.data.jobTitle = '';
+      state.activeSession.data.interviewerPosition = '';
+      state.activeSession.data.interviewType = '';
+      state.activeSession.data.id = '';
+      state.sessionInputs.jobDescription = '';
+      state.sessionInputs.interviewType = '';
+      state.sessionInputs.interviewerPosition = '';
+      state.sessionInputs.extraInformation = '';
+    },
+    setInputJobDescription: (state, action: PayloadAction<string>) => {
+      state.sessionInputs.jobDescription = action.payload;
+    },
+    setInputResume: (state, action: PayloadAction<string>) => {
+      state.sessionInputs.resume = action.payload;
+    },
+    setInputInterviewType: (state, action: PayloadAction<string>) => {
+      state.sessionInputs.interviewType = action.payload;
+    },
+    setInputInterviewerPosition: (state, action: PayloadAction<string>) => {
+      state.sessionInputs.interviewerPosition = action.payload;
+    },
+    setInputExtraInformation: (state, action: PayloadAction<string>) => {
+      state.sessionInputs.extraInformation = action.payload;
     },
     setInterviewInitialState: () => {
       return { ...initialState };
@@ -101,22 +132,22 @@ export const fetchInterviewSession = createAction<{ interviewSessionId: string }
 export const updateQuestionData = createAction<{ question: IQuestion }>('interview/updateQuestionData');
 
 // Selectors
-export const getQuestions = (state: RootState) => state.interview.questions;
-export const getAnalysis = (state: RootState) => state.interview.analysis;
-export const getIsLoadingQuestions = (state: RootState) => state.interview.isLoading;
-export const getCompanyName = (state: RootState) => state.interview.company;
-export const getJobTitle = (state: RootState) => state.interview.jobTitle;
-export const getInterviewerPosition = (state: RootState) => state.interview.interviewerPosition;
-export const getInterviewType = (state: RootState) => state.interview.interviewType;
-export const getUserId = (state: RootState) => state.interview.userId;
-export const getActiveInterviewSessionId = (state: RootState) => state.interview.interviewSessionId;
-export const getInterviewContent = (state: RootState): InterviewContentType => {
+export const getQuestions = (state: RootState) => state.interview.activeSession.data.questions;
+export const getAnalysis = (state: RootState) => state.interview.activeSession.data.analysis;
+export const getIsLoadingQuestions = (state: RootState) => state.interview.activeSession.isLoading;
+export const getCompanyName = (state: RootState) => state.interview.activeSession.data.company;
+export const getJobTitle = (state: RootState) => state.interview.activeSession.data.jobTitle;
+export const getActiveInterviewerPosition = (state: RootState) => state.interview.activeSession.data.interviewerPosition;
+export const getActiveInterviewType = (state: RootState) => state.interview.activeSession.data.interviewType;
+export const getUserId = (state: RootState) => state.interview.activeSession.data.userId;
+export const getActiveInterviewSessionId = (state: RootState) => state.interview.activeSession.data.id;
+export const getInterviewContent = (state: RootState): IInterviewSessionWithQuestions => {
   const questions = getQuestions(state);
   const analysis = getAnalysis(state);
   const company = getCompanyName(state);
   const jobTitle = getJobTitle(state);
-  const interviewerPosition = getInterviewerPosition(state);
-  const interviewType = getInterviewType(state);
+  const interviewerPosition = getActiveInterviewerPosition(state);
+  const interviewType = getActiveInterviewType(state);
 
   return {
     questions,
@@ -126,10 +157,26 @@ export const getInterviewContent = (state: RootState): InterviewContentType => {
     interviewerPosition,
     interviewType,
     userId: getUserId(state),
-    interviewSessionId: getActiveInterviewSessionId(state),
+    id: getActiveInterviewSessionId(state),
+    createdAt: getActiveInterviewSessionId(state),
+    updatedAt: getActiveInterviewSessionId(state),
   };
 };
-export const getInterviewSessions = (state: RootState) => state.interview.interviewSessions;
+export const getInterviewSessions = (state: RootState) => state.interview.sessions;
+export const getSessionInputs = (state: RootState) => state.interview.sessionInputs;
+export const hasRequiredInterviewInformation = (state: RootState) => {
+  return Boolean(
+    state.interview.sessionInputs.interviewType &&
+    state.interview.sessionInputs.interviewerPosition &&
+    state.interview.sessionInputs.jobDescription &&
+    state.interview.sessionInputs.resume
+  );
+}
+export const getInputJobDescription = (state: RootState) => state.interview.sessionInputs.jobDescription;
+export const getInputResume = (state: RootState) => state.interview.sessionInputs.resume;
+export const getInputInterviewType = (state: RootState) => state.interview.sessionInputs.interviewType;
+export const getInputInterviewerPosition = (state: RootState) => state.interview.sessionInputs.interviewerPosition;
+export const getInputExtraInformation = (state: RootState) => state.interview.sessionInputs.extraInformation;  
 
 export const {
   setQuestions,
@@ -137,6 +184,11 @@ export const {
   analyzeRequest,
   analyzeSuccess,
   analyzeFailure,
+  setInputJobDescription,
+  setInputResume,
+  setInputInterviewType,
+  setInputInterviewerPosition,
+  setInputExtraInformation,
   setInterviewInitialState,
   setInterviewSessions,
   setNewInterviewSession,

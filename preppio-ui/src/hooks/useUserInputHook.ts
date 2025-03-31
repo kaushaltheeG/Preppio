@@ -1,16 +1,13 @@
 import React from 'react';
 import { useAppDispatch } from './useAppDispatch';
-import { hasResume } from '../store/slices/resumeSlice';
-import { hasJobDescription } from '../store/slices/jobDescriptionSlice';
-import { hasRequiredTuneInformation } from '../store/slices/tuneSlice';
 import { useAppSelector } from './useAppSelector';
-import { analyzeRequest, getIsLoadingQuestions } from '../store/slices/interviewSlice';
+import { analyzeRequest, getIsLoadingQuestions, getInputResume, getInputJobDescription, hasRequiredInterviewInformation } from '../store/slices/interviewSlice';
 
 const useUserInputHook = () => {
   const dispatch = useAppDispatch();
-  const hasResumeEntered = useAppSelector(hasResume);
-  const hasJobDescriptionEntered = useAppSelector(hasJobDescription);
-  const hasRequiredTuneInfo = useAppSelector(hasRequiredTuneInformation);
+  const hasResumeEntered = Boolean(useAppSelector(getInputResume));
+  const hasJobDescriptionEntered = Boolean(useAppSelector(getInputJobDescription));
+  const hasRequiredTuneInfo = useAppSelector(hasRequiredInterviewInformation);
   const isGeneratingQuestions = useAppSelector(getIsLoadingQuestions);
   const [selectedTab, setSelectedTab] = React.useState(0);
 

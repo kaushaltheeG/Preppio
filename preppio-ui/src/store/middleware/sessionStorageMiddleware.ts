@@ -16,9 +16,9 @@ export const loadStateFromSessionStorage = (): Partial<RootState> => {
         openTabs: new Map(Object.entries(state.app?.openTabs || {}))
       },
       interview: state.interview || {},
-      resume: state.resume || {},
-      jobDescription: state.jobDescription || {},
-      tune: state.tune || {}
+      // resume: state.resume || {},
+      // jobDescription: state.jobDescription || {},
+      // tune: state.tune || {}
     };
   } catch (err) {
     console.error('Error loading state from session storage:', err);
@@ -37,9 +37,9 @@ const sessionStorageMiddleware: Middleware = (store) => (next) => (action: any) 
         openTabs: Object.fromEntries(state.app.openTabs)
       },
       interview: state.interview,
-      resume: state.resume,
-      jobDescription: state.jobDescription,
-      tune: state.tune
+      // resume: state.resume,
+      // jobDescription: state.jobDescription,
+      // tune: state.tune
     });
     sessionStorage.setItem(APP_STATE_KEY, serializedState);
   } catch (err) {

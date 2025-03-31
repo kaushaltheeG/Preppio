@@ -1,16 +1,15 @@
 import React from 'react';
 import PasteOnlyTextBox from '../../ui/PasteOnlyTextBox';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
-import { useAppSelector } from '../../../hooks/useAppSelector'; 
-import { setResume } from '../../../store/slices/resumeSlice';
-
+import { useAppSelector } from '../../../hooks/useAppSelector';
+import { getInputResume, setInputResume } from '../../../store/slices/interviewSlice';
 const Resume: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { content: resumeContent } = useAppSelector((state) => state.resume);
+  const resumeContent = useAppSelector(getInputResume);
 
   const handleResumeChange = (value: string | React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = typeof value === 'string' ? value : value.target.value;
-    dispatch(setResume(newValue));
+    dispatch(setInputResume(newValue));
   };
 
   return (

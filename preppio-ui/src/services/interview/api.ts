@@ -42,6 +42,12 @@ export interface IInterviewSession {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IInterviewSessionWithQuestions extends IInterviewSession {
+  questions: IQuestion[];
+  analysis: IAnalysis;
+}
+
 export interface IGetQuestionsResponse {
   company: string;
   jobTitle: string;
@@ -63,7 +69,7 @@ export interface IInterviewSessionInput {
   interviewerPosition: string;
   extraInformation: string;
 }
-export interface IGetPopulatedInterviewSessionResponse extends IGetQuestionsResponse {
+export interface IGetPopulatedInterviewSessionResponse extends IInterviewSessionWithQuestions {
   resume: string;
   jobDescription: string;
   extraInformation: string;

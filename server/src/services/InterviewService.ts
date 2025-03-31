@@ -1,5 +1,5 @@
 import IGPTService, { IPromptProps } from "../interfaces/services/IGPTService";
-import IInterviewService, { ICreateInterviewQuestionPrompt, IGetQuestionsResponse, ICreateInterviewSession, ICreateInterviewSessionInput, IGetPopulatedInterviewSessionResponse } from "../interfaces/services/IInterviewService";
+import IInterviewService, { ICreateInterviewQuestionPrompt, ICreateInterviewSession, ICreateInterviewSessionInput, IGetPopulatedInterviewSessionResponse, IInterviewSessionWithQuestions } from "../interfaces/services/IInterviewService";
 import { SupabaseClient } from "@supabase/supabase-js";
 import IInterviewSession from "../interfaces/models/IInterviewSession";
 import InterviewSession from "../models/interviewSession";
@@ -94,14 +94,14 @@ class InterviewService implements IInterviewService {
     };
   }
 
-  async createInterviewSession(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IGetQuestionsResponse> {
+  async createInterviewSession(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IInterviewSessionWithQuestions> {
     const prompt = this.createInterviewQuestionsPrompt(interviewRequest);
     const response = await this.gptService.promptModel(prompt);
     if (!response || !response.choices[0].message.content) {
       throw new Error('No response from GPT');
     }
 
-    const aiResponse = this.gptService.cleanResponse<IGetQuestionsResponse>(response.choices[0].message.content);
+    const aiResponse = this.gptService.cleanResponse<IInterviewSessionWithQuestions>(response.choices[0].message.content);
 
     // insert interview session data
     const interviewSessionDto = {
@@ -143,7 +143,7 @@ class InterviewService implements IInterviewService {
     return this.createInterviewSessionResponse(questions, analysisData, interviewSessionData);
   }
 
-  createInterviewSessionResponse(questions: IQuestion[], analysis: IAnalysis, interviewSessionData: IInterviewSession): IGetQuestionsResponse {
+  createInterviewSessionResponse(questions: IQuestion[], analysis: IAnalysis, interviewSessionData: IInterviewSession): IInterviewSessionWithQuestions {
     return {
       company: interviewSessionData.company,
       jobTitle: interviewSessionData.jobTitle,
@@ -152,7 +152,7 @@ class InterviewService implements IInterviewService {
       questions,
       analysis,
       userId: interviewSessionData.userId,
-      interviewSessionId: interviewSessionData.id!
+      id: interviewSessionData.id!
     }
   }
 

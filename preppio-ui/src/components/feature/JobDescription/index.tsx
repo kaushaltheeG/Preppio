@@ -1,15 +1,15 @@
 import React from 'react';
 import PasteOnlyTextBox from '../../ui/PasteOnlyTextBox';
-import { setJobDescription } from '../../../store/slices/jobDescriptionSlice';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { useAppSelector } from '../../../hooks/useAppSelector';
+import { getInputJobDescription, setInputJobDescription } from '../../../store/slices/interviewSlice';
 
 const JobDescription: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { content: jobDescriptionContent } = useAppSelector((state) => state.jobDescription);
+  const jobDescriptionContent = useAppSelector(getInputJobDescription);
   const handleJobDescriptionChange = (value: string | React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = typeof value === 'string' ? value : value.target.value;
-    dispatch(setJobDescription(newValue));
+    dispatch(setInputJobDescription(newValue));
   };
 
   return (

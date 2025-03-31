@@ -12,9 +12,6 @@ import {
   logoutUser,
 } from '../slices/authSlice';
 import { setAppInitialState } from  '../slices/appSlice';
-import { setJobDescriptionInitialState } from '../slices/jobDescriptionSlice';
-import { setResumeInitialState } from '../slices/resumeSlice';
-import { setTuneInitialState } from '../slices/tuneSlice';
 import { setInterviewInitialState } from '../slices/interviewSlice';
 import { setGoogleDriveInitialState } from '../slices/googleDriveSlice';
 import { clearSessionStorage } from '../middleware/sessionStorageMiddleware';
@@ -31,9 +28,6 @@ function* handleCheckSession() {
 function* handleLogout() {
   yield call([supabase.auth, 'signOut'], {scope: 'local'});
   yield put(setAppInitialState());
-  yield put(setJobDescriptionInitialState());
-  yield put(setResumeInitialState());
-  yield put(setTuneInitialState());
   yield put(setInterviewInitialState());
   yield put(setGoogleDriveInitialState());
   yield call(clearSessionStorage);
