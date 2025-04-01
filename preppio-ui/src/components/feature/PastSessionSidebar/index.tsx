@@ -8,6 +8,7 @@ import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { fetchInterviewSession, getInterviewSessions, getActiveInterviewSessionId } from '../../../store/slices/interviewSlice';
 import { NewSessionButton, NewSessionIconButton, useNewSessionButtonHook } from './NewSessionButton';
 import { removeOpenTab, setFormState } from '../../../store/slices/appSlice';
+import ContactLinks from '../ContactLinks';
 
 const PastSessionSidebar: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -75,13 +76,18 @@ const PastSessionSidebar: React.FC = () => {
           </div>
         )}
         {!isOpen && (
-          <div className="flex flex-col flex-1 h-full">
-            <NewSessionIconButton onClick={onClickNewSession} />
-            <Tooltip title="View Past Sessions" placement="right">
-              <IconButton onClick={() => setIsOpen(true)}>
-                <HistoryIcon />
-              </IconButton>
-            </Tooltip>
+          <div className="flex flex-col flex-1 h-full justify-between items-center pb-4">
+            <div className="w-auto h-auto flex flex-col justify-between items-center">
+              <NewSessionIconButton onClick={onClickNewSession} />
+              <Tooltip title="View Past Sessions" placement="right">
+                <IconButton onClick={() => setIsOpen(true)}>
+                  <HistoryIcon />
+                </IconButton>
+              </Tooltip>
+            </div>
+            <div className="flex flex-col justify-center items-center">
+              <ContactLinks />
+            </div>
           </div>
         )}
       </div>

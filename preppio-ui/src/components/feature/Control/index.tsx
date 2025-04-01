@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { getFormState } from "../../../store/slices/appSlice";
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import UserInputs from "./UserInputs";
 import Questions from "../Questions";
 import Tabs from "./Tabs";
