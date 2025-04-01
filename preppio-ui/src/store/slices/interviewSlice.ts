@@ -70,6 +70,9 @@ const interviewSlice = createSlice({
       state.sessionInputs.isLoading = false;
       state.sessionInputs.error = action.payload;
     },
+    setSessionInputsError: (state, action: PayloadAction<string>) => {
+      state.sessionInputs.error = action.payload;
+    },
     updateQuestionDataFailure: (state, action: PayloadAction<string>) => {
       state.activeSession.isLoading = false;
       state.activeSession.error = action.payload;
@@ -102,6 +105,8 @@ const interviewSlice = createSlice({
       state.sessionInputs.interviewType = '';
       state.sessionInputs.interviewerPosition = '';
       state.sessionInputs.extraInformation = '';
+      state.sessionInputs.error = '';
+      state.activeSession.error = '';
     },
     setInputJobDescription: (state, action: PayloadAction<string>) => {
       state.sessionInputs.jobDescription = action.payload;
@@ -192,6 +197,7 @@ export const {
   setInterviewSessions,
   setNewInterviewSession,
   updateQuestionDataFailure,
+  setSessionInputsError,
   setLoadingQuestions,
 } = interviewSlice.actions;
 

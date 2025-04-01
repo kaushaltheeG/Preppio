@@ -2,6 +2,7 @@ import React from 'react';
 import { useAppDispatch } from './useAppDispatch';
 import { useAppSelector } from './useAppSelector';
 import { analyzeRequest, getIsLoadingQuestions, getInputResume, getInputJobDescription, hasRequiredInterviewInformation } from '../store/slices/interviewSlice';
+import { setFormState } from '../store/slices/appSlice';
 
 const useUserInputHook = () => {
   const dispatch = useAppDispatch();
@@ -16,6 +17,7 @@ const useUserInputHook = () => {
   ), [hasResumeEntered, hasJobDescriptionEntered, hasRequiredTuneInfo]);
 
   const handleGenerate = React.useCallback(() => {
+    dispatch(setFormState('questions'));
     dispatch(analyzeRequest());
   }, [dispatch]);
 

@@ -63,10 +63,9 @@ function* analyzeInterviewSaga() {
       extraInformation,
     }, accessToken);
     if (response === null) {
-      yield put(analyzeFailure('Failed to generate potential interview questions'));
-      return;
+      throw new Error('Failed to generate potential interview questions');
     }
-    
+    console.log('hit')
     yield put(analyzeSuccess(response));
     yield put(setFormState('questions'));
     yield call(getInterviewSessionsSaga);
