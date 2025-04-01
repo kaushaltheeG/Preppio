@@ -11,6 +11,7 @@ export interface AppState {
   errorMessage: string;
   formState: FormState;
   openTabs: Map<string, string>;
+  isMobileView: boolean;
 }
 
 const initialState: AppState = {
@@ -18,6 +19,7 @@ const initialState: AppState = {
   errorMessage: '',
   formState: 'userInputs',
   openTabs: new Map(),
+  isMobileView: false,
 };
 
 export const appSlice = createSlice({
@@ -45,6 +47,9 @@ export const appSlice = createSlice({
     setAppInitialState: () => {
       return { ...initialState };
     },
+    setIsMobileView: (state, action: PayloadAction<boolean>) => {
+      state.isMobileView = action.payload;
+    },
   },
 });
 
@@ -57,6 +62,7 @@ export const onUserInputs = (state: RootState) => state.app.formState === 'userI
 export const onIframeSelector = (state: RootState) => state.app.formState === 'iframe';
 export const getOpenTabs = (state: RootState) => state.app.openTabs;
 export const getOpenTabsArray = (state: RootState) => Array.from(state.app.openTabs.entries());
+export const getIsMobileView = (state: RootState) => state.app.isMobileView;
 
 export const { 
   setFormState, 
@@ -65,7 +71,8 @@ export const {
   setOpenTabs,
   setClearOpenTabs,
   closeOpenTab,
-  setAppInitialState
+  setAppInitialState,
+  setIsMobileView
 } = appSlice.actions;
 
 export default appSlice.reducer;

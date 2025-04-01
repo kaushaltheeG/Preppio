@@ -8,6 +8,7 @@ import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { fetchInterviewSession, getInterviewSessions, getActiveInterviewSessionId } from '../../../store/slices/interviewSlice';
 import { NewSessionButton, NewSessionIconButton, useNewSessionButtonHook } from './NewSessionButton';
 import { setFormState } from '../../../store/slices/appSlice';
+
 const PastSessionSidebar: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const pastSessions = useAppSelector((getInterviewSessions));
@@ -41,7 +42,7 @@ const PastSessionSidebar: React.FC = () => {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -50,7 +51,7 @@ const PastSessionSidebar: React.FC = () => {
       <div
         className={`fixed top-12 left-0 h-[calc(100vh-3rem)] bg-white shadow-lg transform transition-all duration-300 ease-in-out z-50 ${
           isOpen ? 'translate-x-0 w-[280px]' : '-translate-x-[calc(280px-64px)] w-16'
-        } lg:translate-x-0 lg:static lg:h-full`}
+        } md:translate-x-0 md:static md:h-full`}
       >
         {isOpen && (
           <div className="h-full flex flex-col">
