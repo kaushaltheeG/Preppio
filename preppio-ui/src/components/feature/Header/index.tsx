@@ -21,10 +21,21 @@ const Header: React.FC = () => {
 
   const renderSubText = React.useMemo(() => {
     if (hasSession && loggedInUser && companyName) {
-      return `Let's get prepped for your upcoming interview at ${companyName}, ${firstName}!`;
+      return (
+        <>
+          Let's get prepped for your upcoming interview at{' '}
+          <span className="text-blue-600">{companyName}</span>,{' '}
+          <span className="text-blue-500">{firstName}</span>!
+        </>
+      );
     }
     if (hasSession && loggedInUser) {
-      return `Let's get prepped for your upcoming interview, ${firstName}!`;
+      return (
+        <>
+          Let's get prepped for your upcoming interview,{' '}
+          <span className="text-blue-500">{firstName}</span>!
+        </>
+      );
     }
     return 'Get Prepped for Your Upcoming Interview';
   }, [hasSession, loggedInUser, firstName, companyName]);
