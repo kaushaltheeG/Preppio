@@ -80,7 +80,7 @@ export interface ISerializedEditorState {
   };
 }
 
-export const getInterviewQuestions = async (requestBody: IGetInterviewQuestionsRequest, accessToken: string): Promise<IGetQuestionsResponse | null> => {
+export const createInterviewQuestions = async (requestBody: IGetInterviewQuestionsRequest, accessToken: string): Promise<IGetQuestionsResponse | null> => {
   try {
     const response = await axios.post<IGetQuestionsResponse>(
       `${API_URL}/api/interview/questions`,
@@ -92,8 +92,8 @@ export const getInterviewQuestions = async (requestBody: IGetInterviewQuestionsR
       }
     );
     return response.data;
-  } catch (error) {
-    return null;
+  } catch (error: any) {
+    throw new Error(error.response.data.error || 'Failed to generate potential interview questions');
   }
 };
 
@@ -113,6 +113,7 @@ export const getInterviewSessions = async (): Promise<IInterviewSession[]> => {
     );
     return response.data;
   } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -134,6 +135,7 @@ export const getPopulatedInterviewSession = async (interviewSessionId: string): 
     );
     return response.data;
   } catch (error) {
+    console.error(error);
     return null;
   }
 };

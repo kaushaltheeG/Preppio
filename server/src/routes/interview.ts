@@ -5,6 +5,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { createAuthMiddleware } from '../middleware/auth';
 import QuestionService from '../services/QuestionService';
 import AnalysisService from '../services/AnalysisService';
+import createRequestLimitMiddleware from '../middleware/requestLimit';
 interface InterviewRequest {
   jobDescription: string;
   resume: string;
@@ -20,6 +21,7 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
   const analysisService = new AnalysisService(supabase);
   const interviewService = new InterviewService(gptService, supabase, questionService, analysisService);
   const authMiddleware = createAuthMiddleware(supabase);
+  const requestLimitMiddleware = createRequestLimitMiddleware(supabase);
 
   router.get('/user/sessions', authMiddleware, async (req: Request, res: Response) => {
     const userId = req.user.id;
@@ -54,7 +56,7 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
   });
   
 
-  router.post('/questions', authMiddleware, async (req: Request<{}, {}, InterviewRequest>, res: Response) => {
+  router.post('/questions', authMiddleware, requestLimitMiddleware, async (req: Request<{}, {}, InterviewRequest>, res: Response) => {
     const { jobDescription, resume, extraNotes, interviewType, interviewerPosition } = req.body;
     const userId = req.user.id;
     if (!jobDescription) {

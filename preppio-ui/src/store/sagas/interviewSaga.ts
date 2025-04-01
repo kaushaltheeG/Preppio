@@ -1,5 +1,5 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { getInterviewQuestions, getInterviewSessions, getPopulatedInterviewSession, IInterviewSession, IGetPopulatedInterviewSessionResponse, IQuestion, IInterviewSessionWithQuestions } from '../../services/interview/api';
+import { getInterviewSessions, getPopulatedInterviewSession, IInterviewSession, IGetPopulatedInterviewSessionResponse, IQuestion, IInterviewSessionWithQuestions, createInterviewQuestions } from '../../services/interview/api';
 import {
   analyzeRequest,
   analyzeSuccess,
@@ -55,16 +55,16 @@ function* analyzeInterviewSaga() {
     }
     const extraInformation: string = yield select(getInputExtraInformation);
 
-    const response: IInterviewSessionWithQuestions | null = yield call(getInterviewQuestions, {
+    const response: IInterviewSessionWithQuestions = yield call(createInterviewQuestions, {
       jobDescription,
       resume,
       interviewType,
       interviewerPosition,
       extraInformation,
     }, accessToken);
-    if (response === null) {
-      throw new Error('Failed to generate potential interview questions');
-    }
+    // if (response === null) {
+    //   throw new Error('Failed to generate potential interview questions');
+    // }
 
     yield put(analyzeSuccess(response));
     yield put(setFormState('questions'));
