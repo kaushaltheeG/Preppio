@@ -30,28 +30,23 @@ function* analyzeInterviewSaga() {
   try {
     const accessToken: string = yield select(getSessionToken);
     if (!accessToken) {
-      yield put(analyzeFailure('Login to Generate Potential Interview Questions!'));
-      return;
+      throw new Error('Login to Generate Potential Interview Questions!');
     }
     const resume: string = yield select(getInputResume);
     if (resume === '') {
-      yield put(analyzeFailure('Resume is required'));
-      return;
+      throw new Error('Resume is required');
     }
     const jobDescription: string = yield select(getInputJobDescription);
     if (jobDescription === '') {
-      yield put(analyzeFailure('Job description is required'));
-      return;
+      throw new Error('Job description is required');
     }
     const interviewType: string = yield select(getInputInterviewType);
     if (interviewType === '') {
-      yield put(analyzeFailure('Interview type is required'));
-      return;
+      throw new Error('Interview type is required');
     }
     const interviewerPosition: string = yield select(getInputInterviewerPosition);
     if (interviewerPosition === '') {
-      yield put(analyzeFailure('Interviewer position is required'));
-      return;
+      throw new Error('Interviewer position is required');
     }
     const extraInformation: string = yield select(getInputExtraInformation);
 
@@ -62,9 +57,6 @@ function* analyzeInterviewSaga() {
       interviewerPosition,
       extraInformation,
     }, accessToken);
-    // if (response === null) {
-    //   throw new Error('Failed to generate potential interview questions');
-    // }
 
     yield put(analyzeSuccess(response));
     yield put(setFormState('questions'));

@@ -1,6 +1,6 @@
 import React from  'react';
 import { Auth } from '@supabase/auth-ui-react';
-import { supabase } from '../../../services/supabase';
+import { supabase } from '../../services/supabase';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 
 const GoogleLogin: React.FC = () => {

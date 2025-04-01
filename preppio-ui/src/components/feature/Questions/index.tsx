@@ -8,7 +8,8 @@ import { setFormState } from '../../../store/slices/appSlice';
 import LoadingQuestion from './LoadingQuestion';
 import ErrorMessage from '../../ui/ErrorMessageCard';
 import { Button } from '@mui/material';
-
+import { getLoggedInUser } from '../../../store/slices/authSlice';
+import GoogleLogin from '../../Google/GoogleLogin';
 interface IQuestionsProps {
   questions: IQuestion[];
 }
@@ -16,6 +17,7 @@ interface IQuestionsProps {
 const Questions: React.FC<IQuestionsProps> = ({ questions }) => {
   const isLoadingQuestions = useAppSelector(getIsLoadingQuestions);
   const generateQuestionError = useAppSelector(getInputError);
+  const loggedInUser = useAppSelector(getLoggedInUser);
   const dispatch = useAppDispatch();
 
   const onGetPotentialQuestions = React.useCallback(() => {
@@ -26,6 +28,7 @@ const Questions: React.FC<IQuestionsProps> = ({ questions }) => {
     dispatch(setSessionInputsError(''));
     dispatch(setFormState('userInputs'));
   }, [dispatch]);
+
 
   if (isLoadingQuestions) {
     return (
@@ -61,6 +64,14 @@ const Questions: React.FC<IQuestionsProps> = ({ questions }) => {
           Try Again
         </Button>
       </ErrorMessage>
+    );
+  }
+
+  if (!loggedInUser) {
+    return (
+      <div className="flex flex-col gap-2  justify-center items-center h-[50vh]">
+        <GoogleLogin />
+      </div>
     );
   }
 

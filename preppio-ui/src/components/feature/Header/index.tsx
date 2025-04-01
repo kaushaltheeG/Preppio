@@ -7,7 +7,7 @@ import {
   unsubscribeFromAuthChanges,
 } from '../../../store/slices/authSlice';
 import { hasSessionSelector, getLoggedInUser } from '../../../store/slices/authSlice';
-import GoogleLogin from './GoogleLogin';
+import GoogleLogin from '../../Google/GoogleLogin';
 import UserProfile from './UserProfile';
 import { getCompanyName } from '../../../store/slices/interviewSlice';
 
