@@ -14,28 +14,45 @@ import {
   fetchInterviewSession,
   updateQuestionDataFailure,
   setLoadingQuestions,
-  setQuestions,
   setInputInterviewType,
   setInputInterviewerPosition,
   setInputExtraInformation,
   setInputJobDescription,
   setInputResume
 } from '../slices/interviewSlice';
-// import { getJobDescription, setJobDescription } from '../slices/jobDescriptionSlice';
-// import { getResume, setResume } from '../slices/resumeSlice';
-// import { getInterviewType, getInterviewerPosition, getExtraInformation, setInterviewerPosition, setExtraInformation, setInterviewType } from '../slices/tuneSlice';
 import { setFormState } from '../slices/appSlice';
-import { setSession } from '../slices/authSlice';
+import { getSessionToken, setSession } from '../slices/authSlice';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { updateQuestion } from '../../services/questions/api';
 import { updateQuestionData } from '../slices/interviewSlice';
 
 function* analyzeInterviewSaga() {
   try {
-    const jobDescription: string = yield select(getInputJobDescription);
+    const accessToken: string = yield select(getSessionToken);
+    if (!accessToken) {
+      yield put(analyzeFailure('Login to Generate Potential Interview Questions!'));
+      return;
+    }
     const resume: string = yield select(getInputResume);
+    if (resume === '') {
+      yield put(analyzeFailure('Resume is required'));
+      return;
+    }
+    const jobDescription: string = yield select(getInputJobDescription);
+    if (jobDescription === '') {
+      yield put(analyzeFailure('Job description is required'));
+      return;
+    }
     const interviewType: string = yield select(getInputInterviewType);
+    if (interviewType === '') {
+      yield put(analyzeFailure('Interview type is required'));
+      return;
+    }
     const interviewerPosition: string = yield select(getInputInterviewerPosition);
+    if (interviewerPosition === '') {
+      yield put(analyzeFailure('Interviewer position is required'));
+      return;
+    }
     const extraInformation: string = yield select(getInputExtraInformation);
 
     const response: IInterviewSessionWithQuestions | null = yield call(getInterviewQuestions, {
@@ -44,9 +61,10 @@ function* analyzeInterviewSaga() {
       interviewType,
       interviewerPosition,
       extraInformation,
-    });
+    }, accessToken);
     if (response === null) {
-      throw new Error('Failed to get interview questions');
+      yield put(analyzeFailure('Failed to generate potential interview questions'));
+      return;
     }
     
     yield put(analyzeSuccess(response));
@@ -68,15 +86,12 @@ function* getPopulatedInterviewSessionSaga(action: PayloadAction<{ interviewSess
   if (interviewSession === null) {
     throw new Error('Failed to get interview session');
   }
-  console.log('interviewSession', interviewSession);
   yield put(analyzeSuccess(interviewSession));
   yield put(setInputInterviewType(interviewSession.interviewType));
   yield put(setInputInterviewerPosition(interviewSession.interviewerPosition));
   yield put(setInputExtraInformation(interviewSession.extraInformation));
   yield put(setInputJobDescription(interviewSession.jobDescription));
   yield put(setInputResume(interviewSession.resume));
-  // yield put(setQuestions(interviewSession.questions));
-  // yield put(analyzeSuccess(interviewSession));
 }
 
 function* updateQuestionDataSaga(action: PayloadAction<{ question: IQuestion }>) {

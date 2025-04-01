@@ -80,13 +80,8 @@ export interface ISerializedEditorState {
   };
 }
 
-export const getInterviewQuestions = async (requestBody: IGetInterviewQuestionsRequest): Promise<IGetQuestionsResponse | null> => {
+export const getInterviewQuestions = async (requestBody: IGetInterviewQuestionsRequest, accessToken: string): Promise<IGetQuestionsResponse | null> => {
   try {
-    const accessToken = getSessionToken(store.getState());
-    if (!accessToken) {
-      throw new Error('User not authenticated');
-    }
-
     const response = await axios.post<IGetQuestionsResponse>(
       `${API_URL}/api/interview/questions`,
       requestBody,

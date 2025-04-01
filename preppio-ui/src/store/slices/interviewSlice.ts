@@ -39,7 +39,7 @@ const initialState: IInterviewState = {
       createdAt: '',
       updatedAt: '',
     },
-    error: null,
+    error: '',
     isLoading: false,
   },
   sessions: [],
@@ -64,9 +64,7 @@ const interviewSlice = createSlice({
     },
     analyzeSuccess: (state, action: PayloadAction<IInterviewSessionWithQuestions>) => {
       state.sessionInputs.isLoading = false;
-      console.log('action.payload', action.payload);
       state.activeSession.data = action.payload;
-      console.log('state.activeSession', state.activeSession);
     },
     analyzeFailure: (state, action: PayloadAction<string>) => {
       state.sessionInputs.isLoading = false;
@@ -126,15 +124,10 @@ const interviewSlice = createSlice({
   },
 });
 
-// Actions
-export const fetchInterviewSessions  = createAction('interview/fetchInterviewSessions');
-export const fetchInterviewSession = createAction<{ interviewSessionId: string }>('interview/fetchInterviewSession');
-export const updateQuestionData = createAction<{ question: IQuestion }>('interview/updateQuestionData');
-
 // Selectors
 export const getQuestions = (state: RootState) => state.interview.activeSession.data.questions;
 export const getAnalysis = (state: RootState) => state.interview.activeSession.data.analysis;
-export const getIsLoadingQuestions = (state: RootState) => state.interview.activeSession.isLoading;
+export const getIsLoadingQuestions = (state: RootState) => state.interview.sessionInputs.isLoading;
 export const getCompanyName = (state: RootState) => state.interview.activeSession.data.company;
 export const getJobTitle = (state: RootState) => state.interview.activeSession.data.jobTitle;
 export const getActiveInterviewerPosition = (state: RootState) => state.interview.activeSession.data.interviewerPosition;
@@ -176,8 +169,14 @@ export const getInputJobDescription = (state: RootState) => state.interview.sess
 export const getInputResume = (state: RootState) => state.interview.sessionInputs.resume;
 export const getInputInterviewType = (state: RootState) => state.interview.sessionInputs.interviewType;
 export const getInputInterviewerPosition = (state: RootState) => state.interview.sessionInputs.interviewerPosition;
-export const getInputExtraInformation = (state: RootState) => state.interview.sessionInputs.extraInformation;  
+export const getInputExtraInformation = (state: RootState) => state.interview.sessionInputs.extraInformation;
+export const getInputError = (state: RootState) => state.interview.sessionInputs.error;
 
+
+// Actions
+export const fetchInterviewSessions  = createAction('interview/fetchInterviewSessions');
+export const fetchInterviewSession = createAction<{ interviewSessionId: string }>('interview/fetchInterviewSession');
+export const updateQuestionData = createAction<{ question: IQuestion }>('interview/updateQuestionData');
 export const {
   setQuestions,
   setAnalysis,

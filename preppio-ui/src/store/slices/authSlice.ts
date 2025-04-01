@@ -30,11 +30,6 @@ const authSlice = createSlice({
   },
 })
 
-// Actions
-export const checkSession = createAction('auth/checkSession');
-export const subscribeToAuthChanges = createAction('auth/subscribeToAuthChanges');
-export const unsubscribeFromAuthChanges = createAction('auth/unsubscribeFromAuthChanges');
-
 // Selectors
 export const hasSessionSelector = (state: RootState): boolean => Boolean(state.auth.session !== null);
 export const getLoggedInUser = (state: RootState): User | null => state.auth.user;
@@ -42,6 +37,11 @@ export const getGoogleAccessToken = (state: RootState): string => state.auth.ses
 export const getRefreshToken = (state: RootState): string | null => state.auth.session?.refresh_token || null;
 export const getSessionToken = (state: RootState): string | null => state.auth.session?.access_token || null;
 
+
+// Actions
+export const checkSession = createAction('auth/checkSession');
+export const subscribeToAuthChanges = createAction('auth/subscribeToAuthChanges');
+export const unsubscribeFromAuthChanges = createAction('auth/unsubscribeFromAuthChanges');
 export const {
   setSession,
   setUser,
