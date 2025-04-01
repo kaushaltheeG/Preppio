@@ -4,7 +4,7 @@ import SharedModal from '../../../../components/ui/SharedModal';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import { Typography, Button, Input } from '@mui/material';
 import { useAppDispatch } from '../../../../hooks/useAppDispatch';
-import { setFormState } from '../../../../store/slices/appSlice';
+import { setOpenTabs, setFormState } from '../../../../store/slices/appSlice';
 
 interface SaveDocumentModalProps {
   open: boolean;
@@ -25,6 +25,7 @@ const SaveDocumentModal: React.FC<SaveDocumentModalProps> = ({
   const handleSave = React.useCallback(() => {
     onSave(documentName);
     onClose();
+    dispatch(setOpenTabs('iframe'));
     dispatch(setFormState('iframe'));
   }, [onSave, documentName, onClose, dispatch]);
 

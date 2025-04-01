@@ -7,7 +7,7 @@ import { useAppSelector } from '../../../hooks/useAppSelector';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { fetchInterviewSession, getInterviewSessions, getActiveInterviewSessionId } from '../../../store/slices/interviewSlice';
 import { NewSessionButton, NewSessionIconButton, useNewSessionButtonHook } from './NewSessionButton';
-import { setFormState } from '../../../store/slices/appSlice';
+import { removeOpenTab, setFormState } from '../../../store/slices/appSlice';
 
 const PastSessionSidebar: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -19,6 +19,7 @@ const PastSessionSidebar: React.FC = () => {
   const handleSessionClick = React.useCallback((interviewSessionId: string) => {
     dispatch(fetchInterviewSession({ interviewSessionId }));
     dispatch(setFormState('questions'));
+    dispatch(removeOpenTab('iframe'));
   }, [dispatch]);
 
   const renderPastSessions = React.useCallback(() => {

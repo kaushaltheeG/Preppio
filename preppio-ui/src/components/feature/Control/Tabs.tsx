@@ -45,7 +45,6 @@ const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions, orientation = 'ho
           sx={tabStyle} 
         />
         <Tab value="questions" label="Questions" sx={tabStyle} />
-        {hadDocumentUrl && <Tab value="iframe" label="IFrame" sx={tabStyle} />}
         {openTabs.map(([id, tab]) => (
           <Tab
             key={id}

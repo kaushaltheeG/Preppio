@@ -38,6 +38,9 @@ export const appSlice = createSlice({
     setOpenTabs: (state, action: PayloadAction<string>) => {
       state.openTabs.set(action.payload, action.payload);
     },
+    removeOpenTab: (state, action: PayloadAction<string>) => {
+      state.openTabs.delete(action.payload);
+    },
     setClearOpenTabs: (state) => {
       state.openTabs = new Map();
     },
@@ -72,6 +75,7 @@ export const {
   setClearOpenTabs,
   closeOpenTab,
   setAppInitialState,
+  removeOpenTab,
   setIsMobileView
 } = appSlice.actions;
 

@@ -14,6 +14,11 @@ const GoogleLogin: React.FC = () => {
         providerScopes={{
           google: 'https://www.googleapis.com/auth/drive.file',
         }}
+        queryParams={{
+          access_type: 'offline',
+          prompt: 'consent',
+          max_age: '86400' // 24 hours in seconds
+        }}
       />
     </div>
   );

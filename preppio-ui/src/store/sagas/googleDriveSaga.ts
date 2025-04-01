@@ -17,7 +17,8 @@ function* createGoogleDriveDocumentSaga(action: PayloadAction<{ title: string }>
     // Refresh access not found, user isn't logged in
     if (!accessToken) {
       yield call(refreshGooglePermissions);
-      yield call(checkSession);
+      yield put(checkSession());  
+      accessToken = yield select(getGoogleAccessToken);
     }
 
     const response: ICreateAndSaveDocumentResponse = yield call(
