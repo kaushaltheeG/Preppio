@@ -90,7 +90,6 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 ![ChatGPT]
 ![Google Drive]
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!--
@@ -148,7 +147,7 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 
   See the [open issues](https://github.com/kaushaltheeG/Preppio/issues) for a full list of proposed features (and known issues).
   
-  <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
   
   
 <!--
@@ -188,8 +187,7 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
   Kaushal Kumbagowdana - [🔗 LinkedIn](https://www.linkedin.com/in/kaushalsk/) - [ 📧 kaushalsk09@gmail.com](kaushalsk09@gmail.com)
   
   Project Link: [https://github.com/kaushaltheeG/Preppio](https://github.com/kaushaltheeG/Preppio)
-  
-  <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
   
   
   
