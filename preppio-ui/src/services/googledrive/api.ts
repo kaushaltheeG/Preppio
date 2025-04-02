@@ -1,7 +1,5 @@
-import axios from 'axios';
-import { API_URL } from '../utils';
 import { IInterviewSessionWithQuestions } from '../interview/api';
-
+import { api } from '../utils';
 // export type InterviewContentType = Omit<IGetQuestionsResponse, 'serializedLexicalEditorState'>;
 export interface ICreateAndSaveDocumentParams {
   title: string;
@@ -15,8 +13,6 @@ export interface ICreateAndSaveDocumentResponse {
 }
 
 export const createAndSaveDocument = async (params: ICreateAndSaveDocumentParams): Promise<ICreateAndSaveDocumentResponse> => {
-  const response = await axios.post(`${API_URL}/api/googledrive/create-save-doc`, params);
+  const response = await api.post(`/api/googledrive/create-save-doc`, params);
   return response.data;
 };
-
-

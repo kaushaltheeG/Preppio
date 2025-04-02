@@ -15,6 +15,7 @@ import { setAppInitialState } from  '../slices/appSlice';
 import { setInterviewInitialState } from '../slices/interviewSlice';
 import { setGoogleDriveInitialState } from '../slices/googleDriveSlice';
 import { clearSessionStorage } from '../middleware/sessionStorageMiddleware';
+
 function* handleCheckSession() {
   try {
     const { data: { session } } = yield call([supabase.auth, 'getSession']);

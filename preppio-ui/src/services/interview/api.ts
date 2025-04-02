@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { API_URL } from '../utils';
+import { api } from '../utils';
 import { store } from '../../store';
 import { getSessionToken } from '../../store/slices/authSlice';
 
@@ -82,8 +81,8 @@ export interface ISerializedEditorState {
 
 export const createInterviewQuestions = async (requestBody: IGetInterviewQuestionsRequest, accessToken: string): Promise<IGetQuestionsResponse | null> => {
   try {
-    const response = await axios.post<IGetQuestionsResponse>(
-      `${API_URL}/api/interview/questions`,
+    const response = await api.post<IGetQuestionsResponse>(
+      `/api/interview/questions`,
       requestBody,
       {
         headers: {
@@ -103,8 +102,8 @@ export const getInterviewSessions = async (): Promise<IInterviewSession[]> => {
     if (!accessToken) {
       throw new Error('User not authenticated');
     }
-    const response = await axios.get<IInterviewSession[]>(
-      `${API_URL}/api/interview/user/sessions`,
+    const response = await api.get<IInterviewSession[]>(
+      `/api/interview/user/sessions`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -125,8 +124,8 @@ export const getPopulatedInterviewSession = async (interviewSessionId: string): 
       throw new Error('User not authenticated');
     }
 
-    const response = await axios.get<IGetPopulatedInterviewSessionResponse>(
-      `${API_URL}/api/interview/user/sessions/${interviewSessionId}/populate`,
+    const response = await api.get<IGetPopulatedInterviewSessionResponse>(
+      `/api/interview/user/sessions/${interviewSessionId}/populate`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
