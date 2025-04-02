@@ -15,7 +15,7 @@ interface InterviewRequest {
 }
 
 const createInterviewRouter = (supabase: SupabaseClient) => {
-  const router = Router();
+  const router: Router = Router();
   const gptService = new GPTService();
   const questionService = new QuestionService(supabase);
   const analysisService = new AnalysisService(supabase);
@@ -23,7 +23,7 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
   const authMiddleware = createAuthMiddleware(supabase);
   const requestLimitMiddleware = createRequestLimitMiddleware(supabase);
 
-  router.get('/user/sessions', authMiddleware, async (req: Request, res: Response) => {
+  router.get('/user/sessions', authMiddleware, async (req: Request, res: Response): Promise<any> => {
     const userId = req.user.id;
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -37,7 +37,7 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
     }
   });
 
-  router.get('/user/sessions/:id/populate', authMiddleware, async (req: Request, res: Response) => {
+  router.get('/user/sessions/:id/populate', authMiddleware, async (req: Request, res: Response): Promise<any> => {
     const userId = req.user.id; 
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -56,7 +56,7 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
   });
   
 
-  router.post('/questions', authMiddleware, requestLimitMiddleware, async (req: Request<{}, {}, InterviewRequest>, res: Response) => {
+  router.post('/questions', authMiddleware, requestLimitMiddleware, async (req: Request<{}, {}, InterviewRequest>, res: Response): Promise<any> => {
     const { jobDescription, resume, extraNotes, interviewType, interviewerPosition } = req.body;
     const userId = req.user.id;
     if (!jobDescription) {

@@ -7,7 +7,7 @@ const createQuestionsRouter = (supabase: SupabaseClient) => {
   const authMiddleware = createAuthMiddleware(supabase);
   const questionService = new QuestionService(supabase);
 
-  router.post('/update/:id', authMiddleware, async (req: Request, res: Response) => {
+  router.post('/update/:id', authMiddleware, async (req: Request, res: Response): Promise<any> => {
     const userId = req.user.id;
     const questionId = req.params.id;
 

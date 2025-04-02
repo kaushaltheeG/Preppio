@@ -5,9 +5,9 @@ import { SupabaseClient } from '@supabase/supabase-js';
 
 
 const createGoogleDriveRouter = (supabase: SupabaseClient) => {
-  const router = Router();
+  const router: Router = Router();
 
-  router.post('/create-save-doc', async (req: Request, res: Response) => {
+  router.post('/create-save-doc', async (req: Request, res: Response): Promise<any> => {
     const { title } = req.body;
     const { accessToken } = req.body;
     const { interviewContent } = req.body;

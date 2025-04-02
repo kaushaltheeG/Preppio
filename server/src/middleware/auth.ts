@@ -12,7 +12,7 @@ declare global {
 }
 
 export const createAuthMiddleware = (supabase: SupabaseClient) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'No authorization token provided' });

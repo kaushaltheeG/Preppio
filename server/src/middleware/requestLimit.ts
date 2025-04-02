@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 const createRequestLimitMiddleware = (supabase: SupabaseClient, limit: number = 10) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     if (process.env.NODE_ENV !== 'production') {
       return next();
     }
