@@ -11,7 +11,7 @@ export const refreshSession = async ({ refreshToken }: { refreshToken: string })
 
 export const refreshGooglePermissions = async (): Promise<OAuthResponse['data']> => {
   let redirectTo: string = 'http://localhost:3000/auth/callback';
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.REACT_APP_NODE_ENV === 'production') {
     redirectTo = "https://preppio-ui.onrender.com/auth/callback";
   }
   try {
