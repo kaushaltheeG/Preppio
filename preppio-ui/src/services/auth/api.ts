@@ -19,7 +19,8 @@ export const refreshGooglePermissions = async (): Promise<OAuthResponse['data']>
           prompt: 'consent',
           scope: 'https://www.googleapis.com/auth/drive.file',
           max_age: '86400' // 24 hours in seconds
-        }
+        },
+        redirectTo: `${window.location.origin}/auth/callback`
       }
     });
     return data;
