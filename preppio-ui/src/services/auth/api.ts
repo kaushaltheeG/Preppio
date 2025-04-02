@@ -10,6 +10,10 @@ export const refreshSession = async ({ refreshToken }: { refreshToken: string })
 };
 
 export const refreshGooglePermissions = async (): Promise<OAuthResponse['data']> => {
+  let redirectTo: string = 'http://localhost:3000/auth/callback';
+  if (process.env.NODE_ENV === 'production') {
+    redirectTo = "https://preppio-ui.onrender.com/auth/callback";
+  }
   try {
     const { data } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -20,7 +24,7 @@ export const refreshGooglePermissions = async (): Promise<OAuthResponse['data']>
           scope: 'https://www.googleapis.com/auth/drive.file',
           max_age: '86400' // 24 hours in seconds
         },
-        redirectTo: `${window.location.origin}/auth/callback`
+        redirectTo,
       }
     });
     return data;
