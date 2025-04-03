@@ -68,7 +68,7 @@ const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions, orientation = 'ho
         ))}
       </MuiTabs>
       {onQuestionsFormState && hasQuestions && (
-        <SaveToGoogleDriveButton handleSaveToGoogleDrive={handleSaveToGoogleDrive} isLoading={isCreatingGoogleDriveDocument} />
+        <SaveToGoogleDriveButton handleSaveToGoogleDrive={handleSaveToGoogleDrive} isLoading={isCreatingGoogleDriveDocument} tooltipTitle="Download as TXT file" />
       )}
       {onIframeFormState && (
         <OpenFileButton url={getCreatedDocumentUrl} />

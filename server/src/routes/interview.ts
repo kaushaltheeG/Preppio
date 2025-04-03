@@ -100,15 +100,15 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
     }
 
     try {
-    const tempFilePath = path.join(__dirname, 'interview.txt');
+    const { filePath, content } = interviewService.createTextFileFilePathAndContent(interviewContent);
 
     // Write content to the file
-    fs.writeFileSync(tempFilePath, JSON.stringify(interviewContent, null, 2), 'utf8');
+    fs.writeFileSync(filePath, content, 'utf8');
 
     // Send the file for download
-    res.download(tempFilePath, 'interview.txt', (err) => {
+    res.download(filePath, 'interview.txt', (err) => {
       // Clean up the temporary file after sending it
-      fs.unlinkSync(tempFilePath);
+      fs.unlinkSync(filePath);
 
       if (err) {
         console.error('Error during file download:', err);

@@ -28,11 +28,6 @@ const SaveButton: React.FC<SaveButtonProps> = ({
     dispatch(downloadAsTxtFile());
   }, [dispatch]);
 
-  // const handleOpenModal = React.useCallback(() => {
-  //   dispatch(gainGoogleDrivePermission());
-  //   setIsModalOpen(true);
-  // }, [dispatch]);
-
   const handleCloseModal = React.useCallback(() => {
     setIsModalOpen(false);
   }, []);

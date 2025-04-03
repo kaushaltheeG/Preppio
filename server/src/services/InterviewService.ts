@@ -11,6 +11,7 @@ import Question from "../models/question";
 import Analysis from "../models/analysis";
 import InterviewSessionInput from "../models/interviewSessionInput";
 import IInterviewSessionInput from "../interfaces/models/IInterviewSessionInput";
+import path from 'path';
 class InterviewService implements IInterviewService {
   private gptService: IGPTService;
   private supabase: SupabaseClient;
@@ -141,6 +142,50 @@ class InterviewService implements IInterviewService {
     ]);
 
     return this.createInterviewSessionResponse(questions, analysisData, interviewSessionData);
+  }
+
+  createTextFileFilePathAndContent(interviewContent: IInterviewSessionWithQuestions): { filePath: string, content: string } {
+    const { questions, analysis, company, jobTitle, interviewType, interviewerPosition } = interviewContent;
+    const fileName = `${interviewContent.company}_${interviewContent.jobTitle}_${interviewContent.interviewType}_interview_${interviewContent.interviewerPosition}.txt`;
+    const filePath = path.join(__dirname, fileName);
+    const content = `
+      === Potential Interview Questions for ${interviewContent.company} ===
+
+      Company: ${company}
+      Job Title: ${jobTitle}
+      Interview Type: ${interviewType}
+      Interviewer Position: ${interviewerPosition}
+
+      === Analysis ===
+
+      **Strength Areas:**
+      ${analysis.strengthAreas.map((area) => `- ${area}`).join('\n')}
+
+      **Gap Areas:**
+      ${analysis.gapAreas.map((area) => `- ${area}`).join('\n')}
+
+      **Recommended Focus:**
+      ${analysis.recommendedFocus.map((focus) => `- ${focus}`).join('\n')}
+
+      === Potential Interview Questions ===
+
+      ${questions.map((q, index) => `
+      ${index + 1}. ${q.question}
+        - **Type:** ${q.type}
+        - **Difficulty:** ${q.difficulty}
+        - **Topic:** ${q.topic}
+        - **Skills Assessed:** ${q.skillsAssessed.join(', ')}
+        - **Key Points:** ${q.keyPoints.join(', ')}
+        - **Relevance:** ${q.relevance}
+        - **Follow-up:** ${q.followUp.join(', ')}
+        - **Notes:** ${q.notes}
+      `).join('\n')}
+    `;
+
+    return {
+      filePath,
+      content,
+    }
   }
 
   createInterviewSessionResponse(questions: IQuestion[], analysis: IAnalysis, interviewSessionData: IInterviewSession): IInterviewSessionWithQuestions {

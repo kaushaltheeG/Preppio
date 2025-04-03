@@ -159,7 +159,7 @@ export const downloadTxtFileApi = async (interviewContent: IInterviewSessionWith
     const link = document.createElement('a');
     link.href = fileUrl;
     link.setAttribute('download', 'interview.txt'); // Set the desired file name
-    
+
     // Append the anchor to the DOM and simulate a click
     document.body.appendChild(link);
     link.click();
