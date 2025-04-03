@@ -15,7 +15,7 @@ import { setAppInitialState } from  '../slices/appSlice';
 import { setInterviewInitialState } from '../slices/interviewSlice';
 import { gainGoogleDrivePermission, setGoogleDriveInitialState } from '../slices/googleDriveSlice';
 import { clearSessionStorage } from '../middleware/sessionStorageMiddleware';
-import { refreshGooglePermissions } from '@/services/auth/api';
+import { refreshGooglePermissions } from '../../services/auth/api';
 
 function* handleCheckSession() {
   try {
