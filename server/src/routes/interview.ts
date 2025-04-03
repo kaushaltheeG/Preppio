@@ -103,7 +103,7 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
     const tempFilePath = path.join(__dirname, 'interview.txt');
 
     // Write content to the file
-    fs.writeFileSync(tempFilePath, interviewContent, 'utf8');
+    fs.writeFileSync(tempFilePath, JSON.stringify(interviewContent, null, 2), 'utf8');
 
     // Send the file for download
     res.download(tempFilePath, 'interview.txt', (err) => {
