@@ -1,5 +1,5 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { getInterviewSessions, getPopulatedInterviewSession, IInterviewSession, IGetPopulatedInterviewSessionResponse, IQuestion, IInterviewSessionWithQuestions, createInterviewQuestions } from '../../services/interview/api';
+import { getInterviewSessions, getPopulatedInterviewSession, IInterviewSession, IGetPopulatedInterviewSessionResponse, IQuestion, IInterviewSessionWithQuestions, createInterviewQuestions, downloadTxtFileApi } from '../../services/interview/api';
 import {
   analyzeRequest,
   analyzeSuccess,
@@ -18,7 +18,9 @@ import {
   setInputInterviewerPosition,
   setInputExtraInformation,
   setInputJobDescription,
-  setInputResume
+  setInputResume,
+  getInterviewContent,
+  downloadAsTxtFile
 } from '../slices/interviewSlice';
 import { setFormState } from '../slices/appSlice';
 import { getSessionToken, setSession } from '../slices/authSlice';
@@ -100,10 +102,21 @@ function* updateQuestionDataSaga(action: PayloadAction<{ question: IQuestion }>)
   }
 }
 
+function* downloadInterviewTxtSaga() {
+  try {
+    const interviewContent: IInterviewSessionWithQuestions = yield select(getInterviewContent);
+    yield call(downloadTxtFileApi, interviewContent);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'An error occurred within the download interview txt saga';
+    console.error(errorMessage);
+  }
+}
+
 export function* interviewSaga() {
   yield takeLatest(analyzeRequest.type, analyzeInterviewSaga);
   yield takeLatest(fetchInterviewSessions.type, getInterviewSessionsSaga);
   yield takeLatest(fetchInterviewSession.type, getPopulatedInterviewSessionSaga);
   yield takeLatest(setSession.type, getInterviewSessionsSaga);
   yield takeLatest(updateQuestionData.type, updateQuestionDataSaga);
+  yield takeLatest(downloadAsTxtFile.type, downloadInterviewTxtSaga);
 }

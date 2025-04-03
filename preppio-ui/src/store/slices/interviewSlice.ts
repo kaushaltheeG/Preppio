@@ -182,6 +182,7 @@ export const getInputError = (state: RootState) => state.interview.sessionInputs
 export const fetchInterviewSessions  = createAction('interview/fetchInterviewSessions');
 export const fetchInterviewSession = createAction<{ interviewSessionId: string }>('interview/fetchInterviewSession');
 export const updateQuestionData = createAction<{ question: IQuestion }>('interview/updateQuestionData');
+export const downloadAsTxtFile = createAction('interview/downloadAsTxtFile');
 export const {
   setQuestions,
   setAnalysis,

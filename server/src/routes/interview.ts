@@ -89,6 +89,33 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
     }
   });
 
+  router.post('/download/txt', authMiddleware, async (req: Request, res: Response): Promise<any> => {
+    const { interviewContent, accessToken } = req.body;
+
+    if (!interviewContent) {
+      return res.status(400).json({ error: 'Interview content is required' });
+    }
+    if (!accessToken) {
+      return res.status(400).json({ error: 'Access token is required' });
+    }
+
+    try {
+      res.download(
+        '/Downloads',
+        'interview.txt',
+        (err) => {
+          if (err) {
+            throw err;
+          }
+        }
+      )
+    } catch (error) {
+      console.error('Error downloading txt:', error);
+      return res.status(500).json({ error: `Failed to download txt: ${error}` });
+    }
+    
+  });
+
   return router;
 }
 

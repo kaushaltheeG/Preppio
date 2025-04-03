@@ -138,3 +138,20 @@ export const getPopulatedInterviewSession = async (interviewSessionId: string): 
     return null;
   }
 };
+
+export const downloadTxtFileApi = async (interviewContent: IInterviewSessionWithQuestions): Promise<void> => {
+  const accessToken = getSessionToken(store.getState());
+  if (!accessToken) {
+    throw new Error('User not authenticated');
+  }
+
+  try {
+    await api.post('/api/interview/download/txt', { interviewContent }, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      } 
+    });
+  } catch (error: any) {
+    throw new Error(error.response.data.error || 'Failed to download txt');
+  }
+};
