@@ -159,7 +159,7 @@ export const downloadTxtFileApi = async (interviewContent: IInterviewSessionWith
     // Create a temporary anchor element to trigger the download
     const link = document.createElement('a');
     link.href = fileUrl;
-    link.setAttribute('download', response.headers['X-Filename']);
+    link.setAttribute('download', response.headers['x-filename']);
     // Append the anchor to the DOM and simulate a click
     document.body.appendChild(link);  
     link.click();
