@@ -4,6 +4,9 @@ import { supabase } from '../../services/supabase';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 
 const GoogleLogin: React.FC = () => {
+  // providerScopes={{
+  //   google: 'https://www.googleapis.com/auth/drive.file',
+  // }}
   return (
     <div className="text-sm text-gray-500">
       <Auth 
@@ -11,9 +14,6 @@ const GoogleLogin: React.FC = () => {
         providers={[ 'google' ]}
         onlyThirdPartyProviders={true}
         appearance={{ theme: ThemeSupa }}
-        providerScopes={{
-          google: 'https://www.googleapis.com/auth/drive.file',
-        }}
         queryParams={{
           access_type: 'offline',
           prompt: 'consent',
