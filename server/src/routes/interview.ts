@@ -106,6 +106,7 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
 
     // Set a custom header with the filename
     res.setHeader('X-Filename', fileName);
+    res.setHeader('Access-Control-Expose-Headers', 'X-Filename');
     // Send the file for download
     res.download(filePath, fileName, (err) => {
       // Clean up the temporary file after sending it

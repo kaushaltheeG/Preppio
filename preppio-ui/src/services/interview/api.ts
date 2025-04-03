@@ -161,7 +161,7 @@ export const downloadTxtFileApi = async (interviewContent: IInterviewSessionWith
     link.href = fileUrl;
     link.setAttribute('download', response.headers['X-Filename']);
     // Append the anchor to the DOM and simulate a click
-    document.body.appendChild(link);
+    document.body.appendChild(link);  
     link.click();
     // Clean up by removing the anchor and revoking the Blob URL
     document.body.removeChild(link);
