@@ -104,6 +104,8 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
     // Write content to the file
     fs.writeFileSync(filePath, content, 'utf8');
 
+    // Set a custom header with the filename
+    res.setHeader('x-filename', fileName);
     // Send the file for download
     res.download(filePath, fileName, (err) => {
       // Clean up the temporary file after sending it

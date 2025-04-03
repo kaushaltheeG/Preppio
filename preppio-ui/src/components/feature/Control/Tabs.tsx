@@ -15,7 +15,7 @@ interface ITabsProps {
 }
 
 const Tabs: React.FC<ITabsProps> = ({ formState, hasQuestions, orientation = 'horizontal' }) => {
-  const { handleSaveToGoogleDrive, getCreatedDocumentUrl, hadDocumentUrl, isCreatingGoogleDriveDocument } = useGoogleDriveHook();
+  const { handleSaveToGoogleDrive, getCreatedDocumentUrl, isCreatingGoogleDriveDocument } = useGoogleDriveHook();
   const { handleTabChange, hanldeCloseTab, tabStyle, openTabs, onQuestionsFormState, onIframeFormState } = useTabsHook(formState);
 
   return (
