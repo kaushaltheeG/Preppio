@@ -146,11 +146,26 @@ export const downloadTxtFileApi = async (interviewContent: IInterviewSessionWith
   }
 
   try {
-    await api.post('/api/interview/download/txt', { interviewContent }, {
+    const response = await api.post('/api/interview/download/txt', { interviewContent }, {
       headers: {
         Authorization: `Bearer ${accessToken}`
-      } 
+      },
+      responseType: 'blob'
     });
+    const blob = new Blob([response.data], { type: 'text/plain' });
+    // Generate a URL for the Blob
+    const fileUrl = window.URL.createObjectURL(blob);
+    // Create a temporary anchor element to trigger the download
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.setAttribute('download', 'interview.txt'); // Set the desired file name
+    
+    // Append the anchor to the DOM and simulate a click
+    document.body.appendChild(link);
+    link.click();
+    // Clean up by removing the anchor and revoking the Blob URL
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(fileUrl);
   } catch (error: any) {
     throw new Error(error.response.data.error || 'Failed to download txt');
   }
