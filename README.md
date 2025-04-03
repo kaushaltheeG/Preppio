@@ -71,7 +71,7 @@
 ## About The Project
 Interview prep can be overwhelming—especially when you're unsure what questions to expect. Preppio makes the process easier by generating personalized interview questions and insights. Simply provide your resume, the job description, and some basic interview info, and Preppio will do the rest.
 
-You can also take notes and save everything as a study guide in your Google Docs for easy access and review.
+You can also take notes and save everything as a TXT file for easy access and review.
 <!-- 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
@@ -87,7 +87,6 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 ![Express.js]
 ![Supabase]
 ![ChatGPT]
-![Google Drive]
 
 
 
