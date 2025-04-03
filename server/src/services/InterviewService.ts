@@ -144,7 +144,7 @@ class InterviewService implements IInterviewService {
     return this.createInterviewSessionResponse(questions, analysisData, interviewSessionData);
   }
 
-  createTextFileFilePathAndContent(interviewContent: IInterviewSessionWithQuestions): { filePath: string, content: string } {
+  createTextFileFilePathAndContent(interviewContent: IInterviewSessionWithQuestions): { content: string, fileName: string, filePath: string } {
     const { questions, analysis, company, jobTitle, interviewType, interviewerPosition } = interviewContent;
     const fileName = `${interviewContent.company}_${interviewContent.jobTitle}_${interviewContent.interviewType}_interview_${interviewContent.interviewerPosition}.txt`;
     const filePath = path.join(__dirname, fileName);
@@ -185,6 +185,7 @@ class InterviewService implements IInterviewService {
     return {
       filePath,
       content,
+      fileName,
     }
   }
 

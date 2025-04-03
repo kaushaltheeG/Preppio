@@ -52,7 +52,7 @@ export interface IGetPopulatedInterviewSessionResponse extends IInterviewSession
 interface IInterviewService {
   createInterviewQuestionsPrompt(interviewRequest: ICreateInterviewQuestionPrompt): IPromptProps;
   createInterviewSession(interviewRequest: ICreateInterviewQuestionPrompt): Promise<IInterviewSessionWithQuestions>;
-  createTextFileFilePathAndContent(interviewContent: IInterviewSessionWithQuestions): { filePath: string, content: string };
+  createTextFileFilePathAndContent(interviewContent: IInterviewSessionWithQuestions): { content: string, fileName: string, filePath: string };
   getUsersInterviewSessions(userId: string): Promise<IInterviewSession[]>;
   getPopulatedInterviewSession(userId: string, interviewSessionId: string): Promise<IGetPopulatedInterviewSessionResponse>;
   insertInterviewSession(interviewRequest: ICreateInterviewSession): Promise<IInterviewSession>;
