@@ -152,7 +152,7 @@ export const downloadTxtFileApi = async (interviewContent: IInterviewSessionWith
       },
       responseType: 'blob'
     });
-    console.log(response);
+
     const blob = new Blob([response.data], { type: 'text/plain' });
     // Generate a URL for the Blob
     const fileUrl = window.URL.createObjectURL(blob);

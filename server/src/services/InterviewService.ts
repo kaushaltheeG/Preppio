@@ -12,6 +12,7 @@ import Analysis from "../models/analysis";
 import InterviewSessionInput from "../models/interviewSessionInput";
 import IInterviewSessionInput from "../interfaces/models/IInterviewSessionInput";
 import path from 'path';
+import dedent from 'dedent';
 class InterviewService implements IInterviewService {
   private gptService: IGPTService;
   private supabase: SupabaseClient;
@@ -148,7 +149,7 @@ class InterviewService implements IInterviewService {
     const { questions, analysis, company, jobTitle, interviewType, interviewerPosition } = interviewContent;
     const fileName = `${interviewContent.company}_${interviewContent.jobTitle}_${interviewContent.interviewType}_interview_${interviewContent.interviewerPosition}.txt`;
     const filePath = path.join(__dirname, fileName);
-    const content = `
+    const content = dedent(`
       === Potential Interview Questions for ${interviewContent.company} ===
 
       Company: ${company}
@@ -180,7 +181,7 @@ class InterviewService implements IInterviewService {
         - **Follow-up:** ${q.followUp.join(', ')}
         - **Notes:** ${q.notes}
       `).join('\n')}
-    `;
+    `);
 
     return {
       filePath,
