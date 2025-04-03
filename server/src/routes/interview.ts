@@ -90,13 +90,10 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
   });
 
   router.post('/download/txt', authMiddleware, async (req: Request, res: Response): Promise<any> => {
-    const { interviewContent, accessToken } = req.body;
+    const { interviewContent } = req.body;
 
     if (!interviewContent) {
       return res.status(400).json({ error: 'Interview content is required' });
-    }
-    if (!accessToken) {
-      return res.status(400).json({ error: 'Access token is required' });
     }
 
     try {
