@@ -4,9 +4,10 @@ import { createAndSaveDocument, ICreateAndSaveDocumentResponse } from '../../ser
 import { PayloadAction } from '@reduxjs/toolkit';
 import { getGoogleAccessToken } from '../slices/authSlice';
 import { getInterviewContent } from '../slices/interviewSlice';
-import { refreshGooglePermissions } from '../../services/auth/api';
-import { checkSession } from '../slices/authSlice';
+// import { refreshGooglePermissions } from '../../services/auth/api';
+// import { checkSession } from '../slices/authSlice';
 import { IInterviewSessionWithQuestions } from '@/services/interview/api';
+
 
 function* createGoogleDriveDocumentSaga(action: PayloadAction<{ title: string }>) {
   try {
@@ -15,10 +16,13 @@ function* createGoogleDriveDocumentSaga(action: PayloadAction<{ title: string }>
     const interviewContent: IInterviewSessionWithQuestions = yield select(getInterviewContent);
 
     // Refresh access not found, user isn't logged in
+    // if (!accessToken) {
+    // yield call(refreshGooglePermissions);
+    // yield put(checkSession());  
+    // const accessToken: string = yield select(getGoogleAccessToken);
+    // console.log('accessToken', accessToken);
     if (!accessToken) {
-      yield call(refreshGooglePermissions);
-      yield put(checkSession());  
-      accessToken = yield select(getGoogleAccessToken);
+      throw new Error('Access token not found');
     }
 
     const response: ICreateAndSaveDocumentResponse = yield call(

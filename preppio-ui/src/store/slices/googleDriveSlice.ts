@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../types';
 
 export interface IGoogleDocumentData {
@@ -51,5 +51,8 @@ export const getGoogleDriveDocumentId = (state: RootState) => state.googleDrive.
 export const isCreatingGoogleDriveDocumentSelector = (state: RootState) => state.googleDrive.documents.isLoading;
 export const getGoogleDriveError = (state: RootState) => state.googleDrive.documents.error;
 
+// Actions
 export const { setGoogleDocumentData, setGoogleDocumentError, createGoogleDriveDocument, setLastCreatedDocument, setGoogleDriveInitialState } = googleDriveSlice.actions;
+export const gainGoogleDrivePermission = createAction('googleDrive/gainGoogleDrivePermission');
+
 export default googleDriveSlice.reducer;

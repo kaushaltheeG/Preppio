@@ -13,8 +13,9 @@ import {
 } from '../slices/authSlice';
 import { setAppInitialState } from  '../slices/appSlice';
 import { setInterviewInitialState } from '../slices/interviewSlice';
-import { setGoogleDriveInitialState } from '../slices/googleDriveSlice';
+import { gainGoogleDrivePermission, setGoogleDriveInitialState } from '../slices/googleDriveSlice';
 import { clearSessionStorage } from '../middleware/sessionStorageMiddleware';
+import { refreshGooglePermissions } from '@/services/auth/api';
 
 function* handleCheckSession() {
   try {
@@ -65,11 +66,22 @@ function* watchAuthStateChange() {
   }
 }
 
+function* gainGoogleDrivePermissionSaga() {
+  try {
+    yield call(refreshGooglePermissions);
+    yield put(checkSession());
+  } catch (error) {
+    console.error('Error gaining google drive permission:', error);
+  }
+}
+
 function* authSaga() {
   // Start watching for session checks
   yield takeLatest(checkSession.type, handleCheckSession);
   // Logout user
   yield takeLatest(logoutUser.type, handleLogout);
+  // Gain google drive permission
+  yield takeLatest(gainGoogleDrivePermission.type, gainGoogleDrivePermissionSaga);
   
   // Start auth state watching immediately
   let authTask: Task = yield fork(watchAuthStateChange);

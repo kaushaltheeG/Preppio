@@ -3,7 +3,8 @@ import React from 'react';
 import IconButton from '@mui/material/IconButton';  
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import SaveDocumentModal from './modals/SaveDocumentModal';
-
+import { useAppDispatch } from '../../../hooks/useAppDispatch';
+import { gainGoogleDrivePermission } from '../../../store/slices/googleDriveSlice';
 interface SaveButtonProps {
   handleSaveToGoogleDrive: (title: string) => void;
   isLoading: boolean;
@@ -19,11 +20,13 @@ const SaveButton: React.FC<SaveButtonProps> = ({
   tooltipTitle = 'Save to your Google Drive',
   tooltipPlacement = 'right'
 }) => {
+  const dispatch = useAppDispatch();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [documentName, setDocumentName] = React.useState('');
   const handleOpenModal = React.useCallback(() => {
+    dispatch(gainGoogleDrivePermission());
     setIsModalOpen(true);
-  }, []);
+  }, [dispatch]);
 
   const handleCloseModal = React.useCallback(() => {
     setIsModalOpen(false);
