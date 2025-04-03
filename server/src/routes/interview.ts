@@ -6,6 +6,9 @@ import { createAuthMiddleware } from '../middleware/auth';
 import QuestionService from '../services/QuestionService';
 import AnalysisService from '../services/AnalysisService';
 import createRequestLimitMiddleware from '../middleware/requestLimit';
+import path from 'path';
+import fs from 'fs';
+
 interface InterviewRequest {
   jobDescription: string;
   resume: string;
@@ -97,15 +100,21 @@ const createInterviewRouter = (supabase: SupabaseClient) => {
     }
 
     try {
-      res.download(
-        '/Downloads',
-        'interview.txt',
-        (err) => {
-          if (err) {
-            throw err;
-          }
-        }
-      )
+    const tempFilePath = path.join(__dirname, 'interview.txt');
+
+    // Write content to the file
+    fs.writeFileSync(tempFilePath, interviewContent, 'utf8');
+
+    // Send the file for download
+    res.download(tempFilePath, 'interview.txt', (err) => {
+      // Clean up the temporary file after sending it
+      fs.unlinkSync(tempFilePath);
+
+      if (err) {
+        console.error('Error during file download:', err);
+        return res.status(500).json({ error: 'Failed to download txt' });
+      }
+    });
     } catch (error) {
       console.error('Error downloading txt:', error);
       return res.status(500).json({ error: `Failed to download txt: ${error}` });
