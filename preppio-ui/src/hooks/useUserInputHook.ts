@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppDispatch } from './useAppDispatch';
 import { useAppSelector } from './useAppSelector';
-import { analyzeRequest, getIsLoadingQuestions, getInputResume, getInputJobDescription, hasRequiredInterviewInformation } from '../store/slices/interviewSlice';
+import { analyzeRequest, getIsLoadingQuestions, getInputResume, getInputJobDescription, hasRequiredInterviewInformation, getQuestions } from '../store/slices/interviewSlice';
 import { setFormState } from '../store/slices/appSlice';
 
 const useUserInputHook = () => {
@@ -10,11 +10,12 @@ const useUserInputHook = () => {
   const hasJobDescriptionEntered = Boolean(useAppSelector(getInputJobDescription));
   const hasRequiredTuneInfo = useAppSelector(hasRequiredInterviewInformation);
   const isGeneratingQuestions = useAppSelector(getIsLoadingQuestions);
+  const questions = useAppSelector(getQuestions);
   const [selectedTab, setSelectedTab] = React.useState(0);
 
   const isGenerateButtonDisabled = React.useMemo(() => (
-    !hasResumeEntered || !hasJobDescriptionEntered || !hasRequiredTuneInfo
-  ), [hasResumeEntered, hasJobDescriptionEntered, hasRequiredTuneInfo]);
+    !hasResumeEntered || !hasJobDescriptionEntered || !hasRequiredTuneInfo || questions.length > 0
+  ), [hasResumeEntered, hasJobDescriptionEntered, hasRequiredTuneInfo, questions]);
 
   const handleGenerate = React.useCallback(() => {
     dispatch(setFormState('questions'));
